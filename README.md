@@ -5,6 +5,8 @@
 This library reads MaxMind [GeoLite2](http://dev.maxmind.com/geoip/geoip2/geolite2/)
 and [GeoIP2](http://www.maxmind.com/en/geolocation_landing) databases.
 
+This is not an official MaxMind API.
+
 ## Example ##
 
 ```go
