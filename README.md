@@ -1,9 +1,9 @@
 # GeoIP2 Reader for Go #
 
-This library reads MaxMind [GeoLite2](http://dev.maxmind.com/geoip/geoip2/geolite2/) and
-[GeoIP2](http://www.maxmind.com/en/geolocation_landing) databases.
+This library reads MaxMind [GeoLite2](http://dev.maxmind.com/geoip/geoip2/geolite2/)
+and [GeoIP2](http://www.maxmind.com/en/geolocation_landing) databases.
 
-# Example #
+## Example ##
 
 ```go
 package main
@@ -29,6 +29,10 @@ func main() {
     db.Close()
 }
 ```
+
+## Notes ##
+
+This uses the [maxminddb library](https://github.com/oschwald/maxminddb-golang).
 
 ## Contributing ##
 
