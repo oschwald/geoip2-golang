@@ -1,8 +1,7 @@
 package geoip2
 
 import (
-	//	"github.com/oschwald/maxminddb-golang"
-	"maxminddb"
+	"github.com/oschwald/maxminddb-golang"
 	"net"
 )
 
