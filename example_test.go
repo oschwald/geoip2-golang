@@ -6,9 +6,9 @@ import (
 	"net"
 )
 
-// ExampleCity provides a basic example of using the API. The Country method
-// is analogous.
-func ExampleCity() {
+// Example provides a basic example of using the API. Use of the Country
+// method is analogous to that of the City method.
+func Example() {
 	db, err := geoip2.Open("test-data/test-data/GeoIP2-City-Test.mmdb")
 	if err != nil {
 		panic(err)
