@@ -1,7 +1,6 @@
-package geoip2_test
+package geoip2
 
 import (
-	"geoip2"
 	. "launchpad.net/gocheck"
 	"net"
 	"testing"
@@ -14,7 +13,7 @@ type MySuite struct{}
 var _ = Suite(&MySuite{})
 
 func (s *MySuite) TestReader(c *C) {
-	reader, err := geoip2.Open("test-data/test-data/GeoIP2-City-Test.mmdb")
+	reader, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
 	if err != nil {
 		c.Log(err)
 		c.Fail()

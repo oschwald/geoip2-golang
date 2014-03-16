@@ -1,15 +1,14 @@
-package geoip2_test
+package geoip2
 
 import (
 	"fmt"
-	"geoip2"
 	"net"
 )
 
 // Example provides a basic example of using the API. Use of the Country
 // method is analogous to that of the City method.
 func Example() {
-	db, err := geoip2.Open("test-data/test-data/GeoIP2-City-Test.mmdb")
+	db, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
 	if err != nil {
 		panic(err)
 	}

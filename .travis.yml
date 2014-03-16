@@ -8,7 +8,6 @@ go:
 install:
  - go get github.com/oschwald/maxminddb-golang
  - go get launchpad.net/gocheck
- - go install
 
 script:
  - go test -v ./...
