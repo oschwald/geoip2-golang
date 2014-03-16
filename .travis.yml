@@ -6,8 +6,7 @@ go:
  - tip
 
 install:
- - go get github.com/oschwald/maxminddb-golang
- - go get launchpad.net/gocheck
+ - go get -t .
 
 script:
  - go test -v ./...

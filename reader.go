@@ -1,3 +1,7 @@
+// Package geoip2 provides a wrapper around the maxminddb package for
+// easy use with the MaxMind GeoIP2 and GeoLite2 databases. The records for
+// the IP address is returned from this package as well-formed structures
+// that match the internal layout of data from MaxMind.
 package geoip2
 
 import (
@@ -5,6 +9,8 @@ import (
 	"net"
 )
 
+// The City structure corresponds to the data in the GeoIP2/GeoLite2 City
+// databases.
 type City struct {
 	City struct {
 		GeoNameID int `maxminddb:"geoname_id"`
@@ -51,6 +57,8 @@ type City struct {
 	}
 }
 
+// The Country structure corresponds to the data in the GeoIP2/GeoLite2
+// Country databases.
 type Country struct {
 	Continent struct {
 		Code      string
@@ -79,27 +87,41 @@ type Country struct {
 	}
 }
 
+// Reader holds the maxminddb.Reader structure. It should be created
+// using the Open function.
 type Reader struct {
 	mmdbReader *maxminddb.Reader
 }
 
+// Open takes a string path to a file and returns a Reader structure or an
+// error. The database file opened using a memory map. Use the Close method
+// on the Reader object to return the resources to the system.
 func Open(file string) (*Reader, error) {
 	reader, err := maxminddb.Open(file)
 	return &Reader{mmdbReader: reader}, err
 }
 
+// City takes an IP address as a net.IP struct and returns a City struct
+// and/or an error. Although this can be used with other databases, this
+// method generally should be used with the GeoIP2 or GeoLite2 City databases.
 func (r *Reader) City(ipAddress net.IP) (*City, error) {
 	var city City
 	err := r.mmdbReader.Unmarshal(ipAddress, &city)
 	return &city, err
 }
 
+// Country takes an IP address as a net.IP struct and returns a Country struct
+// and/or an error. Although this can be used with other databases, this
+// method generally should be used with the GeoIP2 or GeoLite2 Country
+// databases.
 func (r *Reader) Country(ipAddress net.IP) (*Country, error) {
 	var country Country
 	err := r.mmdbReader.Unmarshal(ipAddress, &country)
 	return &country, err
 }
 
+// Close unmaps the database file from virtual memory and returns the
+// resources to the system.
 func (r *Reader) Close() {
 	r.mmdbReader.Close()
 }
