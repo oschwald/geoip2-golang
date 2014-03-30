@@ -5,7 +5,7 @@
 package geoip2
 
 import (
-	"github.com/oschwald/maxminddb-golang"
+	"github.com/oxtoacart/maxminddb-golang"
 	"net"
 )
 
@@ -98,6 +98,14 @@ type Reader struct {
 // on the Reader object to return the resources to the system.
 func Open(file string) (*Reader, error) {
 	reader, err := maxminddb.Open(file)
+	return &Reader{mmdbReader: reader}, err
+}
+
+// OpenBytes takes a string path to a file and returns a Reader structure or an
+// error. The database file opened using a memory map. Use the Close method
+// on the Reader object to return the resources to the system.
+func OpenBytes(bytes []byte) (*Reader, error) {
+	reader, err := maxminddb.OpenBytes(bytes)
 	return &Reader{mmdbReader: reader}, err
 }
 
