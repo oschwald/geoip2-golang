@@ -87,4 +87,23 @@ func (s *MySuite) TestReader(c *C) {
 		"zh-CN": "美国",
 	})
 
+	reader.Close()
+}
+
+func (s *MySuite) TestMetroCode(c *C) {
+	reader, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
+	if err != nil {
+		c.Log(err)
+		c.Fail()
+	}
+
+	record, err := reader.City(net.ParseIP("216.160.83.56"))
+	if err != nil {
+		c.Log(err)
+		c.Fail()
+	}
+
+	c.Assert(record.Location.MetroCode, Equals, 819)
+
+	reader.Close()
 }
