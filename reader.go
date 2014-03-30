@@ -29,7 +29,7 @@ type City struct {
 	Location struct {
 		Latitude  float64
 		Longitude float64
-		MetroCode int    `maxminddb:"metro_code"`
+		MetroCode string `maxminddb:"metro_code"`
 		TimeZone  string `maxminddb:"time_zone"`
 	}
 	Postal struct {
