@@ -113,7 +113,7 @@ func FromBytes(bytes []byte) (*Reader, error) {
 // method generally should be used with the GeoIP2 or GeoLite2 City databases.
 func (r *Reader) City(ipAddress net.IP) (*City, error) {
 	var city City
-	err := r.mmdbReader.Unmarshal(ipAddress, &city)
+	err := r.mmdbReader.Lookup(ipAddress, &city)
 	return &city, err
 }
 
@@ -123,7 +123,7 @@ func (r *Reader) City(ipAddress net.IP) (*City, error) {
 // databases.
 func (r *Reader) Country(ipAddress net.IP) (*Country, error) {
 	var country Country
-	err := r.mmdbReader.Unmarshal(ipAddress, &country)
+	err := r.mmdbReader.Lookup(ipAddress, &country)
 	return &country, err
 }
 
