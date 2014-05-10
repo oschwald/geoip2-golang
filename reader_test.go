@@ -29,39 +29,39 @@ func (s *MySuite) TestReader(c *C) {
 	}
 
 	c.Assert(record.City.GeoNameID, Equals, uint(2643743))
-	c.Assert(record.City.Names, DeepEquals, map[string]string{
-		"de":    "London",
-		"en":    "London",
-		"es":    "Londres",
-		"fr":    "Londres",
-		"ja":    "ロンドン",
-		"pt-BR": "Londres",
-		"ru":    "Лондон",
+	c.Assert(record.City.Names, DeepEquals, Names{
+		German:              "London",
+		English:             "London",
+		Spanish:             "Londres",
+		French:              "Londres",
+		Japanese:            "ロンドン",
+		BrazilianPortuguese: "Londres",
+		Russian:             "Лондон",
 	})
 	c.Assert(record.Continent.GeoNameID, Equals, uint(6255148))
 	c.Assert(record.Continent.Code, Equals, "EU")
-	c.Assert(record.Continent.Names, DeepEquals, map[string]string{
-		"de":    "Europa",
-		"en":    "Europe",
-		"es":    "Europa",
-		"fr":    "Europe",
-		"ja":    "ヨーロッパ",
-		"pt-BR": "Europa",
-		"ru":    "Европа",
-		"zh-CN": "欧洲",
+	c.Assert(record.Continent.Names, DeepEquals, Names{
+		German:              "Europa",
+		English:             "Europe",
+		Spanish:             "Europa",
+		French:              "Europe",
+		Japanese:            "ヨーロッパ",
+		BrazilianPortuguese: "Europa",
+		Russian:             "Европа",
+		Chinese:             "欧洲",
 	})
 
 	c.Assert(record.Country.GeoNameID, Equals, uint(2635167))
 	c.Assert(record.Country.IsoCode, Equals, "GB")
-	c.Assert(record.Country.Names, DeepEquals, map[string]string{
-		"de":    "Vereinigtes Königreich",
-		"en":    "United Kingdom",
-		"es":    "Reino Unido",
-		"fr":    "Royaume-Uni",
-		"ja":    "イギリス",
-		"pt-BR": "Reino Unido",
-		"ru":    "Великобритания",
-		"zh-CN": "英国",
+	c.Assert(record.Country.Names, DeepEquals, Names{
+		German:              "Vereinigtes Königreich",
+		English:             "United Kingdom",
+		Spanish:             "Reino Unido",
+		French:              "Royaume-Uni",
+		Japanese:            "イギリス",
+		BrazilianPortuguese: "Reino Unido",
+		Russian:             "Великобритания",
+		Chinese:             "英国",
 	})
 
 	c.Assert(record.Location.Latitude, Equals, 51.5142)
@@ -70,24 +70,24 @@ func (s *MySuite) TestReader(c *C) {
 
 	c.Assert(record.Subdivisions[0].GeoNameID, Equals, uint(6269131))
 	c.Assert(record.Subdivisions[0].IsoCode, Equals, "ENG")
-	c.Assert(record.Subdivisions[0].Names, DeepEquals, map[string]string{
-		"en":    "England",
-		"pt-BR": "Inglaterra",
-		"fr":    "Angleterre",
-		"es":    "Inglaterra",
+	c.Assert(record.Subdivisions[0].Names, DeepEquals, Names{
+		English:             "England",
+		BrazilianPortuguese: "Inglaterra",
+		French:              "Angleterre",
+		Spanish:             "Inglaterra",
 	})
 
 	c.Assert(record.RegisteredCountry.GeoNameID, Equals, uint(6252001))
 	c.Assert(record.RegisteredCountry.IsoCode, Equals, "US")
-	c.Assert(record.RegisteredCountry.Names, DeepEquals, map[string]string{
-		"de":    "USA",
-		"en":    "United States",
-		"es":    "Estados Unidos",
-		"fr":    "États-Unis",
-		"ja":    "アメリカ合衆国",
-		"pt-BR": "Estados Unidos",
-		"ru":    "США",
-		"zh-CN": "美国",
+	c.Assert(record.RegisteredCountry.Names, DeepEquals, Names{
+		German:              "USA",
+		English:             "United States",
+		Spanish:             "Estados Unidos",
+		French:              "États-Unis",
+		Japanese:            "アメリカ合衆国",
+		BrazilianPortuguese: "Estados Unidos",
+		Russian:             "США",
+		Chinese:             "美国",
 	})
 
 	reader.Close()

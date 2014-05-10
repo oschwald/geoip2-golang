@@ -9,22 +9,33 @@ import (
 	"net"
 )
 
+type Names struct {
+	German              string `maxminddb:"de"`
+	English             string `maxminddb:"en"`
+	Spanish             string `maxminddb:"es"`
+	French              string `maxminddb:"fr"`
+	Japanese            string `maxminddb:"ja"`
+	BrazilianPortuguese string `maxminddb:"pt-BR"`
+	Russian             string `maxminddb:"ru"`
+	Chinese             string `maxminddb:"zh-CN"`
+}
+
 // The City structure corresponds to the data in the GeoIP2/GeoLite2 City
 // databases.
 type City struct {
 	City struct {
-		GeoNameID uint              `maxminddb:"geoname_id"`
-		Names     map[string]string `maxminddb:"names"`
+		GeoNameID uint  `maxminddb:"geoname_id"`
+		Names     Names `maxminddb:"names"`
 	} `maxminddb:"city"`
 	Continent struct {
-		Code      string            `maxminddb:"code"`
-		GeoNameID uint              `maxminddb:"geoname_id"`
-		Names     map[string]string `maxminddb:"names"`
+		Code      string `maxminddb:"code"`
+		GeoNameID uint   `maxminddb:"geoname_id"`
+		Names     Names  `maxminddb:"names"`
 	} `maxminddb:"continent"`
 	Country struct {
-		GeoNameID uint              `maxminddb:"geoname_id"`
-		IsoCode   string            `maxminddb:"iso_code"`
-		Names     map[string]string `maxminddb:"names"`
+		GeoNameID uint   `maxminddb:"geoname_id"`
+		IsoCode   string `maxminddb:"iso_code"`
+		Names     Names  `maxminddb:"names"`
 	} `maxminddb:"country"`
 	Location struct {
 		Latitude  float64 `maxminddb:"latitude"`
@@ -36,20 +47,20 @@ type City struct {
 		Code string `maxminddb:"code"`
 	} `maxminddb:"postal"`
 	RegisteredCountry struct {
-		GeoNameID uint              `maxminddb:"geoname_id"`
-		IsoCode   string            `maxminddb:"iso_code"`
-		Names     map[string]string `maxminddb:"names"`
+		GeoNameID uint   `maxminddb:"geoname_id"`
+		IsoCode   string `maxminddb:"iso_code"`
+		Names     Names  `maxminddb:"names"`
 	} `maxminddb:"registered_country"`
 	RepresentedCountry struct {
-		GeoNameID uint              `maxminddb:"geoname_id"`
-		IsoCode   string            `maxminddb:"iso_code"`
-		Names     map[string]string `maxminddb:"names"`
-		Type      string            `maxminddb:"type"`
+		GeoNameID uint   `maxminddb:"geoname_id"`
+		IsoCode   string `maxminddb:"iso_code"`
+		Names     Names  `maxminddb:"names"`
+		Type      string `maxminddb:"type"`
 	} `maxminddb:"represented_country"`
 	Subdivisions []struct {
-		GeoNameID uint              `maxminddb:"geoname_id"`
-		IsoCode   string            `maxminddb:"iso_code"`
-		Names     map[string]string `maxminddb:"names"`
+		GeoNameID uint   `maxminddb:"geoname_id"`
+		IsoCode   string `maxminddb:"iso_code"`
+		Names     Names  `maxminddb:"names"`
 	} `maxminddb:"subdivisions"`
 	Traits struct {
 		IsAnonymousProxy    bool `maxminddb:"is_anonymous_proxy"`
@@ -61,25 +72,25 @@ type City struct {
 // Country databases.
 type Country struct {
 	Continent struct {
-		Code      string            `maxminddb:"code"`
-		GeoNameID uint              `maxminddb:"geoname_id"`
-		Names     map[string]string `maxminddb:"names"`
+		Code      string `maxminddb:"code"`
+		GeoNameID uint   `maxminddb:"geoname_id"`
+		Names     Names  `maxminddb:"names"`
 	} `maxminddb:"continent"`
 	Country struct {
-		GeoNameID uint              `maxminddb:"geoname_id"`
-		IsoCode   string            `maxminddb:"iso_code"`
-		Names     map[string]string `maxminddb:"names"`
+		GeoNameID uint   `maxminddb:"geoname_id"`
+		IsoCode   string `maxminddb:"iso_code"`
+		Names     Names  `maxminddb:"names"`
 	} `maxminddb:"country"`
 	RegisteredCountry struct {
-		GeoNameID uint              `maxminddb:"geoname_id"`
-		IsoCode   string            `maxminddb:"iso_code"`
-		Names     map[string]string `maxminddb:"names"`
+		GeoNameID uint   `maxminddb:"geoname_id"`
+		IsoCode   string `maxminddb:"iso_code"`
+		Names     Names  `maxminddb:"names"`
 	} `maxminddb:"registered_country"`
 	RepresentedCountry struct {
-		GeoNameID uint              `maxminddb:"geoname_id"`
-		IsoCode   string            `maxminddb:"iso_code"`
-		Names     map[string]string `maxminddb:"names"`
-		Type      string            `maxminddb:"type"`
+		GeoNameID uint   `maxminddb:"geoname_id"`
+		IsoCode   string `maxminddb:"iso_code"`
+		Names     Names  `maxminddb:"names"`
+		Type      string `maxminddb:"type"`
 	} `maxminddb:"represented_country"`
 	Traits struct {
 		IsAnonymousProxy    bool `maxminddb:"is_anonymous_proxy"`
