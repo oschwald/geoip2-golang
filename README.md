@@ -6,7 +6,12 @@
 This library reads MaxMind [GeoLite2](http://dev.maxmind.com/geoip/geoip2/geolite2/)
 and [GeoIP2](http://www.maxmind.com/en/geolocation_landing) databases.
 
-This is not an official MaxMind API.
+This library is built using
+[the Go maxminddb reader](https://github.com/oschwald/maxminddb-golang).
+All data for the database record is decoded using this library. If you only
+need several fields, you may get superior performance by using maxminddb's
+`Lookup` directly with a result struct that only contains the required fields.
+(See `example_test.go` in the maxminddb repository for an example of this.)
 
 ## Installation ##
 
@@ -58,10 +63,6 @@ func main() {
     // Coordinates: 51.5142, -0.0931
 }
 ```
-
-## Notes ##
-
-This uses the [maxminddb library](https://github.com/oschwald/maxminddb-golang).
 
 ## Contributing ##
 
