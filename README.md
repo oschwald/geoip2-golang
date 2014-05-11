@@ -11,7 +11,8 @@ This library is built using
 All data for the database record is decoded using this library. If you only
 need several fields, you may get superior performance by using maxminddb's
 `Lookup` directly with a result struct that only contains the required fields.
-(See `example_test.go` in the maxminddb repository for an example of this.)
+(See [example_test.go](https://github.com/oschwald/maxminddb-golang/blob/master/example_test.go)
+in the maxminddb repository for an example of this.)
 
 ## Installation ##
 
