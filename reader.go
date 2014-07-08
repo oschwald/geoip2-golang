@@ -5,8 +5,9 @@
 package geoip2
 
 import (
-	"github.com/oschwald/maxminddb-golang"
 	"net"
+
+	"github.com/oschwald/maxminddb-golang"
 )
 
 // The City structure corresponds to the data in the GeoIP2/GeoLite2 City
@@ -87,6 +88,25 @@ type Country struct {
 	} `maxminddb:"traits"`
 }
 
+// The ConnectionType structure corresponds to the data in the GeoIP2
+// Connection-Type database.
+type ConnectionType struct {
+	ConnectionType string `maxminddb:"connection_type"`
+}
+
+// The Domain structure corresponds to the data in the GeoIP2 Domain database.
+type Domain struct {
+	Domain string `maxminddb:"domain"`
+}
+
+// The ISP structure corresponds to the data in the GeoIP2 ISP database.
+type ISP struct {
+	AutonomousSystemNumber       uint   `maxminddb:"autonomous_system_number"`
+	AutonomousSystemOrganization string `maxminddb:"autonomous_system_organization"`
+	ISP                          string `maxminddb:"isp"`
+	Organization                 string `maxminddb:"organization"`
+}
+
 // Reader holds the maxminddb.Reader structure. It should be created
 // using the Open function.
 type Reader struct {
@@ -125,6 +145,30 @@ func (r *Reader) Country(ipAddress net.IP) (*Country, error) {
 	var country Country
 	err := r.mmdbReader.Lookup(ipAddress, &country)
 	return &country, err
+}
+
+// ConnectionType takes an IP address as a net.IP struct and returns a
+// ConnectionType struct and/or an error
+func (r *Reader) ConnectionType(ipAddress net.IP) (*ConnectionType, error) {
+	var val ConnectionType
+	err := r.mmdbReader.Lookup(ipAddress, &val)
+	return &val, err
+}
+
+// Domain takes an IP address as a net.IP struct and returns a
+// Domain struct and/or an error
+func (r *Reader) Domain(ipAddress net.IP) (*Domain, error) {
+	var val Domain
+	err := r.mmdbReader.Lookup(ipAddress, &val)
+	return &val, err
+}
+
+// ISP takes an IP address as a net.IP struct and returns a ISP struct and/or
+// an error
+func (r *Reader) ISP(ipAddress net.IP) (*ISP, error) {
+	var val ISP
+	err := r.mmdbReader.Lookup(ipAddress, &val)
+	return &val, err
 }
 
 // Close unmaps the database file from virtual memory and returns the

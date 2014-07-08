@@ -2,11 +2,11 @@ package geoip2
 
 import (
 	"fmt"
-	. "launchpad.net/gocheck"
 	"math/rand"
 	"net"
 	"testing"
 	"time"
+	. "launchpad.net/gocheck"
 )
 
 func TestGeoIP2(t *testing.T) { TestingT(t) }
@@ -21,6 +21,7 @@ func (s *MySuite) TestReader(c *C) {
 		c.Log(err)
 		c.Fail()
 	}
+	defer reader.Close()
 
 	record, err := reader.City(net.ParseIP("81.2.69.160"))
 	if err != nil {
@@ -89,8 +90,6 @@ func (s *MySuite) TestReader(c *C) {
 		"ru":    "США",
 		"zh-CN": "美国",
 	})
-
-	reader.Close()
 }
 
 func (s *MySuite) TestMetroCode(c *C) {
@@ -99,6 +98,7 @@ func (s *MySuite) TestMetroCode(c *C) {
 		c.Log(err)
 		c.Fail()
 	}
+	defer reader.Close()
 
 	record, err := reader.City(net.ParseIP("216.160.83.56"))
 	if err != nil {
@@ -107,8 +107,62 @@ func (s *MySuite) TestMetroCode(c *C) {
 	}
 
 	c.Assert(record.Location.MetroCode, Equals, uint(819))
+}
 
-	reader.Close()
+func (s *MySuite) TestConnectionType(c *C) {
+	reader, err := Open("test-data/test-data/GeoIP2-Connection-Type-Test.mmdb")
+	if err != nil {
+		c.Log(err)
+		c.Fail()
+	}
+	defer reader.Close()
+
+	record, err := reader.ConnectionType(net.ParseIP("1.0.1.0"))
+	if err != nil {
+		c.Log(err)
+		c.Fail()
+	}
+	c.Assert(record.ConnectionType, Equals, "Cable/DSL")
+
+}
+
+func (s *MySuite) TestDomain(c *C) {
+	reader, err := Open("test-data/test-data/GeoIP2-Domain-Test.mmdb")
+	if err != nil {
+		c.Log(err)
+		c.Fail()
+	}
+	defer reader.Close()
+
+	record, err := reader.Domain(net.ParseIP("1.2.0.0"))
+	if err != nil {
+		c.Log(err)
+		c.Fail()
+	}
+	c.Assert(record.Domain, Equals, "maxmind.com")
+
+}
+
+func (s *MySuite) TestISP(c *C) {
+	reader, err := Open("test-data/test-data/GeoIP2-ISP-Test.mmdb")
+	if err != nil {
+		c.Log(err)
+		c.Fail()
+	}
+	defer reader.Close()
+
+	record, err := reader.ISP(net.ParseIP("1.128.0.0"))
+	if err != nil {
+		c.Log(err)
+		c.Fail()
+	}
+
+	c.Assert(record.AutonomousSystemNumber, Equals, uint(1221))
+
+	c.Assert(record.AutonomousSystemOrganization, Equals, "Telstra Pty Ltd")
+	c.Assert(record.ISP, Equals, "Telstra Internet")
+	c.Assert(record.Organization, Equals, "Telstra Internet")
+
 }
 
 func BenchmarkMaxMindDB(b *testing.B) {
@@ -116,6 +170,7 @@ func BenchmarkMaxMindDB(b *testing.B) {
 	if err != nil {
 		b.Fatal(err)
 	}
+	defer db.Close()
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
@@ -128,5 +183,4 @@ func BenchmarkMaxMindDB(b *testing.B) {
 			b.Fatal(err)
 		}
 	}
-	db.Close()
 }
