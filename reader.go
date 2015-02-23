@@ -5,6 +5,7 @@
 package geoip2
 
 import (
+	"math"
 	"net"
 
 	"github.com/oschwald/maxminddb-golang"
@@ -133,6 +134,8 @@ func FromBytes(bytes []byte) (*Reader, error) {
 // method generally should be used with the GeoIP2 or GeoLite2 City databases.
 func (r *Reader) City(ipAddress net.IP) (*City, error) {
 	var city City
+	city.Location.Latitude = math.NaN()
+	city.Location.Longitude = math.NaN()
 	err := r.mmdbReader.Lookup(ipAddress, &city)
 	return &city, err
 }
