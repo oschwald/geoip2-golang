@@ -65,6 +65,21 @@ func main() {
 }
 ```
 
+## Testing ##
+
+Make sure you checked out test data submodule:
+
+```
+git submodule init
+git submodule update
+```
+
+Execute test suite:
+
+```
+go test
+```
+
 ## Contributing ##
 
 Contributions welcome! Please fork the repository and open a pull request
