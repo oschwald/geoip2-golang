@@ -1,11 +1,13 @@
 package geoip2
 
 import (
+	"encoding/json"
 	"fmt"
 	"math/rand"
 	"net"
 	"testing"
 	"time"
+
 	. "launchpad.net/gocheck"
 )
 
@@ -163,6 +165,30 @@ func (s *MySuite) TestISP(c *C) {
 	c.Assert(record.ISP, Equals, "Telstra Internet")
 	c.Assert(record.Organization, Equals, "Telstra Internet")
 
+}
+
+func (s *MySuite) TestJsonMarshal(c *C) {
+	reader, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
+	if err != nil {
+		c.Log(err)
+		c.Fail()
+	}
+	defer reader.Close()
+
+	record, err := reader.City(net.ParseIP("81.2.69.160"))
+	if err != nil {
+		c.Log(err)
+		c.Fail()
+	}
+
+	data, err := json.Marshal(record)
+	if err != nil {
+		c.Log(err)
+		c.Fail()
+	}
+
+	expected := `{"city":{"geoname_id":2643743,"names":{"de":"London","en":"London","es":"Londres","fr":"Londres","ja":"ロンドン","pt-BR":"Londres","ru":"Лондон"}},"continent":{"code":"EU","geoname_id":6255148,"names":{"de":"Europa","en":"Europe","es":"Europa","fr":"Europe","ja":"ヨーロッパ","pt-BR":"Europa","ru":"Европа","zh-CN":"欧洲"}},"country":{"geoname_id":2635167,"iso_code":"GB","names":{"de":"Vereinigtes Königreich","en":"United Kingdom","es":"Reino Unido","fr":"Royaume-Uni","ja":"イギリス","pt-BR":"Reino Unido","ru":"Великобритания","zh-CN":"英国"}},"location":{"latitude":51.5142,"longitude":-0.0931,"metro_code":0,"time_zone":"Europe/London"},"postal":{"code":""},"registered_country":{"geoname_id":6252001,"iso_code":"US","names":{"de":"USA","en":"United States","es":"Estados Unidos","fr":"États-Unis","ja":"アメリカ合衆国","pt-BR":"Estados Unidos","ru":"США","zh-CN":"美国"}},"represented_country":{"geoname_id":0,"iso_code":"","names":null,"type":""},"subdivisions":[{"geoname_id":6269131,"iso_code":"ENG","names":{"en":"England","es":"Inglaterra","fr":"Angleterre","pt-BR":"Inglaterra"}}],"traits":{"is_anonymous_proxy":false,"is_satellite_provider":false}}`
+	c.Assert(string(data), Equals, expected)
 }
 
 func BenchmarkMaxMindDB(b *testing.B) {
