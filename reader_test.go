@@ -2,11 +2,11 @@ package geoip2
 
 import (
 	"fmt"
+	. "launchpad.net/gocheck"
 	"math/rand"
 	"net"
 	"testing"
 	"time"
-	. "launchpad.net/gocheck"
 )
 
 func TestGeoIP2(t *testing.T) { TestingT(t) }
@@ -28,6 +28,19 @@ func (s *MySuite) TestReader(c *C) {
 		c.Log(err)
 		c.Fail()
 	}
+
+	c.Assert(reader.Metadata.BinaryFormatMajorVersion, Equals, uint(2))
+	c.Assert(reader.Metadata.BinaryFormatMinorVersion, Equals, uint(0))
+	c.Assert(reader.Metadata.BuildEpoch, Equals, uint(1403110838))
+	c.Assert(reader.Metadata.DatabaseType, Equals, "GeoIP2 City")
+	c.Assert(reader.Metadata.Description, DeepEquals, map[string]string{
+		"en": "GeoIP2 City Test Database (a small sample of real GeoIP2 data)",
+		"zh": "小型数据库",
+	})
+	c.Assert(reader.Metadata.IPVersion, Equals, uint(6))
+	c.Assert(reader.Metadata.Languages, DeepEquals, []string{"en", "zh"})
+	c.Assert(reader.Metadata.NodeCount, Equals, uint(1218))
+	c.Assert(reader.Metadata.RecordSize, Equals, uint(28))
 
 	c.Assert(record.City.GeoNameID, Equals, uint(2643743))
 	c.Assert(record.City.Names, DeepEquals, map[string]string{
