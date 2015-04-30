@@ -29,18 +29,19 @@ func (s *MySuite) TestReader(c *C) {
 		c.Fail()
 	}
 
-	c.Assert(reader.Metadata.BinaryFormatMajorVersion, Equals, uint(2))
-	c.Assert(reader.Metadata.BinaryFormatMinorVersion, Equals, uint(0))
-	c.Assert(reader.Metadata.BuildEpoch, Equals, uint(1403110838))
-	c.Assert(reader.Metadata.DatabaseType, Equals, "GeoIP2 City")
-	c.Assert(reader.Metadata.Description, DeepEquals, map[string]string{
+	m := reader.Metadata()
+	c.Assert(m.BinaryFormatMajorVersion, Equals, uint(2))
+	c.Assert(m.BinaryFormatMinorVersion, Equals, uint(0))
+	c.Assert(m.BuildEpoch, Equals, uint(1403110838))
+	c.Assert(m.DatabaseType, Equals, "GeoIP2 City")
+	c.Assert(m.Description, DeepEquals, map[string]string{
 		"en": "GeoIP2 City Test Database (a small sample of real GeoIP2 data)",
 		"zh": "小型数据库",
 	})
-	c.Assert(reader.Metadata.IPVersion, Equals, uint(6))
-	c.Assert(reader.Metadata.Languages, DeepEquals, []string{"en", "zh"})
-	c.Assert(reader.Metadata.NodeCount, Equals, uint(1218))
-	c.Assert(reader.Metadata.RecordSize, Equals, uint(28))
+	c.Assert(m.IPVersion, Equals, uint(6))
+	c.Assert(m.Languages, DeepEquals, []string{"en", "zh"})
+	c.Assert(m.NodeCount, Equals, uint(1218))
+	c.Assert(m.RecordSize, Equals, uint(28))
 
 	c.Assert(record.City.GeoNameID, Equals, uint(2643743))
 	c.Assert(record.City.Names, DeepEquals, map[string]string{
