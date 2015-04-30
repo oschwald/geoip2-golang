@@ -111,7 +111,6 @@ type ISP struct {
 // using the Open function.
 type Reader struct {
 	mmdbReader *maxminddb.Reader
-	metadata   *maxminddb.Metadata
 }
 
 // Open takes a string path to a file and returns a Reader structure or an
@@ -119,22 +118,14 @@ type Reader struct {
 // on the Reader object to return the resources to the system.
 func Open(file string) (*Reader, error) {
 	reader, err := maxminddb.Open(file)
-	if err == nil {
-		return &Reader{mmdbReader: reader, metadata: &reader.Metadata}, err
-	} else {
-		return &Reader{mmdbReader: reader}, err
-	}
+	return &Reader{mmdbReader: reader}, err
 }
 
 // FromBytes takes a byte slice corresponding to a GeoIP2/GeoLite2 database
 // file and returns a Reader structure or an error.
 func FromBytes(bytes []byte) (*Reader, error) {
 	reader, err := maxminddb.FromBytes(bytes)
-	if err == nil {
-		return &Reader{mmdbReader: reader, metadata: &reader.Metadata}, err
-	} else {
-		return &Reader{mmdbReader: reader}, err
-	}
+	return &Reader{mmdbReader: reader}, err
 }
 
 // City takes an IP address as a net.IP struct and returns a City struct
@@ -183,7 +174,7 @@ func (r *Reader) ISP(ipAddress net.IP) (*ISP, error) {
 // Metadata takes no arguments and returns a struct containing metadata about
 // the Maxmind database in use by the Reader.
 func (r *Reader) Metadata() *maxminddb.Metadata {
-	return r.metadata
+	return &r.mmdbReader.Metadata
 }
 
 // Close unmaps the database file from virtual memory and returns the
