@@ -173,8 +173,8 @@ func (r *Reader) ISP(ipAddress net.IP) (*ISP, error) {
 
 // Metadata takes no arguments and returns a struct containing metadata about
 // the Maxmind database in use by the Reader.
-func (r *Reader) Metadata() *maxminddb.Metadata {
-	return &r.mmdbReader.Metadata
+func (r *Reader) Metadata() maxminddb.Metadata {
+	return r.mmdbReader.Metadata
 }
 
 // Close unmaps the database file from virtual memory and returns the
