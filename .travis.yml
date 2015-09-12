@@ -10,7 +10,7 @@ go:
  - tip
 
 install:
-  - go get -t -v ./...
+  - go get -v ./...
   # "go get" on 1.1 doesn't get test dependencies apparently.
   - go get gopkg.in/check.v1
 
