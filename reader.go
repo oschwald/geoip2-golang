@@ -88,6 +88,16 @@ type Country struct {
 	} `maxminddb:"traits"`
 }
 
+// The AnonymousIP structure corresponds to the data in the GeoIP2
+// Anonymous IP database.
+type AnonymousIP struct {
+	IsAnonymous       bool `maxminddb:"is_anonymous"`
+	IsAnonymousVPN    bool `maxminddb:"is_anonymous_vpn"`
+	IsHostingProvider bool `maxminddb:"is_hosting_provider"`
+	IsPublicProxy     bool `maxminddb:"is_public_proxy"`
+	IsTorExitNode     bool `maxminddb:"is_tor_exit_node"`
+}
+
 // The ConnectionType structure corresponds to the data in the GeoIP2
 // Connection-Type database.
 type ConnectionType struct {
@@ -147,6 +157,14 @@ func (r *Reader) Country(ipAddress net.IP) (*Country, error) {
 	return &country, err
 }
 
+// AnonymousIP takes an IP address as a net.IP struct and returns a
+// AnonymousIP struct and/or an error.
+func (r *Reader) AnonymousIP(ipAddress net.IP) (*AnonymousIP, error) {
+	var anonIP AnonymousIP
+	err := r.mmdbReader.Lookup(ipAddress, &anonIP)
+	return &anonIP, err
+}
+
 // ConnectionType takes an IP address as a net.IP struct and returns a
 // ConnectionType struct and/or an error
 func (r *Reader) ConnectionType(ipAddress net.IP) (*ConnectionType, error) {
@@ -172,13 +190,13 @@ func (r *Reader) ISP(ipAddress net.IP) (*ISP, error) {
 }
 
 // Metadata takes no arguments and returns a struct containing metadata about
-// the Maxmind database in use by the Reader.
+// the MaxMind database in use by the Reader.
 func (r *Reader) Metadata() maxminddb.Metadata {
 	return r.mmdbReader.Metadata
 }
 
 // Close unmaps the database file from virtual memory and returns the
 // resources to the system.
-func (r *Reader) Close() {
-	r.mmdbReader.Close()
+func (r *Reader) Close() error {
+	return r.mmdbReader.Close()
 }

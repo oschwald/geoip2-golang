@@ -180,6 +180,29 @@ func (s *MySuite) TestISP(c *C) {
 
 }
 
+func (s *MySuite) TestAnonymousIP(c *C) {
+	reader, err := Open("test-data/test-data/GeoIP2-Anonymous-IP-Test.mmdb")
+	if err != nil {
+		c.Log(err)
+		c.Fail()
+	}
+	defer reader.Close()
+
+	record, err := reader.AnonymousIP(net.ParseIP("1.2.0.0"))
+	if err != nil {
+		c.Log(err)
+		c.Fail()
+	}
+
+	c.Assert(record.IsAnonymous, Equals, true)
+
+	c.Assert(record.IsAnonymousVPN, Equals, true)
+	c.Assert(record.IsHostingProvider, Equals, false)
+	c.Assert(record.IsPublicProxy, Equals, false)
+	c.Assert(record.IsTorExitNode, Equals, false)
+
+}
+
 func BenchmarkMaxMindDB(b *testing.B) {
 	db, err := Open("GeoLite2-City.mmdb")
 	if err != nil {
