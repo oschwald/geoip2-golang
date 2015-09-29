@@ -107,6 +107,15 @@ type ISP struct {
 	Organization                 string `maxminddb:"organization"`
 }
 
+// The Anonymous structure corresponds to the data in the GeoIP2 ISP database.
+type Anonymous struct {
+	IsAnonymous       bool `maxminddb:"is_anonymous"`
+	IsAnonymousVPN    bool `maxminddb:"is_anonymous_vpn"`
+	IsHostingProvider bool `maxminddb:"is_hosting_provider"`
+	IsPublicProxy     bool `maxminddb:"is_public_proxy"`
+	IsTorExitNode     bool `maxminddb:"is_tor_exit_node"`
+}
+
 // Reader holds the maxminddb.Reader structure. It should be created
 // using the Open function.
 type Reader struct {
@@ -135,6 +144,15 @@ func (r *Reader) City(ipAddress net.IP) (*City, error) {
 	var city City
 	err := r.mmdbReader.Lookup(ipAddress, &city)
 	return &city, err
+}
+
+// Anonynous takes an IP address as a net.IP struct and returns a Anonymous struct
+// and/or an error. Although this can be used with other databases, this
+// method generally should be used with the GeoIP2 or GeoLite2 Anonymous databases.
+func (r *Reader) Anonymous(ipAddress net.IP) (*Anonymous, error) {
+	var anonymous Anonymous
+	err := r.mmdbReader.Lookup(ipAddress, &anonymous)
+	return &anonymous, err
 }
 
 // Country takes an IP address as a net.IP struct and returns a Country struct
