@@ -229,9 +229,6 @@ func randomIPv4Address(b *testing.B, r *rand.Rand) net.IP {
 	num := r.Uint32()
 	ip := []byte{byte(num >> 24), byte(num >> 16), byte(num >> 8),
 		byte(num)}
-	if _, err := rand.Read(ip); err != nil {
-		b.Fatalf("Error generating IP: %v", err)
-	}
 
 	return ip
 }
