@@ -4,7 +4,6 @@ import (
 	"math/rand"
 	"net"
 	"testing"
-	"time"
 
 	. "gopkg.in/check.v1"
 )
@@ -212,7 +211,7 @@ func BenchmarkMaxMindDB(b *testing.B) {
 	}
 	defer db.Close()
 
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	r := rand.New(rand.NewSource(0))
 
 	var city *City
 
@@ -227,8 +226,10 @@ func BenchmarkMaxMindDB(b *testing.B) {
 }
 
 func randomIPv4Address(b *testing.B, r *rand.Rand) net.IP {
-	ip := make([]byte, 4, 4)
-	if _, err := r.Read(ip); err != nil {
+	num := r.Uint32()
+	ip := []byte{byte(num >> 24), byte(num >> 16), byte(num >> 8),
+		byte(num)}
+	if _, err := rand.Read(ip); err != nil {
 		b.Fatalf("Error generating IP: %v", err)
 	}
 
