@@ -1,7 +1,6 @@
 package geoip2
 
 import (
-	"fmt"
 	"math/rand"
 	"net"
 	"testing"
@@ -203,6 +202,9 @@ func (s *MySuite) TestAnonymousIP(c *C) {
 
 }
 
+// This ensures the compiler does not optimize away the function call
+var cityResult *City
+
 func BenchmarkMaxMindDB(b *testing.B) {
 	db, err := Open("GeoLite2-City.mmdb")
 	if err != nil {
@@ -212,13 +214,23 @@ func BenchmarkMaxMindDB(b *testing.B) {
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
+	var city *City
+
 	for i := 0; i < b.N; i++ {
-		num := r.Uint32()
-		ip := net.ParseIP(fmt.Sprintf("%d.%d.%d.%d", (0xFF000000&num)>>24,
-			(0x00FF0000&num)>>16, (0x0000FF00&num)>>8, 0x000000F&num))
-		_, err := db.City(ip)
+		ip := randomIPv4Address(b, r)
+		city, err = db.City(ip)
 		if err != nil {
 			b.Fatal(err)
 		}
 	}
+	cityResult = city
+}
+
+func randomIPv4Address(b *testing.B, r *rand.Rand) net.IP {
+	ip := make([]byte, 4, 4)
+	if _, err := r.Read(ip); err != nil {
+		b.Fatalf("Error generating IP: %v", err)
+	}
+
+	return ip
 }
