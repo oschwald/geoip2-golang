@@ -6,6 +6,10 @@ go:
  - 1.6
  - tip
 
+matrix:
+  allow_failures:
+    - go: tip
+
 before_install:
   - "if [[ $TRAVIS_GO_VERSION == 1.6 ]]; then go get -v github.com/golang/lint/golint; fi"
 
