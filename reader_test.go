@@ -31,15 +31,15 @@ func (s *MySuite) TestReader(c *C) {
 	m := reader.Metadata()
 	c.Assert(m.BinaryFormatMajorVersion, Equals, uint(2))
 	c.Assert(m.BinaryFormatMinorVersion, Equals, uint(0))
-	c.Assert(m.BuildEpoch, Equals, uint(1436981935))
+	c.Assert(m.BuildEpoch, Equals, uint(1461706823))
 	c.Assert(m.DatabaseType, Equals, "GeoIP2-City")
 	c.Assert(m.Description, DeepEquals, map[string]string{
-		"en": "GeoIP2 City Test Database (a small sample of real GeoIP2 data)",
+		"en": "GeoIP2 City Test Database (fake GeoIP2 data, for example purposes only)",
 		"zh": "小型数据库",
 	})
 	c.Assert(m.IPVersion, Equals, uint(6))
 	c.Assert(m.Languages, DeepEquals, []string{"en", "zh"})
-	c.Assert(m.NodeCount, Equals, uint(1240))
+	c.Assert(m.NodeCount, Equals, uint(1431))
 	c.Assert(m.RecordSize, Equals, uint(28))
 
 	c.Assert(record.City.GeoNameID, Equals, uint(2643743))
@@ -78,6 +78,7 @@ func (s *MySuite) TestReader(c *C) {
 		"zh-CN": "英国",
 	})
 
+	c.Assert(record.Location.AccuracyRadius, Equals, uint16(100))
 	c.Assert(record.Location.Latitude, Equals, 51.5142)
 	c.Assert(record.Location.Longitude, Equals, -0.0931)
 	c.Assert(record.Location.TimeZone, Equals, "Europe/London")
