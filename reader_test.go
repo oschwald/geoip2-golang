@@ -16,17 +16,12 @@ var _ = Suite(&MySuite{})
 
 func (s *MySuite) TestReader(c *C) {
 	reader, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
-	if err != nil {
-		c.Log(err)
-		c.Fail()
-	}
+	c.Assert(err, IsNil)
+
 	defer reader.Close()
 
 	record, err := reader.City(net.ParseIP("81.2.69.160"))
-	if err != nil {
-		c.Log(err)
-		c.Fail()
-	}
+	c.Assert(err, IsNil)
 
 	m := reader.Metadata()
 	c.Assert(m.BinaryFormatMajorVersion, Equals, uint(2))
@@ -108,68 +103,46 @@ func (s *MySuite) TestReader(c *C) {
 
 func (s *MySuite) TestMetroCode(c *C) {
 	reader, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
-	if err != nil {
-		c.Log(err)
-		c.Fail()
-	}
+	c.Assert(err, IsNil)
 	defer reader.Close()
 
 	record, err := reader.City(net.ParseIP("216.160.83.56"))
-	if err != nil {
-		c.Log(err)
-		c.Fail()
-	}
+	c.Assert(err, IsNil)
 
 	c.Assert(record.Location.MetroCode, Equals, uint(819))
 }
 
 func (s *MySuite) TestConnectionType(c *C) {
 	reader, err := Open("test-data/test-data/GeoIP2-Connection-Type-Test.mmdb")
-	if err != nil {
-		c.Log(err)
-		c.Fail()
-	}
+	c.Assert(err, IsNil)
+
 	defer reader.Close()
 
 	record, err := reader.ConnectionType(net.ParseIP("1.0.1.0"))
-	if err != nil {
-		c.Log(err)
-		c.Fail()
-	}
+	c.Assert(err, IsNil)
+
 	c.Assert(record.ConnectionType, Equals, "Cable/DSL")
 
 }
 
 func (s *MySuite) TestDomain(c *C) {
 	reader, err := Open("test-data/test-data/GeoIP2-Domain-Test.mmdb")
-	if err != nil {
-		c.Log(err)
-		c.Fail()
-	}
+	c.Assert(err, IsNil)
 	defer reader.Close()
 
 	record, err := reader.Domain(net.ParseIP("1.2.0.0"))
-	if err != nil {
-		c.Log(err)
-		c.Fail()
-	}
+	c.Assert(err, IsNil)
 	c.Assert(record.Domain, Equals, "maxmind.com")
 
 }
 
 func (s *MySuite) TestISP(c *C) {
 	reader, err := Open("test-data/test-data/GeoIP2-ISP-Test.mmdb")
-	if err != nil {
-		c.Log(err)
-		c.Fail()
-	}
+	c.Assert(err, IsNil)
 	defer reader.Close()
 
 	record, err := reader.ISP(net.ParseIP("1.128.0.0"))
-	if err != nil {
-		c.Log(err)
-		c.Fail()
-	}
+	c.Assert(err, IsNil)
 
 	c.Assert(record.AutonomousSystemNumber, Equals, uint(1221))
 
@@ -181,17 +154,11 @@ func (s *MySuite) TestISP(c *C) {
 
 func (s *MySuite) TestAnonymousIP(c *C) {
 	reader, err := Open("test-data/test-data/GeoIP2-Anonymous-IP-Test.mmdb")
-	if err != nil {
-		c.Log(err)
-		c.Fail()
-	}
+	c.Assert(err, IsNil)
 	defer reader.Close()
 
 	record, err := reader.AnonymousIP(net.ParseIP("1.2.0.0"))
-	if err != nil {
-		c.Log(err)
-		c.Fail()
-	}
+	c.Assert(err, IsNil)
 
 	c.Assert(record.IsAnonymous, Equals, true)
 
