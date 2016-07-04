@@ -5,6 +5,7 @@
 package geoip2
 
 import (
+	"fmt"
 	"net"
 
 	"github.com/oschwald/maxminddb-golang"
@@ -118,10 +119,47 @@ type ISP struct {
 	Organization                 string `maxminddb:"organization"`
 }
 
+type databaseType int
+
+const (
+	isAnonymousIP = 1 << iota
+	isCity
+	isConnectionType
+	isCountry
+	isDomain
+	isEnterprise
+	isISP
+)
+
 // Reader holds the maxminddb.Reader structure. It should be created
 // using the Open function.
 type Reader struct {
-	mmdbReader *maxminddb.Reader
+	mmdbReader   *maxminddb.Reader
+	databaseType databaseType
+}
+
+// InvalidMethodError is returned when a lookup method is called on a
+// database that it does not support. For instance, calling the ISP method
+// on a City database.
+type InvalidMethodError struct {
+	Method       string
+	DatabaseType string
+}
+
+func (e InvalidMethodError) Error() string {
+	return fmt.Sprintf(`geoip2: the %s method does not support the %s database`,
+		e.Method, e.DatabaseType)
+}
+
+// UnknownDatabaseTypeError is returned when an unknown database type is
+// opened.
+type UnknownDatabaseTypeError struct {
+	DatabaseType string
+}
+
+func (e UnknownDatabaseTypeError) Error() string {
+	return fmt.Sprintf(`geoip2: reader does not support the "%s" database type`,
+		e.DatabaseType)
 }
 
 // Open takes a string path to a file and returns a Reader structure or an
@@ -129,20 +167,52 @@ type Reader struct {
 // on the Reader object to return the resources to the system.
 func Open(file string) (*Reader, error) {
 	reader, err := maxminddb.Open(file)
-	return &Reader{mmdbReader: reader}, err
+	if err != nil {
+		return nil, err
+	}
+	dbType, err := getDBType(reader)
+	return &Reader{reader, dbType}, err
 }
 
 // FromBytes takes a byte slice corresponding to a GeoIP2/GeoLite2 database
 // file and returns a Reader structure or an error.
 func FromBytes(bytes []byte) (*Reader, error) {
 	reader, err := maxminddb.FromBytes(bytes)
-	return &Reader{mmdbReader: reader}, err
+	if err != nil {
+		return nil, err
+	}
+	dbType, err := getDBType(reader)
+	return &Reader{reader, dbType}, err
+}
+
+func getDBType(reader *maxminddb.Reader) (databaseType, error) {
+	switch reader.Metadata.DatabaseType {
+	case "GeoIP2-Anonymous-IP":
+		return isAnonymousIP, nil
+	// We allow City lookups on Country for back compat
+	case "GeoLite2-City", "GeoIP2-City", "GeoIP2-Precision-City", "GeoLite2-Country",
+		"GeoIP2-Country":
+		return isCity | isCountry, nil
+	case "GeoIP2-Connection-Type":
+		return isConnectionType, nil
+	case "GeoIP2-Domain":
+		return isDomain, nil
+	case "GeoIP2-Enterprise":
+		return isEnterprise | isCity | isCountry, nil
+	case "GeoIP2-ISP", "GeoIP2-Precision-ISP":
+		return isISP, nil
+	default:
+		return 0, UnknownDatabaseTypeError{reader.Metadata.DatabaseType}
+	}
 }
 
 // City takes an IP address as a net.IP struct and returns a City struct
 // and/or an error. Although this can be used with other databases, this
 // method generally should be used with the GeoIP2 or GeoLite2 City databases.
 func (r *Reader) City(ipAddress net.IP) (*City, error) {
+	if isCity&r.databaseType == 0 {
+		return nil, InvalidMethodError{"City", r.Metadata().DatabaseType}
+	}
 	var city City
 	err := r.mmdbReader.Lookup(ipAddress, &city)
 	return &city, err
@@ -153,6 +223,9 @@ func (r *Reader) City(ipAddress net.IP) (*City, error) {
 // method generally should be used with the GeoIP2 or GeoLite2 Country
 // databases.
 func (r *Reader) Country(ipAddress net.IP) (*Country, error) {
+	if isCountry&r.databaseType == 0 {
+		return nil, InvalidMethodError{"Country", r.Metadata().DatabaseType}
+	}
 	var country Country
 	err := r.mmdbReader.Lookup(ipAddress, &country)
 	return &country, err
@@ -161,6 +234,9 @@ func (r *Reader) Country(ipAddress net.IP) (*Country, error) {
 // AnonymousIP takes an IP address as a net.IP struct and returns a
 // AnonymousIP struct and/or an error.
 func (r *Reader) AnonymousIP(ipAddress net.IP) (*AnonymousIP, error) {
+	if isAnonymousIP&r.databaseType == 0 {
+		return nil, InvalidMethodError{"AnonymousIP", r.Metadata().DatabaseType}
+	}
 	var anonIP AnonymousIP
 	err := r.mmdbReader.Lookup(ipAddress, &anonIP)
 	return &anonIP, err
@@ -169,6 +245,9 @@ func (r *Reader) AnonymousIP(ipAddress net.IP) (*AnonymousIP, error) {
 // ConnectionType takes an IP address as a net.IP struct and returns a
 // ConnectionType struct and/or an error
 func (r *Reader) ConnectionType(ipAddress net.IP) (*ConnectionType, error) {
+	if isConnectionType&r.databaseType == 0 {
+		return nil, InvalidMethodError{"ConnectionType", r.Metadata().DatabaseType}
+	}
 	var val ConnectionType
 	err := r.mmdbReader.Lookup(ipAddress, &val)
 	return &val, err
@@ -177,6 +256,9 @@ func (r *Reader) ConnectionType(ipAddress net.IP) (*ConnectionType, error) {
 // Domain takes an IP address as a net.IP struct and returns a
 // Domain struct and/or an error
 func (r *Reader) Domain(ipAddress net.IP) (*Domain, error) {
+	if isDomain&r.databaseType == 0 {
+		return nil, InvalidMethodError{"Domain", r.Metadata().DatabaseType}
+	}
 	var val Domain
 	err := r.mmdbReader.Lookup(ipAddress, &val)
 	return &val, err
@@ -185,6 +267,9 @@ func (r *Reader) Domain(ipAddress net.IP) (*Domain, error) {
 // ISP takes an IP address as a net.IP struct and returns a ISP struct and/or
 // an error
 func (r *Reader) ISP(ipAddress net.IP) (*ISP, error) {
+	if isISP&r.databaseType == 0 {
+		return nil, InvalidMethodError{"ISP", r.Metadata().DatabaseType}
+	}
 	var val ISP
 	err := r.mmdbReader.Lookup(ipAddress, &val)
 	return &val, err
