@@ -1,7 +1,10 @@
-// Package geoip2 provides a wrapper around the maxminddb package for
-// easy use with the MaxMind GeoIP2 and GeoLite2 databases. The records for
-// the IP address is returned from this package as well-formed structures
-// that match the internal layout of data from MaxMind.
+// Package geoip2 provides an easy-to-use API for the MaxMind GeoIP2 and
+// GeoLite2 databases. This does not support GeoIP Legacy databases.
+//
+// The structs provided by this package match the internal structure of
+// the data in the MaxMind databases.
+//
+// See github.com/oschwald/maxminddb-golang for more advanced used cases.
 package geoip2
 
 import (
