@@ -1,7 +1,7 @@
 // Package geoip2 provides an easy-to-use API for the MaxMind GeoIP2 and
-// GeoLite2 databases. This does not support GeoIP Legacy databases.
+// GeoLite2 databases; this package does not support GeoIP Legacy databases.
 //
-// The structs provided by this package match the internal structure of
+// The strucs provided by this package match the internal structure of
 // the data in the MaxMind databases.
 //
 // See github.com/oschwald/maxminddb-golang for more advanced used cases.
@@ -14,7 +14,7 @@ import (
 	"github.com/oschwald/maxminddb-golang"
 )
 
-// The City structure corresponds to the data in the GeoIP2/GeoLite2 City
+// The City struct corresponds to the data in the GeoIP2/GeoLite2 City
 // databases.
 type City struct {
 	City struct {
@@ -63,7 +63,7 @@ type City struct {
 	} `maxminddb:"traits"`
 }
 
-// The Country structure corresponds to the data in the GeoIP2/GeoLite2
+// The Country struct corresponds to the data in the GeoIP2/GeoLite2
 // Country databases.
 type Country struct {
 	Continent struct {
@@ -93,7 +93,7 @@ type Country struct {
 	} `maxminddb:"traits"`
 }
 
-// The AnonymousIP structure corresponds to the data in the GeoIP2
+// The AnonymousIP struct corresponds to the data in the GeoIP2
 // Anonymous IP database.
 type AnonymousIP struct {
 	IsAnonymous       bool `maxminddb:"is_anonymous"`
@@ -103,18 +103,18 @@ type AnonymousIP struct {
 	IsTorExitNode     bool `maxminddb:"is_tor_exit_node"`
 }
 
-// The ConnectionType structure corresponds to the data in the GeoIP2
+// The ConnectionType struct corresponds to the data in the GeoIP2
 // Connection-Type database.
 type ConnectionType struct {
 	ConnectionType string `maxminddb:"connection_type"`
 }
 
-// The Domain structure corresponds to the data in the GeoIP2 Domain database.
+// The Domain struct corresponds to the data in the GeoIP2 Domain database.
 type Domain struct {
 	Domain string `maxminddb:"domain"`
 }
 
-// The ISP structure corresponds to the data in the GeoIP2 ISP database.
+// The ISP struct corresponds to the data in the GeoIP2 ISP database.
 type ISP struct {
 	AutonomousSystemNumber       uint   `maxminddb:"autonomous_system_number"`
 	AutonomousSystemOrganization string `maxminddb:"autonomous_system_organization"`
@@ -134,8 +134,8 @@ const (
 	isISP
 )
 
-// Reader holds the maxminddb.Reader structure. It should be created
-// using the Open function.
+// Reader holds the maxminddb.Reader struct. It can be created using the
+// Open and FromBytes functions.
 type Reader struct {
 	mmdbReader   *maxminddb.Reader
 	databaseType databaseType
@@ -165,9 +165,9 @@ func (e UnknownDatabaseTypeError) Error() string {
 		e.DatabaseType)
 }
 
-// Open takes a string path to a file and returns a Reader structure or an
-// error. The database file is opened using a memory map. Use the Close method
-// on the Reader object to return the resources to the system.
+// Open takes a string path to a file and returns a Reader struct or an error.
+// The database file is opened using a memory map. Use the Close method on the
+// Reader object to return the resources to the system.
 func Open(file string) (*Reader, error) {
 	reader, err := maxminddb.Open(file)
 	if err != nil {
@@ -178,7 +178,9 @@ func Open(file string) (*Reader, error) {
 }
 
 // FromBytes takes a byte slice corresponding to a GeoIP2/GeoLite2 database
-// file and returns a Reader structure or an error.
+// file and returns a Reader struct or an error. Note that the byte slice is
+// use directly; any modication of it after opening the database will result
+// in errors while reading from the database.
 func FromBytes(bytes []byte) (*Reader, error) {
 	reader, err := maxminddb.FromBytes(bytes)
 	if err != nil {
