@@ -4,6 +4,7 @@ go:
  - 1.4
  - 1.5
  - 1.6
+ - 1.7
  - tip
 
 matrix:
@@ -11,12 +12,12 @@ matrix:
     - go: tip
 
 before_install:
-  - "if [[ $TRAVIS_GO_VERSION == 1.6 ]]; then go get -v github.com/golang/lint/golint; fi"
+  - "if [[ $TRAVIS_GO_VERSION == 1.7 ]]; then go get -v github.com/golang/lint/golint; fi"
 
 script:
   - go test -race -cpu 1,4 -v
   - go test -race -v -tags appengine
-  - "if [[ $TRAVIS_GO_VERSION == 1.6 ]]; then go vet ./...; fi"
-  - "if [[ $TRAVIS_GO_VERSION == 1.6 ]]; then golint .; fi"
+  - "if [[ $TRAVIS_GO_VERSION == 1.7 ]]; then go vet ./...; fi"
+  - "if [[ $TRAVIS_GO_VERSION == 1.7 ]]; then golint .; fi"
 
 sudo: false
