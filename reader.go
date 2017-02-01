@@ -1,7 +1,7 @@
 // Package geoip2 provides an easy-to-use API for the MaxMind GeoIP2 and
 // GeoLite2 databases; this package does not support GeoIP Legacy databases.
 //
-// The strucs provided by this package match the internal structure of
+// The structs provided by this package match the internal structure of
 // the data in the MaxMind databases.
 //
 // See github.com/oschwald/maxminddb-golang for more advanced used cases.
@@ -179,7 +179,7 @@ func Open(file string) (*Reader, error) {
 
 // FromBytes takes a byte slice corresponding to a GeoIP2/GeoLite2 database
 // file and returns a Reader struct or an error. Note that the byte slice is
-// use directly; any modication of it after opening the database will result
+// use directly; any modification of it after opening the database will result
 // in errors while reading from the database.
 func FromBytes(bytes []byte) (*Reader, error) {
 	reader, err := maxminddb.FromBytes(bytes)
