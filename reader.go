@@ -195,8 +195,8 @@ func getDBType(reader *maxminddb.Reader) (databaseType, error) {
 	case "GeoIP2-Anonymous-IP":
 		return isAnonymousIP, nil
 	// We allow City lookups on Country for back compat
-	case "GeoLite2-City", "GeoIP2-City", "GeoIP2-Precision-City", "GeoLite2-Country",
-		"GeoIP2-Country":
+	case "GeoLite2-City", "GeoIP2-City", "GeoIP2-City-Europe", "GeoIP2-Precision-City",
+		"GeoLite2-Country", "GeoIP2-Country":
 		return isCity | isCountry, nil
 	case "GeoIP2-Connection-Type":
 		return isConnectionType, nil
