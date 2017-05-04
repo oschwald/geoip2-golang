@@ -316,6 +316,6 @@ func (r *Reader) Metadata() maxminddb.Metadata {
 
 // Close unmaps the database file from virtual memory and returns the
 // resources to the system.
-func (r *Reader) Close() error {
-	return r.mmdbReader.Close()
+func (r *Reader) Close() {
+	r.mmdbReader.Close()
 }
