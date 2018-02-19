@@ -5,91 +5,100 @@ import (
 	"net"
 	"testing"
 
-	. "gopkg.in/check.v1"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestGeoIP2(t *testing.T) { TestingT(t) }
-
-type MySuite struct{}
-
-var _ = Suite(&MySuite{})
-
-func (s *MySuite) TestReader(c *C) {
+func TestReader(t *testing.T) {
 	reader, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
-	c.Assert(err, IsNil)
+	assert.Nil(t, err)
 
 	defer reader.Close()
 
 	record, err := reader.City(net.ParseIP("81.2.69.160"))
-	c.Assert(err, IsNil)
+	assert.Nil(t, err)
 
 	m := reader.Metadata()
-	c.Assert(m.BinaryFormatMajorVersion, Equals, uint(2))
-	c.Assert(m.BinaryFormatMinorVersion, Equals, uint(0))
-	c.Assert(m.BuildEpoch, Equals, uint(0x58f5327d))
-	c.Assert(m.DatabaseType, Equals, "GeoIP2-City")
-	c.Assert(m.Description, DeepEquals, map[string]string{
-		"en": "GeoIP2 City Test Database (fake GeoIP2 data, for example purposes only)",
-		"zh": "小型数据库",
-	})
-	c.Assert(m.IPVersion, Equals, uint(6))
-	c.Assert(m.Languages, DeepEquals, []string{"en", "zh"})
-	c.Assert(m.NodeCount, Equals, uint(1240))
-	c.Assert(m.RecordSize, Equals, uint(28))
+	assert.Equal(t, uint(2), m.BinaryFormatMajorVersion)
+	assert.Equal(t, uint(0), m.BinaryFormatMinorVersion)
+	assert.NotZero(t, m.BuildEpoch)
+	assert.Equal(t, "GeoIP2-City", m.DatabaseType)
+	assert.Equal(t,
+		map[string]string{
+			"en": "GeoIP2 City Test Database (fake GeoIP2 data, for example purposes only)",
+			"zh": "小型数据库",
+		},
+		m.Description,
+	)
+	assert.Equal(t, uint(6), m.IPVersion)
+	assert.Equal(t, []string{"en", "zh"}, m.Languages)
+	assert.NotZero(t, m.NodeCount)
+	assert.Equal(t, uint(28), m.RecordSize)
 
-	c.Assert(record.City.GeoNameID, Equals, uint(2643743))
-	c.Assert(record.City.Names, DeepEquals, map[string]string{
-		"de":    "London",
-		"en":    "London",
-		"es":    "Londres",
-		"fr":    "Londres",
-		"ja":    "ロンドン",
-		"pt-BR": "Londres",
-		"ru":    "Лондон",
-	})
-	c.Assert(record.Continent.GeoNameID, Equals, uint(6255148))
-	c.Assert(record.Continent.Code, Equals, "EU")
-	c.Assert(record.Continent.Names, DeepEquals, map[string]string{
-		"de":    "Europa",
-		"en":    "Europe",
-		"es":    "Europa",
-		"fr":    "Europe",
-		"ja":    "ヨーロッパ",
-		"pt-BR": "Europa",
-		"ru":    "Европа",
-		"zh-CN": "欧洲",
-	})
+	assert.Equal(t, uint(2643743), record.City.GeoNameID)
+	assert.Equal(t,
+		map[string]string{
+			"de":    "London",
+			"en":    "London",
+			"es":    "Londres",
+			"fr":    "Londres",
+			"ja":    "ロンドン",
+			"pt-BR": "Londres",
+			"ru":    "Лондон",
+		},
+		record.City.Names,
+	)
+	assert.Equal(t, uint(6255148), record.Continent.GeoNameID)
+	assert.Equal(t, "EU", record.Continent.Code)
+	assert.Equal(t,
+		map[string]string{
+			"de":    "Europa",
+			"en":    "Europe",
+			"es":    "Europa",
+			"fr":    "Europe",
+			"ja":    "ヨーロッパ",
+			"pt-BR": "Europa",
+			"ru":    "Европа",
+			"zh-CN": "欧洲",
+		},
+		record.Continent.Names,
+	)
 
-	c.Assert(record.Country.GeoNameID, Equals, uint(2635167))
-	c.Assert(record.Country.IsoCode, Equals, "GB")
-	c.Assert(record.Country.Names, DeepEquals, map[string]string{
-		"de":    "Vereinigtes Königreich",
-		"en":    "United Kingdom",
-		"es":    "Reino Unido",
-		"fr":    "Royaume-Uni",
-		"ja":    "イギリス",
-		"pt-BR": "Reino Unido",
-		"ru":    "Великобритания",
-		"zh-CN": "英国",
-	})
+	assert.Equal(t, uint(2635167), record.Country.GeoNameID)
+	assert.Equal(t, "GB", record.Country.IsoCode)
+	assert.Equal(t,
+		map[string]string{
+			"de":    "Vereinigtes Königreich",
+			"en":    "United Kingdom",
+			"es":    "Reino Unido",
+			"fr":    "Royaume-Uni",
+			"ja":    "イギリス",
+			"pt-BR": "Reino Unido",
+			"ru":    "Великобритания",
+			"zh-CN": "英国",
+		},
+		record.Country.Names,
+	)
 
-	c.Assert(record.Location.AccuracyRadius, Equals, uint16(100))
-	c.Assert(record.Location.Latitude, Equals, 51.5142)
-	c.Assert(record.Location.Longitude, Equals, -0.0931)
-	c.Assert(record.Location.TimeZone, Equals, "Europe/London")
+	assert.Equal(t, uint16(100), record.Location.AccuracyRadius)
+	assert.Equal(t, 51.5142, record.Location.Latitude)
+	assert.Equal(t, -0.0931, record.Location.Longitude)
+	assert.Equal(t, "Europe/London", record.Location.TimeZone)
 
-	c.Assert(record.Subdivisions[0].GeoNameID, Equals, uint(6269131))
-	c.Assert(record.Subdivisions[0].IsoCode, Equals, "ENG")
-	c.Assert(record.Subdivisions[0].Names, DeepEquals, map[string]string{
-		"en":    "England",
-		"pt-BR": "Inglaterra",
-		"fr":    "Angleterre",
-		"es":    "Inglaterra",
-	})
+	assert.Equal(t, uint(6269131), record.Subdivisions[0].GeoNameID)
+	assert.Equal(t, "ENG", record.Subdivisions[0].IsoCode)
+	assert.Equal(t,
+		map[string]string{
+			"en":    "England",
+			"pt-BR": "Inglaterra",
+			"fr":    "Angleterre",
+			"es":    "Inglaterra",
+		},
+		record.Subdivisions[0].Names,
+	)
 
-	c.Assert(record.RegisteredCountry.GeoNameID, Equals, uint(6252001))
-	c.Assert(record.RegisteredCountry.IsoCode, Equals, "US")
-	c.Assert(record.RegisteredCountry.Names, DeepEquals, map[string]string{
+	assert.Equal(t, uint(6252001), record.RegisteredCountry.GeoNameID)
+	assert.Equal(t, "US", record.RegisteredCountry.IsoCode)
+	assert.Equal(t, map[string]string{
 		"de":    "USA",
 		"en":    "United States",
 		"es":    "Estados Unidos",
@@ -98,84 +107,86 @@ func (s *MySuite) TestReader(c *C) {
 		"pt-BR": "Estados Unidos",
 		"ru":    "США",
 		"zh-CN": "美国",
-	})
+	},
+		record.RegisteredCountry.Names,
+	)
 }
 
-func (s *MySuite) TestMetroCode(c *C) {
+func TestMetroCode(t *testing.T) {
 	reader, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
-	c.Assert(err, IsNil)
+	assert.Nil(t, err)
 	defer reader.Close()
 
 	record, err := reader.City(net.ParseIP("216.160.83.56"))
-	c.Assert(err, IsNil)
+	assert.Nil(t, err)
 
-	c.Assert(record.Location.MetroCode, Equals, uint(819))
+	assert.Equal(t, uint(819), record.Location.MetroCode)
 }
 
-func (s *MySuite) TestAnonymousIP(c *C) {
+func TestAnonymousIP(t *testing.T) {
 	reader, err := Open("test-data/test-data/GeoIP2-Anonymous-IP-Test.mmdb")
-	c.Assert(err, IsNil)
+	assert.Nil(t, err)
 	defer reader.Close()
 
 	record, err := reader.AnonymousIP(net.ParseIP("1.2.0.0"))
-	c.Assert(err, IsNil)
+	assert.Nil(t, err)
 
-	c.Assert(record.IsAnonymous, Equals, true)
+	assert.Equal(t, true, record.IsAnonymous)
 
-	c.Assert(record.IsAnonymousVPN, Equals, true)
-	c.Assert(record.IsHostingProvider, Equals, false)
-	c.Assert(record.IsPublicProxy, Equals, false)
-	c.Assert(record.IsTorExitNode, Equals, false)
+	assert.Equal(t, true, record.IsAnonymousVPN)
+	assert.Equal(t, false, record.IsHostingProvider)
+	assert.Equal(t, false, record.IsPublicProxy)
+	assert.Equal(t, false, record.IsTorExitNode)
 }
 
-func (s *MySuite) TestASN(c *C) {
+func TestASN(t *testing.T) {
 	reader, err := Open("test-data/test-data/GeoLite2-ASN-Test.mmdb")
-	c.Assert(err, IsNil)
+	assert.Nil(t, err)
 	defer reader.Close()
 
 	record, err := reader.ASN(net.ParseIP("1.128.0.0"))
-	c.Assert(err, IsNil)
+	assert.Nil(t, err)
 
-	c.Assert(record.AutonomousSystemNumber, Equals, uint(1221))
+	assert.Equal(t, uint(1221), record.AutonomousSystemNumber)
 
-	c.Assert(record.AutonomousSystemOrganization, Equals, "Telstra Pty Ltd")
+	assert.Equal(t, "Telstra Pty Ltd", record.AutonomousSystemOrganization)
 }
 
-func (s *MySuite) TestConnectionType(c *C) {
+func TestConnectionType(t *testing.T) {
 	reader, err := Open("test-data/test-data/GeoIP2-Connection-Type-Test.mmdb")
-	c.Assert(err, IsNil)
+	assert.Nil(t, err)
 
 	defer reader.Close()
 
 	record, err := reader.ConnectionType(net.ParseIP("1.0.1.0"))
-	c.Assert(err, IsNil)
+	assert.Nil(t, err)
 
-	c.Assert(record.ConnectionType, Equals, "Cable/DSL")
+	assert.Equal(t, "Cable/DSL", record.ConnectionType)
 }
 
-func (s *MySuite) TestDomain(c *C) {
+func TestDomain(t *testing.T) {
 	reader, err := Open("test-data/test-data/GeoIP2-Domain-Test.mmdb")
-	c.Assert(err, IsNil)
+	assert.Nil(t, err)
 	defer reader.Close()
 
 	record, err := reader.Domain(net.ParseIP("1.2.0.0"))
-	c.Assert(err, IsNil)
-	c.Assert(record.Domain, Equals, "maxmind.com")
+	assert.Nil(t, err)
+	assert.Equal(t, "maxmind.com", record.Domain)
 }
 
-func (s *MySuite) TestISP(c *C) {
+func TestISP(t *testing.T) {
 	reader, err := Open("test-data/test-data/GeoIP2-ISP-Test.mmdb")
-	c.Assert(err, IsNil)
+	assert.Nil(t, err)
 	defer reader.Close()
 
 	record, err := reader.ISP(net.ParseIP("1.128.0.0"))
-	c.Assert(err, IsNil)
+	assert.Nil(t, err)
 
-	c.Assert(record.AutonomousSystemNumber, Equals, uint(1221))
+	assert.Equal(t, uint(1221), record.AutonomousSystemNumber)
 
-	c.Assert(record.AutonomousSystemOrganization, Equals, "Telstra Pty Ltd")
-	c.Assert(record.ISP, Equals, "Telstra Internet")
-	c.Assert(record.Organization, Equals, "Telstra Internet")
+	assert.Equal(t, "Telstra Pty Ltd", record.AutonomousSystemOrganization)
+	assert.Equal(t, "Telstra Internet", record.ISP)
+	assert.Equal(t, "Telstra Internet", record.Organization)
 }
 
 // This ensures the compiler does not optimize away the function call
