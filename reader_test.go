@@ -64,6 +64,7 @@ func TestReader(t *testing.T) {
 	)
 
 	assert.Equal(t, uint(2635167), record.Country.GeoNameID)
+	assert.True(t, record.Country.IsInEuropeanUnion)
 	assert.Equal(t, "GB", record.Country.IsoCode)
 	assert.Equal(t,
 		map[string]string{
@@ -97,19 +98,23 @@ func TestReader(t *testing.T) {
 	)
 
 	assert.Equal(t, uint(6252001), record.RegisteredCountry.GeoNameID)
+	assert.False(t, record.RegisteredCountry.IsInEuropeanUnion)
 	assert.Equal(t, "US", record.RegisteredCountry.IsoCode)
-	assert.Equal(t, map[string]string{
-		"de":    "USA",
-		"en":    "United States",
-		"es":    "Estados Unidos",
-		"fr":    "États-Unis",
-		"ja":    "アメリカ合衆国",
-		"pt-BR": "Estados Unidos",
-		"ru":    "США",
-		"zh-CN": "美国",
-	},
+	assert.Equal(t,
+		map[string]string{
+			"de":    "USA",
+			"en":    "United States",
+			"es":    "Estados Unidos",
+			"fr":    "États-Unis",
+			"ja":    "アメリカ合衆国",
+			"pt-BR": "Estados Unidos",
+			"ru":    "США",
+			"zh-CN": "美国",
+		},
 		record.RegisteredCountry.Names,
 	)
+
+	assert.False(t, record.RepresentedCountry.IsInEuropeanUnion)
 }
 
 func TestMetroCode(t *testing.T) {
@@ -162,6 +167,20 @@ func TestConnectionType(t *testing.T) {
 	assert.Nil(t, err)
 
 	assert.Equal(t, "Cable/DSL", record.ConnectionType)
+}
+
+func TestCountry(t *testing.T) {
+	reader, err := Open("test-data/test-data/GeoIP2-Country-Test.mmdb")
+	assert.Nil(t, err)
+
+	defer reader.Close()
+
+	record, err := reader.Country(net.ParseIP("81.2.69.160"))
+	assert.Nil(t, err)
+
+	assert.True(t, record.Country.IsInEuropeanUnion)
+	assert.False(t, record.RegisteredCountry.IsInEuropeanUnion)
+	assert.False(t, record.RepresentedCountry.IsInEuropeanUnion)
 }
 
 func TestDomain(t *testing.T) {
