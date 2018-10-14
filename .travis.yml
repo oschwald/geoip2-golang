@@ -13,7 +13,7 @@ matrix:
     - go: tip
 
 before_install:
-  - "if [[ $TRAVIS_GO_VERSION == 1.11 ]]; then go get -v github.com/golang/lint/golint; fi"
+  - "if [[ $TRAVIS_GO_VERSION == 1.11 ]]; then go get -u golang.org/x/lint/golint; fi"
 
 script:
   - go test -race -cpu 1,4 -v
