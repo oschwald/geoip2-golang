@@ -14,6 +14,71 @@ import (
 	"github.com/oschwald/maxminddb-golang"
 )
 
+// The Enterprise struct corresponds to the data in the GeoIP2 Enterprise
+// database.
+type Enterprise struct {
+	City struct {
+		Confidence uint8             `maxminddb:"confidence"`
+		GeoNameID  uint              `maxminddb:"geoname_id"`
+		Names      map[string]string `maxminddb:"names"`
+	} `maxminddb:"city"`
+	Continent struct {
+		Code      string            `maxminddb:"code"`
+		GeoNameID uint              `maxminddb:"geoname_id"`
+		Names     map[string]string `maxminddb:"names"`
+	} `maxminddb:"continent"`
+	Country struct {
+		GeoNameID         uint              `maxminddb:"geoname_id"`
+		IsoCode           string            `maxminddb:"iso_code"`
+		Names             map[string]string `maxminddb:"names"`
+		Confidence        uint8             `maxminddb:"confidence"`
+		IsInEuropeanUnion bool              `maxminddb:"is_in_european_union"`
+	} `maxminddb:"country"`
+	Location struct {
+		AccuracyRadius uint16  `maxminddb:"accuracy_radius"`
+		Latitude       float64 `maxminddb:"latitude"`
+		Longitude      float64 `maxminddb:"longitude"`
+		MetroCode      uint    `maxminddb:"metro_code"`
+		TimeZone       string  `maxminddb:"time_zone"`
+	} `maxminddb:"location"`
+	Postal struct {
+		Code       string `maxminddb:"code"`
+		Confidence uint8  `maxminddb:"confidence"`
+	} `maxminddb:"postal"`
+	RegisteredCountry struct {
+		GeoNameID         uint              `maxminddb:"geoname_id"`
+		IsoCode           string            `maxminddb:"iso_code"`
+		Names             map[string]string `maxminddb:"names"`
+		Confidence        uint8             `maxminddb:"confidence"`
+		IsInEuropeanUnion bool              `maxminddb:"is_in_european_union"`
+	} `maxminddb:"registered_country"`
+	RepresentedCountry struct {
+		GeoNameID         uint              `maxminddb:"geoname_id"`
+		IsInEuropeanUnion bool              `maxminddb:"is_in_european_union"`
+		IsoCode           string            `maxminddb:"iso_code"`
+		Names             map[string]string `maxminddb:"names"`
+		Type              string            `maxminddb:"type"`
+	} `maxminddb:"represented_country"`
+	Subdivisions []struct {
+		Confidence uint8             `maxminddb:"confidence"`
+		GeoNameID  uint              `maxminddb:"geoname_id"`
+		IsoCode    string            `maxminddb:"iso_code"`
+		Names      map[string]string `maxminddb:"names"`
+	} `maxminddb:"subdivisions"`
+	Traits struct {
+		AutonomousSystemNumber       uint   `maxminddb:"autonomous_system_number"`
+		AutonomousSystemOrganization string `maxminddb:"autonomous_system_organization"`
+		ConnectionType               string `maxminddb:"connection_type"`
+		Domain                       string `maxminddb:"domain"`
+		IsAnonymousProxy             bool   `maxminddb:"is_anonymous_proxy"`
+		IsLegitimateProxy            bool   `maxminddb:"is_legitimate_proxy"`
+		IsSatelliteProvider          bool   `maxminddb:"is_satellite_provider"`
+		ISP                          string `maxminddb:"isp"`
+		Organization                 string `maxminddb:"organization"`
+		UserType                     string `maxminddb:"user_type"`
+	} `maxminddb:"traits"`
+}
+
 // The City struct corresponds to the data in the GeoIP2/GeoLite2 City
 // databases.
 type City struct {
@@ -232,6 +297,18 @@ func getDBType(reader *maxminddb.Reader) (databaseType, error) {
 	default:
 		return 0, UnknownDatabaseTypeError{reader.Metadata.DatabaseType}
 	}
+}
+
+// Enterprise takes an IP address as a net.IP struct and returns an Enterprise
+// struct and/or an error. This is intended to be used with the GeoIP2
+// Enterprise database.
+func (r *Reader) Enterprise(ipAddress net.IP) (*Enterprise, error) {
+	if isEnterprise&r.databaseType == 0 {
+		return nil, InvalidMethodError{"Enterprise", r.Metadata().DatabaseType}
+	}
+	var enterprise Enterprise
+	err := r.mmdbReader.Lookup(ipAddress, &enterprise)
+	return &enterprise, err
 }
 
 // City takes an IP address as a net.IP struct and returns a City struct

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestReader(t *testing.T) {
@@ -191,6 +192,23 @@ func TestDomain(t *testing.T) {
 	record, err := reader.Domain(net.ParseIP("1.2.0.0"))
 	assert.Nil(t, err)
 	assert.Equal(t, "maxmind.com", record.Domain)
+}
+
+func TestEnterprise(t *testing.T) {
+	reader, err := Open("test-data/test-data/GeoIP2-Enterprise-Test.mmdb")
+	require.Nil(t, err)
+
+	defer reader.Close()
+
+	record, err := reader.Enterprise(net.ParseIP("74.209.24.0"))
+	require.Nil(t, err)
+
+	assert.Equal(t, uint8(11), record.City.Confidence)
+
+	assert.Equal(t, uint(14671), record.Traits.AutonomousSystemNumber)
+	assert.Equal(t, "FairPoint Communications", record.Traits.AutonomousSystemOrganization)
+	assert.Equal(t, "Cable/DSL", record.Traits.ConnectionType)
+	assert.Equal(t, "frpt.net", record.Traits.Domain)
 }
 
 func TestISP(t *testing.T) {
