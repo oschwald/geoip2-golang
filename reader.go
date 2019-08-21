@@ -294,6 +294,8 @@ func getDBType(reader *maxminddb.Reader) (databaseType, error) {
 		return isEnterprise | isCity | isCountry, nil
 	case "GeoIP2-ISP", "GeoIP2-Precision-ISP":
 		return isISP, nil
+	case "DBIP-Location-ISP (compat=Enterprise)":
+		return isEnterprise | isCity | isCountry | isISP, nil
 	default:
 		return 0, UnknownDatabaseTypeError{reader.Metadata.DatabaseType}
 	}
