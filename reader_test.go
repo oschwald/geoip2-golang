@@ -241,7 +241,7 @@ func BenchmarkMaxMindDB(b *testing.B) {
 	var city *City
 
 	for i := 0; i < b.N; i++ {
-		ip := randomIPv4Address(b, r)
+		ip := randomIPv4Address(r)
 		city, err = db.City(ip)
 		if err != nil {
 			b.Fatal(err)
@@ -250,7 +250,7 @@ func BenchmarkMaxMindDB(b *testing.B) {
 	cityResult = city
 }
 
-func randomIPv4Address(b *testing.B, r *rand.Rand) net.IP {
+func randomIPv4Address(r *rand.Rand) net.IP {
 	num := r.Uint32()
 	return []byte{byte(num >> 24), byte(num >> 16), byte(num >> 8),
 		byte(num)}
