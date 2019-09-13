@@ -23,7 +23,7 @@ install:
 
 before_script:
   - |
-    if [[ $TRAVIS_GO_VERSION == 1.13 && $TRAVIS_OS_NAME == 'linux' && $(arch) != 'ppc64le' ]]; then
+    if [[ $TRAVIS_GO_VERSION == '1.13.x' && $TRAVIS_OS_NAME == 'linux' && $(arch) != 'ppc64le' ]]; then
       curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin
     fi
 
@@ -41,7 +41,7 @@ script:
       go test -race -v -tags appengine
     fi
   - |
-    if [[ $TRAVIS_GO_VERSION == 1.13 && $TRAVIS_OS_NAME == 'linux' && $(arch) != 'ppc64le' ]]; then
+    if [[ $TRAVIS_GO_VERSION == '1.13.x' && $TRAVIS_OS_NAME == 'linux' && $(arch) != 'ppc64le' ]]; then
       golangci-lint run
     fi
 
