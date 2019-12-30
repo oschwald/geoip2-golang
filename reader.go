@@ -276,9 +276,9 @@ func getDBType(reader *maxminddb.Reader) (databaseType, error) {
 		return isASN, nil
 	// We allow City lookups on Country for back compat
 	case "DBIP-City-Lite",
-		"DBIP-City",
 		"DBIP-Country-Lite",
 		"DBIP-Country",
+		"DBIP-Location (compat=City)",
 		"GeoLite2-City",
 		"GeoIP2-City",
 		"GeoIP2-City-Africa",
@@ -294,7 +294,8 @@ func getDBType(reader *maxminddb.Reader) (databaseType, error) {
 		return isConnectionType, nil
 	case "GeoIP2-Domain":
 		return isDomain, nil
-	case "DBIP-Location-ISP (compat=Enterprise)",
+	case "DBIP-ISP (compat=Enterprise)",
+		"DBIP-Location-ISP (compat=Enterprise)",
 		"GeoIP2-Enterprise":
 		return isEnterprise | isCity | isCountry, nil
 	case "GeoIP2-ISP",
