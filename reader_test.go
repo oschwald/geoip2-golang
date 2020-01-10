@@ -209,6 +209,7 @@ func TestEnterprise(t *testing.T) {
 	assert.Equal(t, "FairPoint Communications", record.Traits.AutonomousSystemOrganization)
 	assert.Equal(t, "Cable/DSL", record.Traits.ConnectionType)
 	assert.Equal(t, "frpt.net", record.Traits.Domain)
+	assert.Equal(t, float64(0.34), record.Traits.StaticIPScore)
 }
 
 func TestISP(t *testing.T) {
