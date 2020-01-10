@@ -66,16 +66,17 @@ type Enterprise struct {
 		Names      map[string]string `maxminddb:"names"`
 	} `maxminddb:"subdivisions"`
 	Traits struct {
-		AutonomousSystemNumber       uint   `maxminddb:"autonomous_system_number"`
-		AutonomousSystemOrganization string `maxminddb:"autonomous_system_organization"`
-		ConnectionType               string `maxminddb:"connection_type"`
-		Domain                       string `maxminddb:"domain"`
-		IsAnonymousProxy             bool   `maxminddb:"is_anonymous_proxy"`
-		IsLegitimateProxy            bool   `maxminddb:"is_legitimate_proxy"`
-		IsSatelliteProvider          bool   `maxminddb:"is_satellite_provider"`
-		ISP                          string `maxminddb:"isp"`
-		Organization                 string `maxminddb:"organization"`
-		UserType                     string `maxminddb:"user_type"`
+		AutonomousSystemNumber       uint    `maxminddb:"autonomous_system_number"`
+		AutonomousSystemOrganization string  `maxminddb:"autonomous_system_organization"`
+		ConnectionType               string  `maxminddb:"connection_type"`
+		Domain                       string  `maxminddb:"domain"`
+		IsAnonymousProxy             bool    `maxminddb:"is_anonymous_proxy"`
+		IsLegitimateProxy            bool    `maxminddb:"is_legitimate_proxy"`
+		IsSatelliteProvider          bool    `maxminddb:"is_satellite_provider"`
+		ISP                          string  `maxminddb:"isp"`
+		StaticIPScore                float64 `maxminddb:"static_ip_score"`
+		Organization                 string  `maxminddb:"organization"`
+		UserType                     string  `maxminddb:"user_type"`
 	} `maxminddb:"traits"`
 }
 
