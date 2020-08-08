@@ -253,6 +253,8 @@ func BenchmarkMaxMindDB(b *testing.B) {
 
 func randomIPv4Address(r *rand.Rand) net.IP {
 	num := r.Uint32()
-	return []byte{byte(num >> 24), byte(num >> 16), byte(num >> 8),
-		byte(num)}
+	return []byte{
+		byte(num >> 24), byte(num >> 16), byte(num >> 8),
+		byte(num),
+	}
 }
