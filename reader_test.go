@@ -230,7 +230,7 @@ func TestISP(t *testing.T) {
 // This ensures the compiler does not optimize away the function call
 var cityResult *City
 
-func BenchmarkMaxMindDB(b *testing.B) {
+func BenchmarkCity(b *testing.B) {
 	db, err := Open("GeoLite2-City.mmdb")
 	if err != nil {
 		b.Fatal(err)
@@ -250,6 +250,31 @@ func BenchmarkMaxMindDB(b *testing.B) {
 		}
 	}
 	cityResult = city
+}
+
+// This ensures the compiler does not optimize away the function call
+var asnResult *ASN
+
+func BenchmarkASN(b *testing.B) {
+	db, err := Open("GeoLite2-ASN.mmdb")
+	if err != nil {
+		b.Fatal(err)
+	}
+	defer db.Close()
+
+	r := rand.New(rand.NewSource(0))
+
+	var asn *ASN
+
+	ip := make(net.IP, 4)
+	for i := 0; i < b.N; i++ {
+		randomIPv4Address(r, ip)
+		asn, err = db.ASN(ip)
+		if err != nil {
+			b.Fatal(err)
+		}
+	}
+	asnResult = asn
 }
 
 func randomIPv4Address(r *rand.Rand, ip net.IP) {
