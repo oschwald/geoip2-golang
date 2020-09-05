@@ -41,7 +41,7 @@ type Enterprise struct {
 	} `maxminddb:"continent" json:"continent,omitempty"`
 	Country struct {
 		GeoNameID         uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
-		IsoCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		ISOCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
 		Names             Names  `maxminddb:"names" json:"names,omitempty"`
 		Confidence        uint8  `maxminddb:"confidence" json:"confidence,omitempty"`
 		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union" json:"is_in_european_union,omitempty"`
@@ -59,7 +59,7 @@ type Enterprise struct {
 	} `maxminddb:"postal" json:"postal,omitempty"`
 	RegisteredCountry struct {
 		GeoNameID         uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
-		IsoCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		ISOCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
 		Names             Names  `maxminddb:"names" json:"names,omitempty"`
 		Confidence        uint8  `maxminddb:"confidence" json:"confidence,omitempty"`
 		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union" json:"is_in_european_union,omitempty"`
@@ -67,14 +67,14 @@ type Enterprise struct {
 	RepresentedCountry struct {
 		GeoNameID         uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
 		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union" json:"is_in_european_union,omitempty"`
-		IsoCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		ISOCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
 		Names             Names  `maxminddb:"names" json:"names,omitempty"`
 		Type              string `maxminddb:"type" json:"type,omitempty"`
 	} `maxminddb:"represented_country" json:"represented_country,omitempty"`
 	Subdivisions []struct {
 		Confidence uint8  `maxminddb:"confidence" json:"confidence,omitempty"`
 		GeoNameID  uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
-		IsoCode    string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		ISOCode    string `maxminddb:"iso_code" json:"iso_code,omitempty"`
 		Names      Names  `maxminddb:"names" json:"names,omitempty"`
 	} `maxminddb:"subdivisions" json:"subdivisions,omitempty"`
 	Traits struct {
@@ -107,7 +107,7 @@ type City struct {
 	Country struct {
 		GeoNameID         uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
 		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union" json:"is_in_european_union,omitempty"`
-		IsoCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		ISOCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
 		Names             Names  `maxminddb:"names" json:"names,omitempty"`
 	} `maxminddb:"country" json:"country,omitempty"`
 	Location struct {
@@ -123,19 +123,19 @@ type City struct {
 	RegisteredCountry struct {
 		GeoNameID         uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
 		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union" json:"is_in_european_union,omitempty"`
-		IsoCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		ISOCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
 		Names             Names  `maxminddb:"names" json:"names,omitempty"`
 	} `maxminddb:"registered_country" json:"registered_country,omitempty"`
 	RepresentedCountry struct {
 		GeoNameID         uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
 		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union" json:"is_in_european_union,omitempty"`
-		IsoCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		ISOCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
 		Names             Names  `maxminddb:"names" json:"names,omitempty"`
 		Type              string `maxminddb:"type" json:"type,omitempty"`
 	} `maxminddb:"represented_country" json:"represented_country,omitempty"`
 	Subdivisions []struct {
 		GeoNameID uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
-		IsoCode   string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		ISOCode   string `maxminddb:"iso_code" json:"iso_code,omitempty"`
 		Names     Names  `maxminddb:"names" json:"names,omitempty"`
 	} `maxminddb:"subdivisions" json:"subdivisions,omitempty"`
 	Traits struct {
@@ -155,19 +155,19 @@ type Country struct {
 	Country struct {
 		GeoNameID         uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
 		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union" json:"is_in_european_union,omitempty"`
-		IsoCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		ISOCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
 		Names             Names  `maxminddb:"names" json:"names,omitempty"`
 	} `maxminddb:"country" json:"country,omitempty"`
 	RegisteredCountry struct {
 		GeoNameID         uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
 		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union" json:"is_in_european_union,omitempty"`
-		IsoCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		ISOCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
 		Names             Names  `maxminddb:"names" json:"names,omitempty"`
 	} `maxminddb:"registered_country" json:"registered_country,omitempty"`
 	RepresentedCountry struct {
 		GeoNameID         uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
 		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union" json:"is_in_european_union,omitempty"`
-		IsoCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		ISOCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
 		Names             Names  `maxminddb:"names" json:"names,omitempty"`
 		Type              string `maxminddb:"type" json:"type,omitempty"`
 	} `maxminddb:"represented_country" json:"represented_country,omitempty"`
