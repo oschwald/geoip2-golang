@@ -16,200 +16,200 @@ import (
 
 // Names are the localized names for the location.
 type Names struct {
-	De   string `maxminddb:"de"`
-	En   string `maxminddb:"en"`
-	Es   string `maxminddb:"es"`
-	Fr   string `maxminddb:"fr"`
-	Ja   string `maxminddb:"ja"`
-	PtBR string `maxminddb:"pt-BR"`
-	Ru   string `maxminddb:"ru"`
-	ZhCN string `maxminddb:"zh-CN"`
+	De   string `maxminddb:"de" json:"de,omitempty"`
+	En   string `maxminddb:"en" json:"en,omitempty"`
+	Es   string `maxminddb:"es" json:"es,omitempty"`
+	Fr   string `maxminddb:"fr" json:"fr,omitempty"`
+	Ja   string `maxminddb:"ja" json:"ja,omitempty"`
+	PtBR string `maxminddb:"pt-BR" json:"pt-BR,omitempty"`
+	Ru   string `maxminddb:"ru" json:"ru,omitempty"`
+	ZhCN string `maxminddb:"zh-CN" json:"zh-CN,omitempty"`
 }
 
 // The Enterprise struct corresponds to the data in the GeoIP2 Enterprise
 // database.
 type Enterprise struct {
 	City struct {
-		Confidence uint8 `maxminddb:"confidence"`
-		GeoNameID  uint  `maxminddb:"geoname_id"`
-		Names      Names `maxminddb:"names"`
-	} `maxminddb:"city"`
+		Confidence uint8 `maxminddb:"confidence" json:"confidence,omitempty"`
+		GeoNameID  uint  `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
+		Names      Names `maxminddb:"names" json:"names,omitempty"`
+	} `maxminddb:"city" json:"city,omitempty"`
 	Continent struct {
-		Code      string `maxminddb:"code"`
-		GeoNameID uint   `maxminddb:"geoname_id"`
-		Names     Names  `maxminddb:"names"`
-	} `maxminddb:"continent"`
+		Code      string `maxminddb:"code" json:"code,omitempty"`
+		GeoNameID uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
+		Names     Names  `maxminddb:"names" json:"names,omitempty"`
+	} `maxminddb:"continent" json:"continent,omitempty"`
 	Country struct {
-		GeoNameID         uint   `maxminddb:"geoname_id"`
-		IsoCode           string `maxminddb:"iso_code"`
-		Names             Names  `maxminddb:"names"`
-		Confidence        uint8  `maxminddb:"confidence"`
-		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union"`
-	} `maxminddb:"country"`
+		GeoNameID         uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
+		IsoCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		Names             Names  `maxminddb:"names" json:"names,omitempty"`
+		Confidence        uint8  `maxminddb:"confidence" json:"confidence,omitempty"`
+		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union" json:"is_in_european_union,omitempty"`
+	} `maxminddb:"country" json:"country,omitempty"`
 	Location struct {
-		AccuracyRadius uint16  `maxminddb:"accuracy_radius"`
-		Latitude       float64 `maxminddb:"latitude"`
-		Longitude      float64 `maxminddb:"longitude"`
-		MetroCode      uint    `maxminddb:"metro_code"`
-		TimeZone       string  `maxminddb:"time_zone"`
-	} `maxminddb:"location"`
+		AccuracyRadius uint16  `maxminddb:"accuracy_radius" json:"accuracy_radius,omitempty"`
+		Latitude       float64 `maxminddb:"latitude" json:"latitude,omitempty"`
+		Longitude      float64 `maxminddb:"longitude" json:"longitude,omitempty"`
+		MetroCode      uint    `maxminddb:"metro_code" json:"metro_code,omitempty"`
+		TimeZone       string  `maxminddb:"time_zone" json:"time_zone,omitempty"`
+	} `maxminddb:"location" json:"location,omitempty"`
 	Postal struct {
-		Code       string `maxminddb:"code"`
-		Confidence uint8  `maxminddb:"confidence"`
-	} `maxminddb:"postal"`
+		Code       string `maxminddb:"code" json:"code,omitempty"`
+		Confidence uint8  `maxminddb:"confidence" json:"confidence,omitempty"`
+	} `maxminddb:"postal" json:"postal,omitempty"`
 	RegisteredCountry struct {
-		GeoNameID         uint   `maxminddb:"geoname_id"`
-		IsoCode           string `maxminddb:"iso_code"`
-		Names             Names  `maxminddb:"names"`
-		Confidence        uint8  `maxminddb:"confidence"`
-		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union"`
-	} `maxminddb:"registered_country"`
+		GeoNameID         uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
+		IsoCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		Names             Names  `maxminddb:"names" json:"names,omitempty"`
+		Confidence        uint8  `maxminddb:"confidence" json:"confidence,omitempty"`
+		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union" json:"is_in_european_union,omitempty"`
+	} `maxminddb:"registered_country" json:"registered_country,omitempty"`
 	RepresentedCountry struct {
-		GeoNameID         uint   `maxminddb:"geoname_id"`
-		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union"`
-		IsoCode           string `maxminddb:"iso_code"`
-		Names             Names  `maxminddb:"names"`
-		Type              string `maxminddb:"type"`
-	} `maxminddb:"represented_country"`
+		GeoNameID         uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
+		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union" json:"is_in_european_union,omitempty"`
+		IsoCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		Names             Names  `maxminddb:"names" json:"names,omitempty"`
+		Type              string `maxminddb:"type" json:"type,omitempty"`
+	} `maxminddb:"represented_country" json:"represented_country,omitempty"`
 	Subdivisions []struct {
-		Confidence uint8  `maxminddb:"confidence"`
-		GeoNameID  uint   `maxminddb:"geoname_id"`
-		IsoCode    string `maxminddb:"iso_code"`
-		Names      Names  `maxminddb:"names"`
-	} `maxminddb:"subdivisions"`
+		Confidence uint8  `maxminddb:"confidence" json:"confidence,omitempty"`
+		GeoNameID  uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
+		IsoCode    string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		Names      Names  `maxminddb:"names" json:"names,omitempty"`
+	} `maxminddb:"subdivisions" json:"subdivisions,omitempty"`
 	Traits struct {
-		AutonomousSystemNumber       uint    `maxminddb:"autonomous_system_number"`
-		AutonomousSystemOrganization string  `maxminddb:"autonomous_system_organization"`
-		ConnectionType               string  `maxminddb:"connection_type"`
-		Domain                       string  `maxminddb:"domain"`
-		IsAnonymousProxy             bool    `maxminddb:"is_anonymous_proxy"`
-		IsLegitimateProxy            bool    `maxminddb:"is_legitimate_proxy"`
-		IsSatelliteProvider          bool    `maxminddb:"is_satellite_provider"`
-		ISP                          string  `maxminddb:"isp"`
-		StaticIPScore                float64 `maxminddb:"static_ip_score"`
-		Organization                 string  `maxminddb:"organization"`
-		UserType                     string  `maxminddb:"user_type"`
-	} `maxminddb:"traits"`
+		AutonomousSystemNumber       uint    `maxminddb:"autonomous_system_number" json:"autonomous_system_number,omitempty"`
+		AutonomousSystemOrganization string  `maxminddb:"autonomous_system_organization" json:"autonomous_system_organization,omitempty"`
+		ConnectionType               string  `maxminddb:"connection_type" json:"connection_type,omitempty"`
+		Domain                       string  `maxminddb:"domain" json:"domain,omitempty"`
+		IsAnonymousProxy             bool    `maxminddb:"is_anonymous_proxy" json:"is_anonymous_proxy,omitempty"`
+		IsLegitimateProxy            bool    `maxminddb:"is_legitimate_proxy" json:"is_legitimate_proxy,omitempty"`
+		IsSatelliteProvider          bool    `maxminddb:"is_satellite_provider" json:"is_satellite_provider,omitempty"`
+		ISP                          string  `maxminddb:"isp" json:"isp,omitempty"`
+		StaticIPScore                float64 `maxminddb:"static_ip_score" json:"static_ip_score,omitempty"`
+		Organization                 string  `maxminddb:"organization" json:"organization,omitempty"`
+		UserType                     string  `maxminddb:"user_type" json:"user_type,omitempty"`
+	} `maxminddb:"traits" json:"traits,omitempty"`
 }
 
 // The City struct corresponds to the data in the GeoIP2/GeoLite2 City
 // databases.
 type City struct {
 	City struct {
-		GeoNameID uint  `maxminddb:"geoname_id"`
-		Names     Names `maxminddb:"names"`
-	} `maxminddb:"city"`
+		GeoNameID uint  `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
+		Names     Names `maxminddb:"names" json:"names,omitempty"`
+	} `maxminddb:"city" json:"city,omitempty"`
 	Continent struct {
-		Code      string `maxminddb:"code"`
-		GeoNameID uint   `maxminddb:"geoname_id"`
-		Names     Names  `maxminddb:"names"`
-	} `maxminddb:"continent"`
+		Code      string `maxminddb:"code" json:"code,omitempty"`
+		GeoNameID uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
+		Names     Names  `maxminddb:"names" json:"names,omitempty"`
+	} `maxminddb:"continent" json:"continent,omitempty"`
 	Country struct {
-		GeoNameID         uint   `maxminddb:"geoname_id"`
-		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union"`
-		IsoCode           string `maxminddb:"iso_code"`
-		Names             Names  `maxminddb:"names"`
-	} `maxminddb:"country"`
+		GeoNameID         uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
+		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union" json:"is_in_european_union,omitempty"`
+		IsoCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		Names             Names  `maxminddb:"names" json:"names,omitempty"`
+	} `maxminddb:"country" json:"country,omitempty"`
 	Location struct {
-		AccuracyRadius uint16  `maxminddb:"accuracy_radius"`
-		Latitude       float64 `maxminddb:"latitude"`
-		Longitude      float64 `maxminddb:"longitude"`
-		MetroCode      uint    `maxminddb:"metro_code"`
-		TimeZone       string  `maxminddb:"time_zone"`
-	} `maxminddb:"location"`
+		AccuracyRadius uint16  `maxminddb:"accuracy_radius" json:"accuracy_radius,omitempty"`
+		Latitude       float64 `maxminddb:"latitude" json:"latitude,omitempty"`
+		Longitude      float64 `maxminddb:"longitude" json:"longitude,omitempty"`
+		MetroCode      uint    `maxminddb:"metro_code" json:"metro_code,omitempty"`
+		TimeZone       string  `maxminddb:"time_zone" json:"time_zone,omitempty"`
+	} `maxminddb:"location" json:"location,omitempty"`
 	Postal struct {
-		Code string `maxminddb:"code"`
-	} `maxminddb:"postal"`
+		Code string `maxminddb:"code" json:"code,omitempty"`
+	} `maxminddb:"postal" json:"postal,omitempty"`
 	RegisteredCountry struct {
-		GeoNameID         uint   `maxminddb:"geoname_id"`
-		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union"`
-		IsoCode           string `maxminddb:"iso_code"`
-		Names             Names  `maxminddb:"names"`
-	} `maxminddb:"registered_country"`
+		GeoNameID         uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
+		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union" json:"is_in_european_union,omitempty"`
+		IsoCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		Names             Names  `maxminddb:"names" json:"names,omitempty"`
+	} `maxminddb:"registered_country" json:"registered_country,omitempty"`
 	RepresentedCountry struct {
-		GeoNameID         uint   `maxminddb:"geoname_id"`
-		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union"`
-		IsoCode           string `maxminddb:"iso_code"`
-		Names             Names  `maxminddb:"names"`
-		Type              string `maxminddb:"type"`
-	} `maxminddb:"represented_country"`
+		GeoNameID         uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
+		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union" json:"is_in_european_union,omitempty"`
+		IsoCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		Names             Names  `maxminddb:"names" json:"names,omitempty"`
+		Type              string `maxminddb:"type" json:"type,omitempty"`
+	} `maxminddb:"represented_country" json:"represented_country,omitempty"`
 	Subdivisions []struct {
-		GeoNameID uint   `maxminddb:"geoname_id"`
-		IsoCode   string `maxminddb:"iso_code"`
-		Names     Names  `maxminddb:"names"`
-	} `maxminddb:"subdivisions"`
+		GeoNameID uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
+		IsoCode   string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		Names     Names  `maxminddb:"names" json:"names,omitempty"`
+	} `maxminddb:"subdivisions" json:"subdivisions,omitempty"`
 	Traits struct {
-		IsAnonymousProxy    bool `maxminddb:"is_anonymous_proxy"`
-		IsSatelliteProvider bool `maxminddb:"is_satellite_provider"`
-	} `maxminddb:"traits"`
+		IsAnonymousProxy    bool `maxminddb:"is_anonymous_proxy" json:"is_anonymous_proxy,omitempty"`
+		IsSatelliteProvider bool `maxminddb:"is_satellite_provider" json:"is_satellite_provider,omitempty"`
+	} `maxminddb:"traits" json:"traits,omitempty"`
 }
 
 // The Country struct corresponds to the data in the GeoIP2/GeoLite2
 // Country databases.
 type Country struct {
 	Continent struct {
-		Code      string `maxminddb:"code"`
-		GeoNameID uint   `maxminddb:"geoname_id"`
-		Names     Names  `maxminddb:"names"`
-	} `maxminddb:"continent"`
+		Code      string `maxminddb:"code" json:"code,omitempty"`
+		GeoNameID uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
+		Names     Names  `maxminddb:"names" json:"names,omitempty"`
+	} `maxminddb:"continent" json:"continent,omitempty"`
 	Country struct {
-		GeoNameID         uint   `maxminddb:"geoname_id"`
-		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union"`
-		IsoCode           string `maxminddb:"iso_code"`
-		Names             Names  `maxminddb:"names"`
-	} `maxminddb:"country"`
+		GeoNameID         uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
+		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union" json:"is_in_european_union,omitempty"`
+		IsoCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		Names             Names  `maxminddb:"names" json:"names,omitempty"`
+	} `maxminddb:"country" json:"country,omitempty"`
 	RegisteredCountry struct {
-		GeoNameID         uint   `maxminddb:"geoname_id"`
-		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union"`
-		IsoCode           string `maxminddb:"iso_code"`
-		Names             Names  `maxminddb:"names"`
-	} `maxminddb:"registered_country"`
+		GeoNameID         uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
+		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union" json:"is_in_european_union,omitempty"`
+		IsoCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		Names             Names  `maxminddb:"names" json:"names,omitempty"`
+	} `maxminddb:"registered_country" json:"registered_country,omitempty"`
 	RepresentedCountry struct {
-		GeoNameID         uint   `maxminddb:"geoname_id"`
-		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union"`
-		IsoCode           string `maxminddb:"iso_code"`
-		Names             Names  `maxminddb:"names"`
-		Type              string `maxminddb:"type"`
-	} `maxminddb:"represented_country"`
+		GeoNameID         uint   `maxminddb:"geoname_id" json:"geoname_id,omitempty"`
+		IsInEuropeanUnion bool   `maxminddb:"is_in_european_union" json:"is_in_european_union,omitempty"`
+		IsoCode           string `maxminddb:"iso_code" json:"iso_code,omitempty"`
+		Names             Names  `maxminddb:"names" json:"names,omitempty"`
+		Type              string `maxminddb:"type" json:"type,omitempty"`
+	} `maxminddb:"represented_country" json:"represented_country,omitempty"`
 	Traits struct {
-		IsAnonymousProxy    bool `maxminddb:"is_anonymous_proxy"`
-		IsSatelliteProvider bool `maxminddb:"is_satellite_provider"`
-	} `maxminddb:"traits"`
+		IsAnonymousProxy    bool `maxminddb:"is_anonymous_proxy" json:"is_anonymous_proxy,omitempty"`
+		IsSatelliteProvider bool `maxminddb:"is_satellite_provider" json:"is_satellite_provider,omitempty"`
+	} `maxminddb:"traits" json:"traits,omitempty"`
 }
 
 // The AnonymousIP struct corresponds to the data in the GeoIP2
 // Anonymous IP database.
 type AnonymousIP struct {
-	IsAnonymous       bool `maxminddb:"is_anonymous"`
-	IsAnonymousVPN    bool `maxminddb:"is_anonymous_vpn"`
-	IsHostingProvider bool `maxminddb:"is_hosting_provider"`
-	IsPublicProxy     bool `maxminddb:"is_public_proxy"`
-	IsTorExitNode     bool `maxminddb:"is_tor_exit_node"`
+	IsAnonymous       bool `maxminddb:"is_anonymous" json:"is_anonymous,omitempty"`
+	IsAnonymousVPN    bool `maxminddb:"is_anonymous_vpn" json:"is_anonymous_vpn,omitempty"`
+	IsHostingProvider bool `maxminddb:"is_hosting_provider" json:"is_hosting_provider,omitempty"`
+	IsPublicProxy     bool `maxminddb:"is_public_proxy" json:"is_public_proxy,omitempty"`
+	IsTorExitNode     bool `maxminddb:"is_tor_exit_node" json:"is_tor_exit_node,omitempty"`
 }
 
 // The ASN struct corresponds to the data in the GeoLite2 ASN database.
 type ASN struct {
-	AutonomousSystemNumber       uint   `maxminddb:"autonomous_system_number"`
-	AutonomousSystemOrganization string `maxminddb:"autonomous_system_organization"`
+	AutonomousSystemNumber       uint   `maxminddb:"autonomous_system_number" json:"autonomous_system_number,omitempty"`
+	AutonomousSystemOrganization string `maxminddb:"autonomous_system_organization" json:"autonomous_system_organization,omitempty"`
 }
 
 // The ConnectionType struct corresponds to the data in the GeoIP2
 // Connection-Type database.
 type ConnectionType struct {
-	ConnectionType string `maxminddb:"connection_type"`
+	ConnectionType string `maxminddb:"connection_type" json:"connection_type,omitempty"`
 }
 
 // The Domain struct corresponds to the data in the GeoIP2 Domain database.
 type Domain struct {
-	Domain string `maxminddb:"domain"`
+	Domain string `maxminddb:"domain" json:"domain,omitempty"`
 }
 
 // The ISP struct corresponds to the data in the GeoIP2 ISP database.
 type ISP struct {
-	AutonomousSystemNumber       uint   `maxminddb:"autonomous_system_number"`
-	AutonomousSystemOrganization string `maxminddb:"autonomous_system_organization"`
-	ISP                          string `maxminddb:"isp"`
-	Organization                 string `maxminddb:"organization"`
+	AutonomousSystemNumber       uint   `maxminddb:"autonomous_system_number" json:"autonomous_system_number,omitempty"`
+	AutonomousSystemOrganization string `maxminddb:"autonomous_system_organization" json:"autonomous_system_organization,omitempty"`
+	ISP                          string `maxminddb:"isp" json:"isp,omitempty"`
+	Organization                 string `maxminddb:"organization" json:"organization,omitempty"`
 }
 
 type databaseType int
