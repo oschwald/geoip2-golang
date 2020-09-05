@@ -277,6 +277,28 @@ func BenchmarkASN(b *testing.B) {
 	asnResult = asn
 }
 
+func BenchmarkASNFast(b *testing.B) {
+	db, err := Open("GeoLite2-ASN.mmdb")
+	if err != nil {
+		b.Fatal(err)
+	}
+	defer db.Close()
+
+	r := rand.New(rand.NewSource(0))
+
+	var asn *ASN
+
+	ip := make(net.IP, 4)
+	for i := 0; i < b.N; i++ {
+		randomIPv4Address(r, ip)
+		asn, err = db.ASNFast(ip)
+		if err != nil {
+			b.Fatal(err)
+		}
+	}
+	asnResult = asn
+}
+
 func randomIPv4Address(r *rand.Rand, ip net.IP) {
 	num := r.Uint32()
 	ip[0] = byte(num >> 24)

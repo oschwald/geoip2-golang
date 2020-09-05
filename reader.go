@@ -8,7 +8,10 @@
 package geoip2
 
 import (
+	"bytes"
+	"errors"
 	"fmt"
+	"math/big"
 	"net"
 
 	"github.com/oschwald/maxminddb-golang"
@@ -364,6 +367,95 @@ func (r *Reader) ASN(ipAddress net.IP) (*ASN, error) {
 	var val ASN
 	err := r.mmdbReader.Lookup(ipAddress, &val)
 	return &val, err
+}
+
+// ASNFast takes an IP address as a net.IP struct and returns a ASN struct and/or
+// an error
+func (r *Reader) ASNFast(ipAddress net.IP) (*ASN, error) {
+	if isASN&r.databaseType == 0 {
+		return nil, InvalidMethodError{"ASN", r.Metadata().DatabaseType}
+	}
+	var deserializer deserializerASN
+	err := r.mmdbReader.Lookup(ipAddress, &deserializer)
+	return &deserializer.val, err
+}
+
+type deserializerASN struct {
+	val     ASN
+	lastKey []byte
+}
+
+func (d *deserializerASN) ShouldSkip(offset uintptr) (bool, error) {
+	return false, nil
+}
+
+func (d *deserializerASN) StartSlice(size uint) error {
+	return errors.New("unsupported")
+}
+
+func (d *deserializerASN) StartMap(size uint) error {
+	return nil
+}
+
+func (d *deserializerASN) End() error {
+	return nil
+}
+
+func (d *deserializerASN) Key(v []byte) error {
+	d.lastKey = v
+	return nil
+}
+
+var asoKey = []byte("autonomous_system_organization")
+
+func (d *deserializerASN) String(v string) error {
+	if bytes.Equal(d.lastKey, asoKey) {
+		d.val.AutonomousSystemOrganization = v
+	}
+	d.lastKey = nil
+	return nil
+}
+
+func (d *deserializerASN) Float64(v float64) error {
+	return errors.New("unsupported")
+}
+
+func (d *deserializerASN) Bytes(v []byte) error {
+	return errors.New("unsupported")
+}
+
+func (d *deserializerASN) Uint16(v uint16) error {
+	return errors.New("unsupported")
+}
+
+var asnKey = []byte("autonomous_system_number")
+
+func (d *deserializerASN) Uint32(v uint32) error {
+	if bytes.Equal(d.lastKey, asnKey) {
+		d.val.AutonomousSystemNumber = uint(v)
+	}
+	d.lastKey = nil
+	return nil
+}
+
+func (d *deserializerASN) Int32(v int32) error {
+	return errors.New("unsupported")
+}
+
+func (d *deserializerASN) Uint64(v uint64) error {
+	return errors.New("unsupported")
+}
+
+func (d *deserializerASN) Uint128(v *big.Int) error {
+	return errors.New("unsupported")
+}
+
+func (d *deserializerASN) Bool(v bool) error {
+	return errors.New("unsupported")
+}
+
+func (d *deserializerASN) Float32(v float32) error {
+	return errors.New("unsupported")
 }
 
 // ConnectionType takes an IP address as a net.IP struct and returns a
