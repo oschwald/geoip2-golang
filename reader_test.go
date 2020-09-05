@@ -37,29 +37,29 @@ func TestReader(t *testing.T) {
 
 	assert.Equal(t, uint(2643743), record.City.GeoNameID)
 	assert.Equal(t,
-		map[string]string{
-			"de":    "London",
-			"en":    "London",
-			"es":    "Londres",
-			"fr":    "Londres",
-			"ja":    "ロンドン",
-			"pt-BR": "Londres",
-			"ru":    "Лондон",
+		Names {
+			De:    "London",
+			En:    "London",
+			Es:    "Londres",
+			Fr:    "Londres",
+			Ja:    "ロンドン",
+			PtBR: "Londres",
+			Ru:    "Лондон",
 		},
 		record.City.Names,
 	)
 	assert.Equal(t, uint(6255148), record.Continent.GeoNameID)
 	assert.Equal(t, "EU", record.Continent.Code)
 	assert.Equal(t,
-		map[string]string{
-			"de":    "Europa",
-			"en":    "Europe",
-			"es":    "Europa",
-			"fr":    "Europe",
-			"ja":    "ヨーロッパ",
-			"pt-BR": "Europa",
-			"ru":    "Европа",
-			"zh-CN": "欧洲",
+		Names {
+			De:    "Europa",
+			En:    "Europe",
+			Es:    "Europa",
+			Fr:    "Europe",
+			Ja:    "ヨーロッパ",
+			PtBR: "Europa",
+			Ru:    "Европа",
+			ZhCN: "欧洲",
 		},
 		record.Continent.Names,
 	)
@@ -68,15 +68,15 @@ func TestReader(t *testing.T) {
 	assert.True(t, record.Country.IsInEuropeanUnion)
 	assert.Equal(t, "GB", record.Country.IsoCode)
 	assert.Equal(t,
-		map[string]string{
-			"de":    "Vereinigtes Königreich",
-			"en":    "United Kingdom",
-			"es":    "Reino Unido",
-			"fr":    "Royaume-Uni",
-			"ja":    "イギリス",
-			"pt-BR": "Reino Unido",
-			"ru":    "Великобритания",
-			"zh-CN": "英国",
+		Names {
+			De:    "Vereinigtes Königreich",
+			En:    "United Kingdom",
+			Es:    "Reino Unido",
+			Fr:    "Royaume-Uni",
+			Ja:    "イギリス",
+			PtBR: "Reino Unido",
+			Ru:    "Великобритания",
+			ZhCN: "英国",
 		},
 		record.Country.Names,
 	)
@@ -89,11 +89,11 @@ func TestReader(t *testing.T) {
 	assert.Equal(t, uint(6269131), record.Subdivisions[0].GeoNameID)
 	assert.Equal(t, "ENG", record.Subdivisions[0].IsoCode)
 	assert.Equal(t,
-		map[string]string{
-			"en":    "England",
-			"pt-BR": "Inglaterra",
-			"fr":    "Angleterre",
-			"es":    "Inglaterra",
+	Names {
+			En:    "England",
+			PtBR: "Inglaterra",
+			Fr:    "Angleterre",
+			Es:    "Inglaterra",
 		},
 		record.Subdivisions[0].Names,
 	)
@@ -102,15 +102,15 @@ func TestReader(t *testing.T) {
 	assert.False(t, record.RegisteredCountry.IsInEuropeanUnion)
 	assert.Equal(t, "US", record.RegisteredCountry.IsoCode)
 	assert.Equal(t,
-		map[string]string{
-			"de":    "USA",
-			"en":    "United States",
-			"es":    "Estados Unidos",
-			"fr":    "États-Unis",
-			"ja":    "アメリカ合衆国",
-			"pt-BR": "Estados Unidos",
-			"ru":    "США",
-			"zh-CN": "美国",
+	Names{
+			De:    "USA",
+			En:    "United States",
+			Es:    "Estados Unidos",
+			Fr:    "États-Unis",
+			Ja:    "アメリカ合衆国",
+			PtBR: "Estados Unidos",
+			Ru:    "США",
+			ZhCN: "美国",
 		},
 		record.RegisteredCountry.Names,
 	)
