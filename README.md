@@ -1,6 +1,6 @@
 # GeoIP2 Reader for Go #
 
-[![GoDoc](https://godoc.org/github.com/oschwald/geoip2-golang?status.svg)](https://godoc.org/github.com/oschwald/geoip2-golang)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/oschwald/geoip2-golang)](https://pkg.go.dev/github.com/oschwald/geoip2-golang)
 
 This library reads MaxMind [GeoLite2](http://dev.maxmind.com/geoip/geoip2/geolite2/)
 and [GeoIP2](http://www.maxmind.com/en/geolocation_landing) databases.
