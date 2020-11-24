@@ -11,14 +11,14 @@ import (
 func Example() {
 	db, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 	defer db.Close()
 	// If you are using strings that may be invalid, check that ip is not nil
 	ip := net.ParseIP("81.2.69.142")
 	record, err := db.City(ip)
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 	fmt.Printf("Portuguese (BR) city name: %v\n", record.City.Names["pt-BR"])
 	fmt.Printf("English subdivision name: %v\n", record.Subdivisions[0].Names["en"])
