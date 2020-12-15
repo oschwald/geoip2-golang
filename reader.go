@@ -96,6 +96,8 @@ type City struct {
 		GeoNameID         uint              `maxminddb:"geoname_id"`
 		IsInEuropeanUnion bool              `maxminddb:"is_in_european_union"`
 		IsoCode           string            `maxminddb:"iso_code"`
+		IsoCode2          string            `maxminddb:"iso2"`
+		IsoCode3          string            `maxminddb:"iso3"`
 		Names             map[string]string `maxminddb:"names"`
 	} `maxminddb:"country"`
 	Location struct {
@@ -144,6 +146,8 @@ type Country struct {
 		GeoNameID         uint              `maxminddb:"geoname_id"`
 		IsInEuropeanUnion bool              `maxminddb:"is_in_european_union"`
 		IsoCode           string            `maxminddb:"iso_code"`
+		IsoCode2          string            `maxminddb:"iso2"`
+		IsoCode3          string            `maxminddb:"iso3"`
 		Names             map[string]string `maxminddb:"names"`
 	} `maxminddb:"country"`
 	RegisteredCountry struct {
