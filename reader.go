@@ -215,6 +215,7 @@ const (
 	isDomain
 	isEnterprise
 	isISP
+	isAdRollMagellan
 )
 
 // Reader holds the maxminddb.Reader struct. It can be created using the
@@ -307,7 +308,7 @@ func getDBType(reader *maxminddb.Reader) (databaseType, error) {
 		"GeoIP2-Precision-ISP":
 		return isISP | isASN, nil
 	case "AdRoll-Magellan":
-		return isCity | isCountry, nil
+		return isCity | isCountry | isAdRollMagellan, nil
 	default:
 		return 0, UnknownDatabaseTypeError{reader.Metadata.DatabaseType}
 	}
@@ -334,6 +335,16 @@ func (r *Reader) City(ipAddress net.IP) (*City, error) {
 	}
 	var city City
 	err := r.mmdbReader.Lookup(ipAddress, &city)
+	if err != nil {
+		return &city, err
+	}
+	if isAdRollMagellan&r.databaseType != 0 && city.Country.IsoCode == "" {
+		if city.Country.IsoCode2 != "" {
+			city.Country.IsoCode = city.Country.IsoCode2
+		} else if city.Country.IsoCode3 != "" {
+			city.Country.IsoCode = city.Country.IsoCode3
+		}
+	}
 	return &city, err
 }
 
@@ -347,6 +358,16 @@ func (r *Reader) Country(ipAddress net.IP) (*Country, error) {
 	}
 	var country Country
 	err := r.mmdbReader.Lookup(ipAddress, &country)
+	if err != nil {
+		return &country, err
+	}
+	if isAdRollMagellan&r.databaseType != 0 && country.Country.IsoCode == "" {
+		if country.Country.IsoCode2 != "" {
+			country.Country.IsoCode = country.Country.IsoCode2
+		} else if country.Country.IsoCode3 != "" {
+			country.Country.IsoCode = country.Country.IsoCode3
+		}
+	}
 	return &country, err
 }
 
