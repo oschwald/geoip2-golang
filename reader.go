@@ -415,3 +415,8 @@ func (r *Reader) Metadata() maxminddb.Metadata {
 func (r *Reader) Close() error {
 	return r.mmdbReader.Close()
 }
+
+// DB returns the underlying maxminddb reader.
+func (r *Reader) DB() *maxminddb.Reader {
+	return r.mmdbReader
+}
