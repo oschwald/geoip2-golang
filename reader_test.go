@@ -137,13 +137,13 @@ func TestAnonymousIP(t *testing.T) {
 	record, err := reader.AnonymousIP(net.ParseIP("1.2.0.0"))
 	assert.Nil(t, err)
 
-	assert.Equal(t, true, record.IsAnonymous)
+	assert.True(t, record.IsAnonymous)
 
-	assert.Equal(t, true, record.IsAnonymousVPN)
-	assert.Equal(t, false, record.IsHostingProvider)
-	assert.Equal(t, false, record.IsPublicProxy)
-	assert.Equal(t, false, record.IsTorExitNode)
-	assert.Equal(t, false, record.IsResidentialProxy)
+	assert.True(t, record.IsAnonymousVPN)
+	assert.False(t, record.IsHostingProvider)
+	assert.False(t, record.IsPublicProxy)
+	assert.False(t, record.IsTorExitNode)
+	assert.False(t, record.IsResidentialProxy)
 }
 
 func TestASN(t *testing.T) {

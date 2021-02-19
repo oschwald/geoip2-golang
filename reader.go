@@ -172,8 +172,8 @@ type AnonymousIP struct {
 	IsAnonymousVPN     bool `maxminddb:"is_anonymous_vpn"`
 	IsHostingProvider  bool `maxminddb:"is_hosting_provider"`
 	IsPublicProxy      bool `maxminddb:"is_public_proxy"`
-	IsTorExitNode      bool `maxminddb:"is_tor_exit_node"`
 	IsResidentialProxy bool `maxminddb:"is_residential_proxy"`
+	IsTorExitNode      bool `maxminddb:"is_tor_exit_node"`
 }
 
 // The ASN struct corresponds to the data in the GeoLite2 ASN database.
