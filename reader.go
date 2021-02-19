@@ -168,11 +168,12 @@ type Country struct {
 // The AnonymousIP struct corresponds to the data in the GeoIP2
 // Anonymous IP database.
 type AnonymousIP struct {
-	IsAnonymous       bool `maxminddb:"is_anonymous"`
-	IsAnonymousVPN    bool `maxminddb:"is_anonymous_vpn"`
-	IsHostingProvider bool `maxminddb:"is_hosting_provider"`
-	IsPublicProxy     bool `maxminddb:"is_public_proxy"`
-	IsTorExitNode     bool `maxminddb:"is_tor_exit_node"`
+	IsAnonymous        bool `maxminddb:"is_anonymous"`
+	IsAnonymousVPN     bool `maxminddb:"is_anonymous_vpn"`
+	IsHostingProvider  bool `maxminddb:"is_hosting_provider"`
+	IsPublicProxy      bool `maxminddb:"is_public_proxy"`
+	IsTorExitNode      bool `maxminddb:"is_tor_exit_node"`
+	IsResidentialProxy bool `maxminddb:"is_residential_proxy"`
 }
 
 // The ASN struct corresponds to the data in the GeoLite2 ASN database.
