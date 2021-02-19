@@ -143,6 +143,7 @@ func TestAnonymousIP(t *testing.T) {
 	assert.Equal(t, false, record.IsHostingProvider)
 	assert.Equal(t, false, record.IsPublicProxy)
 	assert.Equal(t, false, record.IsTorExitNode)
+	assert.Equal(t, false, record.IsResidentialProxy)
 }
 
 func TestASN(t *testing.T) {
