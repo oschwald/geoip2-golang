@@ -65,7 +65,7 @@ func TestReader(t *testing.T) {
 	)
 
 	assert.Equal(t, uint(2635167), record.Country.GeoNameID)
-	assert.True(t, record.Country.IsInEuropeanUnion)
+	assert.False(t, record.Country.IsInEuropeanUnion)
 	assert.Equal(t, "GB", record.Country.IsoCode)
 	assert.Equal(t,
 		map[string]string{
@@ -180,7 +180,7 @@ func TestCountry(t *testing.T) {
 	record, err := reader.Country(net.ParseIP("81.2.69.160"))
 	assert.Nil(t, err)
 
-	assert.True(t, record.Country.IsInEuropeanUnion)
+	assert.False(t, record.Country.IsInEuropeanUnion)
 	assert.False(t, record.RegisteredCountry.IsInEuropeanUnion)
 	assert.False(t, record.RepresentedCountry.IsInEuropeanUnion)
 }
