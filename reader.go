@@ -259,7 +259,7 @@ func Open(file string) (*Reader, error) {
 
 // FromBytes takes a byte slice corresponding to a GeoIP2/GeoLite2 database
 // file and returns a Reader struct or an error. Note that the byte slice is
-// use directly; any modification of it after opening the database will result
+// used directly; any modification of it after opening the database will result
 // in errors while reading from the database.
 func FromBytes(bytes []byte) (*Reader, error) {
 	reader, err := maxminddb.FromBytes(bytes)
