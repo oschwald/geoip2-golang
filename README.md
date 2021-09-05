@@ -31,9 +31,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/oschwald/geoip2-golang"
 	"log"
 	"net"
+
+	"github.com/oschwald/geoip2-golang"
 )
 
 func main() {
@@ -64,6 +65,7 @@ func main() {
 	// Time zone: Europe/London
 	// Coordinates: 51.5142, -0.0931
 }
+
 ```
 
 ## Testing ##
