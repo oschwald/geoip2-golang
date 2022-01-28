@@ -11,12 +11,12 @@ import (
 
 func TestReader(t *testing.T) {
 	reader, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	defer reader.Close()
 
 	record, err := reader.City(net.ParseIP("81.2.69.160"))
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	m := reader.Metadata()
 	assert.Equal(t, uint(2), m.BinaryFormatMajorVersion)
@@ -120,22 +120,22 @@ func TestReader(t *testing.T) {
 
 func TestMetroCode(t *testing.T) {
 	reader, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	defer reader.Close()
 
 	record, err := reader.City(net.ParseIP("216.160.83.56"))
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	assert.Equal(t, uint(819), record.Location.MetroCode)
 }
 
 func TestAnonymousIP(t *testing.T) {
 	reader, err := Open("test-data/test-data/GeoIP2-Anonymous-IP-Test.mmdb")
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	defer reader.Close()
 
 	record, err := reader.AnonymousIP(net.ParseIP("1.2.0.0"))
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	assert.True(t, record.IsAnonymous)
 
@@ -148,11 +148,11 @@ func TestAnonymousIP(t *testing.T) {
 
 func TestASN(t *testing.T) {
 	reader, err := Open("test-data/test-data/GeoLite2-ASN-Test.mmdb")
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	defer reader.Close()
 
 	record, err := reader.ASN(net.ParseIP("1.128.0.0"))
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	assert.Equal(t, uint(1221), record.AutonomousSystemNumber)
 
@@ -161,24 +161,24 @@ func TestASN(t *testing.T) {
 
 func TestConnectionType(t *testing.T) {
 	reader, err := Open("test-data/test-data/GeoIP2-Connection-Type-Test.mmdb")
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	defer reader.Close()
 
 	record, err := reader.ConnectionType(net.ParseIP("1.0.1.0"))
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	assert.Equal(t, "Cable/DSL", record.ConnectionType)
 }
 
 func TestCountry(t *testing.T) {
 	reader, err := Open("test-data/test-data/GeoIP2-Country-Test.mmdb")
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	defer reader.Close()
 
 	record, err := reader.Country(net.ParseIP("81.2.69.160"))
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	assert.False(t, record.Country.IsInEuropeanUnion)
 	assert.False(t, record.RegisteredCountry.IsInEuropeanUnion)
@@ -187,11 +187,11 @@ func TestCountry(t *testing.T) {
 
 func TestDomain(t *testing.T) {
 	reader, err := Open("test-data/test-data/GeoIP2-Domain-Test.mmdb")
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	defer reader.Close()
 
 	record, err := reader.Domain(net.ParseIP("1.2.0.0"))
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, "maxmind.com", record.Domain)
 }
 
@@ -225,11 +225,11 @@ func TestEnterprise(t *testing.T) {
 
 func TestISP(t *testing.T) {
 	reader, err := Open("test-data/test-data/GeoIP2-ISP-Test.mmdb")
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	defer reader.Close()
 
 	record, err := reader.ISP(net.ParseIP("149.101.100.0"))
-	assert.Nil(t, err)
+	require.NoError(t, err)
 
 	assert.Equal(t, uint(6167), record.AutonomousSystemNumber)
 
