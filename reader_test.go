@@ -211,6 +211,16 @@ func TestEnterprise(t *testing.T) {
 	assert.Equal(t, "Cable/DSL", record.Traits.ConnectionType)
 	assert.Equal(t, "frpt.net", record.Traits.Domain)
 	assert.Equal(t, float64(0.34), record.Traits.StaticIPScore)
+
+	record, err = reader.Enterprise(net.ParseIP("149.101.100.0"))
+	require.NoError(t, err)
+
+	assert.Equal(t, uint(6167), record.Traits.AutonomousSystemNumber)
+
+	assert.Equal(t, "CELLCO-PART", record.Traits.AutonomousSystemOrganization)
+	assert.Equal(t, "Verizon Wireless", record.Traits.ISP)
+	assert.Equal(t, "310", record.Traits.MobileCountryCode)
+	assert.Equal(t, "004", record.Traits.MobileNetworkCode)
 }
 
 func TestISP(t *testing.T) {
@@ -218,14 +228,16 @@ func TestISP(t *testing.T) {
 	assert.Nil(t, err)
 	defer reader.Close()
 
-	record, err := reader.ISP(net.ParseIP("1.128.0.0"))
+	record, err := reader.ISP(net.ParseIP("149.101.100.0"))
 	assert.Nil(t, err)
 
-	assert.Equal(t, uint(1221), record.AutonomousSystemNumber)
+	assert.Equal(t, uint(6167), record.AutonomousSystemNumber)
 
-	assert.Equal(t, "Telstra Pty Ltd", record.AutonomousSystemOrganization)
-	assert.Equal(t, "Telstra Internet", record.ISP)
-	assert.Equal(t, "Telstra Internet", record.Organization)
+	assert.Equal(t, "CELLCO-PART", record.AutonomousSystemOrganization)
+	assert.Equal(t, "Verizon Wireless", record.ISP)
+	assert.Equal(t, "310", record.MobileCountryCode)
+	assert.Equal(t, "004", record.MobileNetworkCode)
+	assert.Equal(t, "Verizon Wireless", record.Organization)
 }
 
 // This ensures the compiler does not optimize away the function call

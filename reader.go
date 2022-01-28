@@ -74,8 +74,10 @@ type Enterprise struct {
 		IsLegitimateProxy            bool    `maxminddb:"is_legitimate_proxy"`
 		IsSatelliteProvider          bool    `maxminddb:"is_satellite_provider"`
 		ISP                          string  `maxminddb:"isp"`
-		StaticIPScore                float64 `maxminddb:"static_ip_score"`
+		MobileCountryCode            string  `maxminddb:"mobile_country_code"`
+		MobileNetworkCode            string  `maxminddb:"mobile_network_code"`
 		Organization                 string  `maxminddb:"organization"`
+		StaticIPScore                float64 `maxminddb:"static_ip_score"`
 		UserType                     string  `maxminddb:"user_type"`
 	} `maxminddb:"traits"`
 }
@@ -198,6 +200,8 @@ type ISP struct {
 	AutonomousSystemNumber       uint   `maxminddb:"autonomous_system_number"`
 	AutonomousSystemOrganization string `maxminddb:"autonomous_system_organization"`
 	ISP                          string `maxminddb:"isp"`
+	MobileCountryCode            string `maxminddb:"mobile_country_code"`
+	MobileNetworkCode            string `maxminddb:"mobile_network_code"`
 	Organization                 string `maxminddb:"organization"`
 }
 
