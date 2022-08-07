@@ -245,7 +245,7 @@ type UnknownDatabaseTypeError struct {
 }
 
 func (e UnknownDatabaseTypeError) Error() string {
-	return fmt.Sprintf(`geoip2: reader does not support the "%s" database type`,
+	return fmt.Sprintf(`geoip2: reader does not support the %q database type`,
 		e.DatabaseType)
 }
 
@@ -362,7 +362,7 @@ func (r *Reader) AnonymousIP(ipAddress net.IP) (*AnonymousIP, error) {
 }
 
 // ASN takes an IP address as a net.IP struct and returns a ASN struct and/or
-// an error
+// an error.
 func (r *Reader) ASN(ipAddress net.IP) (*ASN, error) {
 	if isASN&r.databaseType == 0 {
 		return nil, InvalidMethodError{"ASN", r.Metadata().DatabaseType}
@@ -373,7 +373,7 @@ func (r *Reader) ASN(ipAddress net.IP) (*ASN, error) {
 }
 
 // ConnectionType takes an IP address as a net.IP struct and returns a
-// ConnectionType struct and/or an error
+// ConnectionType struct and/or an error.
 func (r *Reader) ConnectionType(ipAddress net.IP) (*ConnectionType, error) {
 	if isConnectionType&r.databaseType == 0 {
 		return nil, InvalidMethodError{"ConnectionType", r.Metadata().DatabaseType}
@@ -384,7 +384,7 @@ func (r *Reader) ConnectionType(ipAddress net.IP) (*ConnectionType, error) {
 }
 
 // Domain takes an IP address as a net.IP struct and returns a
-// Domain struct and/or an error
+// Domain struct and/or an error.
 func (r *Reader) Domain(ipAddress net.IP) (*Domain, error) {
 	if isDomain&r.databaseType == 0 {
 		return nil, InvalidMethodError{"Domain", r.Metadata().DatabaseType}
@@ -395,7 +395,7 @@ func (r *Reader) Domain(ipAddress net.IP) (*Domain, error) {
 }
 
 // ISP takes an IP address as a net.IP struct and returns a ISP struct and/or
-// an error
+// an error.
 func (r *Reader) ISP(ipAddress net.IP) (*ISP, error) {
 	if isISP&r.databaseType == 0 {
 		return nil, InvalidMethodError{"ISP", r.Metadata().DatabaseType}
