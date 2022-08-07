@@ -168,7 +168,7 @@ func TestConnectionType(t *testing.T) {
 	record, err := reader.ConnectionType(net.ParseIP("1.0.1.0"))
 	require.NoError(t, err)
 
-	assert.Equal(t, "Cable/DSL", record.ConnectionType)
+	assert.Equal(t, "Cellular", record.ConnectionType)
 }
 
 func TestCountry(t *testing.T) {
