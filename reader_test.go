@@ -240,7 +240,7 @@ func TestISP(t *testing.T) {
 	assert.Equal(t, "Verizon Wireless", record.Organization)
 }
 
-// This ensures the compiler does not optimize away the function call
+// This ensures the compiler does not optimize away the function call.
 var cityResult *City
 
 func BenchmarkCity(b *testing.B) {
@@ -250,6 +250,7 @@ func BenchmarkCity(b *testing.B) {
 	}
 	defer db.Close()
 
+	//nolint:gosec // this is just a benchmark
 	r := rand.New(rand.NewSource(0))
 
 	var city *City
@@ -265,7 +266,7 @@ func BenchmarkCity(b *testing.B) {
 	cityResult = city
 }
 
-// This ensures the compiler does not optimize away the function call
+// This ensures the compiler does not optimize away the function call.
 var asnResult *ASN
 
 func BenchmarkASN(b *testing.B) {
@@ -275,6 +276,7 @@ func BenchmarkASN(b *testing.B) {
 	}
 	defer db.Close()
 
+	//nolint:gosec // this is just a benchmark
 	r := rand.New(rand.NewSource(0))
 
 	var asn *ASN
