@@ -14,9 +14,13 @@ need several fields, you may get superior performance by using maxminddb's
 in the maxminddb repository for an example of this.)
 
 ## Installation ##
-
+- For Go version up to v1.17:
 ```
 go get github.com/oschwald/geoip2-golang
+```
+- For Go version starting from [v1.18](https://go.dev/doc/go-get-install-deprecation)
+```
+go install github.com/oschwald/geoip2-golang@latest
 ```
 
 ## Usage ##
