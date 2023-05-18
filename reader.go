@@ -279,7 +279,8 @@ func getDBType(reader *maxminddb.Reader) (databaseType, error) {
 	case "GeoIP2-Anonymous-IP":
 		return isAnonymousIP, nil
 	case "DBIP-ASN-Lite (compat=GeoLite2-ASN)",
-		"GeoLite2-ASN":
+		"GeoLite2-ASN",
+		"ipinfo asn.mmdb":
 		return isASN, nil
 	// We allow City lookups on Country for back compat
 	case "DBIP-City-Lite",
@@ -307,6 +308,10 @@ func getDBType(reader *maxminddb.Reader) (databaseType, error) {
 		return isEnterprise | isCity | isCountry, nil
 	case "GeoIP2-ISP", "GeoIP2-Precision-ISP":
 		return isISP | isASN, nil
+	case "ipinfo country.mmdb":
+		return isCountry, nil
+	case "ipinfo country_asn.mmdb":
+		return isCountry | isASN, nil
 	default:
 		return 0, UnknownDatabaseTypeError{reader.Metadata.DatabaseType}
 	}
