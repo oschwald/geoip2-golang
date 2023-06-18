@@ -1,25 +1,26 @@
 [run]
   deadline = "10m"
-
   tests = true
 
 [linters]
   disable-all = true
   enable = [
+    "asasalint",
     "asciicheck",
     "bidichk",
     "bodyclose",
     "containedctx",
     "contextcheck",
     "depguard",
+    "dupword",
     "durationcheck",
     "errcheck",
     "errchkjson",
     "errname",
     "errorlint",
+    # "exhaustive",
     "exportloopref",
     "forbidigo",
-    #"forcetypeassert",
     "goconst",
     "gocyclo",
     "gocritic",
@@ -42,6 +43,7 @@
     "nosprintfhostport",
     "predeclared",
     "revive",
+    "rowserrcheck",
     "sqlclosecheck",
     "staticcheck",
     "stylecheck",
@@ -51,10 +53,17 @@
     "unconvert",
     "unparam",
     "unused",
+    "usestdlibvars",
     "vetshadow",
+    "wastedassign",
   ]
 
+[[linters-settings.depguard.rules.main.deny]]
+pkg = "io/ioutil"
+desc = "Deprecated. Functions have been moved elsewhere."
+
 [linters-settings.errcheck]
+    check-blank = true
     # Ignoring Close so that we don't have to have a bunch of
     # `defer func() { _ = r.Close() }()` constructs when we
     # don't actually care about the error.
@@ -67,6 +76,15 @@
 
 [linters-settings.exhaustive]
     default-signifies-exhaustive = true
+
+[linters-settings.forbidigo]
+    # Forbid the following identifiers
+    forbid = [
+        "Geoip", # use "GeoIP"
+        "^geoIP", # use "geoip"
+        "Maxmind", # use "MaxMind"
+        "^maxMind", # use "maxmind"
+    ]
 
 [linters-settings.gocritic]
     enabled-checks = [
@@ -89,8 +107,7 @@
         "commentedOutImport",
         "commentFormatting",
         "defaultCaseOrder",
-        # Revive's defer rule already captures this. This caught no extra cases.
-        # "deferInLoop",
+        "deferInLoop",
         "deferUnlambda",
         "deprecatedComment",
         "docStub",
@@ -109,12 +126,12 @@
         "exitAfterDefer",
         "exposedSyncMutex",
         "externalErrorReassign",
-        # Given that all of our code runs on Linux and the / separate should
-        # work fine, this seems less important.
-        # "filepathJoin",
+        "filepathJoin",
         "flagDeref",
         "flagName",
         "hexLiteral",
+        "httpNoBody",
+        "hugeParam",
         "ifElseChain",
         "importShadow",
         "indexAlloc",
@@ -138,22 +155,20 @@
         "redundantSprint",
         "regexpMust",
         "regexpPattern",
-        # This might be good, but I don't think we want to encourage
-        # significant changes to regexes as we port stuff from Perl.
-        # "regexpSimplify",
+        "regexpSimplify",
+        "returnAfterHttpError",
         "ruleguard",
         "singleCaseSwitch",
         "sliceClear",
         "sloppyLen",
-        # This seems like it might also be good, but a lot of existing code
-        # fails.
-        # "sloppyReassign",
-        "returnAfterHttpError",
+        "sloppyReassign",
+        "sloppyTestFuncName",
         "sloppyTypeAssert",
         "sortSlice",
         "sprintfQuotedString",
         "sqlQuery",
         "stringsCompare",
+        "stringConcatSimplify",
         "stringXbytes",
         "switchTrue",
         "syncMapLoadAndDelete",
@@ -168,28 +183,40 @@
         "underef",
         "unlabelStmt",
         "unlambda",
-        # I am not sure we would want this linter and a lot of existing
-        # code fails.
         # "unnamedResult",
         "unnecessaryBlock",
         "unnecessaryDefer",
         "unslice",
         "valSwap",
         "weakCond",
+        # Covered by nolintlint
+        # "whyNoLint"
         "wrapperFunc",
         "yodaStyleExpr",
-        # This requires explanations for "nolint" directives. This would be
-        # nice for gosec ones, but I am not sure we want it generally unless
-        # we can get the false positive rate lower.
-        # "whyNoLint"
     ]
 
 [linters-settings.gofumpt]
     extra-rules = true
     lang-version = "1.19"
 
+[linters-settings.gosec]
+    excludes = [
+        # G104 - "Audit errors not checked." We use errcheck for this.
+        "G104",
+
+        # G304 - "Potential file inclusion via variable"
+        "G304",
+
+        # G306 - "Expect WriteFile permissions to be 0600 or less".
+        "G306",
+
+        # Prohibits defer (*os.File).Close, which we allow when reading from file.
+        "G307",
+    ]
+
 [linters-settings.govet]
     "enable-all" = true
+    disable = ["shadow"]
 
 [linters-settings.lll]
     line-length = 120
@@ -206,8 +233,6 @@
     ignore-generated-header = true
     severity = "warning"
 
-    # This might be nice but it is so common that it is hard
-    # to enable.
     # [[linters-settings.revive.rules]]
     # name = "add-constant"
 
@@ -232,8 +257,10 @@
     # [[linters-settings.revive.rules]]
     # name = "cognitive-complexity"
 
-    # Probably a good rule, but we have a lot of names that
-    # only have case differences.
+    [[linters-settings.revive.rules]]
+    name = "comment-spacings"
+    arguments = ["easyjson", "nolint"]
+
     # [[linters-settings.revive.rules]]
     # name = "confusing-naming"
 
@@ -251,6 +278,12 @@
 
     # [[linters-settings.revive.rules]]
     # name = "cyclomatic"
+
+    [[linters-settings.revive.rules]]
+    name = "datarace"
+
+    # [[linters-settings.revive.rules]]
+    # name = "deep-exit"
 
     [[linters-settings.revive.rules]]
     name = "defer"
@@ -288,8 +321,6 @@
     # [[linters-settings.revive.rules]]
     # name = "file-header"
 
-    # We have a lot of flag parameters. This linter probably makes
-    # a good point, but we would need some cleanup or a lot of nolints.
     # [[linters-settings.revive.rules]]
     # name = "flag-parameter"
 
@@ -329,7 +360,6 @@
     [[linters-settings.revive.rules]]
     name = "modifies-value-receiver"
 
-    # We frequently use nested structs, particularly in tests.
     # [[linters-settings.revive.rules]]
     # name = "nested-structs"
 
@@ -364,6 +394,9 @@
     name = "superfluous-else"
 
     [[linters-settings.revive.rules]]
+    name = "time-equal"
+
+    [[linters-settings.revive.rules]]
     name = "time-naming"
 
     [[linters-settings.revive.rules]]
@@ -375,8 +408,6 @@
     [[linters-settings.revive.rules]]
     name = "unexported-return"
 
-    # This is covered elsewhere and we want to ignore some
-    # functions such as fmt.Fprintf.
     # [[linters-settings.revive.rules]]
     # name = "unhandled-error"
 
@@ -389,14 +420,11 @@
     [[linters-settings.revive.rules]]
     name = "unused-parameter"
 
-    # We generally have unused receivers in tests for meeting the
-    # requirements of an interface.
-    # [[linters-settings.revive.rules]]
-    # name = "unused-receiver"
+    [[linters-settings.revive.rules]]
+    name = "unused-receiver"
 
-    # This probably makes sense after we upgrade to 1.18
-    # [[linters-settings.revive.rules]]
-    # name = "use-any"
+    [[linters-settings.revive.rules]]
+    name = "use-any"
 
     [[linters-settings.revive.rules]]
     name = "useless-break"
@@ -413,16 +441,12 @@
 [linters-settings.unparam]
     check-exported = true
 
+[issues]
+exclude-use-default = false
+
 [[issues.exclude-rules]]
   linters = [
     "govet"
   ]
-  # we want to enable almost all govet rules. It is easier to just filter out
-  # the ones we don't want:
-  #
-  # * fieldalignment - way too noisy. Although it is very useful in particular
-  #   cases where we are trying to use as little memory as possible, having
-  #   it go off on every struct isn't helpful.
-  # * shadow - although often useful, it complains about _many_ err
-  #   shadowing assignments and some others where shadowing is clear.
-  text = "^(fieldalignment|shadow)"
+  path = "_test.go"
+  text = "^fieldalignment"
