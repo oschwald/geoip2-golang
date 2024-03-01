@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/oschwald/maxminddb-golang v1.12.0
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 )
 
 require (
