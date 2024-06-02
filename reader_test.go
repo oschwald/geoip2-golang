@@ -82,8 +82,8 @@ func TestReader(t *testing.T) {
 	)
 
 	assert.Equal(t, uint16(100), record.Location.AccuracyRadius)
-	assert.Equal(t, 51.5142, record.Location.Latitude)
-	assert.Equal(t, -0.0931, record.Location.Longitude)
+	assert.InEpsilon(t, 51.5142, record.Location.Latitude, 1e-10)
+	assert.InEpsilon(t, -0.0931, record.Location.Longitude, 1e-10)
 	assert.Equal(t, "Europe/London", record.Location.TimeZone)
 
 	assert.Equal(t, uint(6269131), record.Subdivisions[0].GeoNameID)
@@ -197,12 +197,12 @@ func TestDomain(t *testing.T) {
 
 func TestEnterprise(t *testing.T) {
 	reader, err := Open("test-data/test-data/GeoIP2-Enterprise-Test.mmdb")
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	defer reader.Close()
 
 	record, err := reader.Enterprise(net.ParseIP("74.209.24.0"))
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	assert.Equal(t, uint8(11), record.City.Confidence)
 
@@ -210,7 +210,7 @@ func TestEnterprise(t *testing.T) {
 	assert.Equal(t, "FairPoint Communications", record.Traits.AutonomousSystemOrganization)
 	assert.Equal(t, "Cable/DSL", record.Traits.ConnectionType)
 	assert.Equal(t, "frpt.net", record.Traits.Domain)
-	assert.Equal(t, float64(0.34), record.Traits.StaticIPScore)
+	assert.InEpsilon(t, float64(0.34), record.Traits.StaticIPScore, 1e-10)
 
 	record, err = reader.Enterprise(net.ParseIP("149.101.100.0"))
 	require.NoError(t, err)
