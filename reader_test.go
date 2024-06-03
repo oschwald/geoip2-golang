@@ -118,6 +118,21 @@ func TestReader(t *testing.T) {
 	assert.False(t, record.RepresentedCountry.IsInEuropeanUnion)
 }
 
+func TestIsAnycast(t *testing.T) {
+	for _, test := range []string{"Country", "City", "Enterprise"} {
+		t.Run(test, func(t *testing.T) {
+			reader, err := Open("test-data/test-data/GeoIP2-" + test + "-Test.mmdb")
+			require.NoError(t, err)
+			defer reader.Close()
+
+			record, err := reader.City(net.ParseIP("214.1.1.0"))
+			require.NoError(t, err)
+
+			assert.True(t, record.Traits.IsAnycast)
+		})
+	}
+}
+
 func TestMetroCode(t *testing.T) {
 	reader, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
 	require.NoError(t, err)
