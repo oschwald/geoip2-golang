@@ -1,6 +1,6 @@
 module github.com/oschwald/geoip2-golang
 
-go 1.21
+go 1.23.0
 
 require (
 	github.com/oschwald/maxminddb-golang v1.13.1

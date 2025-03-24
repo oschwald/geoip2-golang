@@ -271,7 +271,7 @@ func BenchmarkCity(b *testing.B) {
 	var city *City
 
 	ip := make(net.IP, 4)
-	for i := 0; i < b.N; i++ {
+	for range b.N {
 		randomIPv4Address(r, ip)
 		city, err = db.City(ip)
 		if err != nil {
@@ -297,7 +297,7 @@ func BenchmarkASN(b *testing.B) {
 	var asn *ASN
 
 	ip := make(net.IP, 4)
-	for i := 0; i < b.N; i++ {
+	for range b.N {
 		randomIPv4Address(r, ip)
 		asn, err = db.ASN(ip)
 		if err != nil {
