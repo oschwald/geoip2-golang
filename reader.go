@@ -413,6 +413,11 @@ func (r *Reader) Metadata() maxminddb.Metadata {
 	return r.mmdbReader.Metadata
 }
 
+// Reader allows to access to raw maxminddb Reader
+func (r *Reader) Reader() *maxminddb.Reader {
+	return r.mmdbReader
+}
+
 // Close unmaps the database file from virtual memory and returns the
 // resources to the system.
 func (r *Reader) Close() error {
