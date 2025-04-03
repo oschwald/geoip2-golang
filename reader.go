@@ -183,6 +183,7 @@ type AnonymousIP struct {
 
 // The ASN struct corresponds to the data in the GeoLite2 ASN database.
 type ASN struct {
+	Network                      string
 	AutonomousSystemOrganization string `maxminddb:"autonomous_system_organization"`
 	AutonomousSystemNumber       uint   `maxminddb:"autonomous_system_number"`
 }
@@ -366,12 +367,14 @@ func (r *Reader) AnonymousIP(ipAddress net.IP) (*AnonymousIP, error) {
 // ASN takes an IP address as a net.IP struct and returns a ASN struct and/or
 // an error.
 func (r *Reader) ASN(ipAddress net.IP) (*ASN, error) {
-	if isASN&r.databaseType == 0 {
-		return nil, InvalidMethodError{"ASN", r.Metadata().DatabaseType}
+	var asn ASN
+	network, _, err := r.mmdbReader.LookupNetwork(ipAddress, &asn)
+	if err != nil {
+		return nil, err
 	}
-	var val ASN
-	err := r.mmdbReader.Lookup(ipAddress, &val)
-	return &val, err
+	mask, _ := network.Mask.Size()
+	asn.Network = fmt.Sprintf("%s/%d", network.IP.String(), mask)
+	return &asn, nil
 }
 
 // ConnectionType takes an IP address as a net.IP struct and returns a
