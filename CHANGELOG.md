@@ -5,6 +5,8 @@
 * **BREAKING CHANGE**: All lookup methods now accept `netip.Addr` instead of
   `net.IP`. This provides better performance and aligns with modern Go
   networking practices.
+* **BREAKING CHANGE**: Renamed `IsoCode` fields to `ISOCode` in all structs
+  to follow proper capitalization for the ISO acronym. Closes GitHub issue #4.
 * Updated module path to `github.com/oschwald/geoip2-golang/v2` to follow
   Go's semantic versioning guidelines for breaking changes.
 * Updated examples and documentation to demonstrate proper error handling
@@ -37,6 +39,17 @@ To migrate from v1 to v2:
        // handle error
    }
    record, err := db.City(ip)
+   ```
+
+3. Update field names from `IsoCode` to `ISOCode`:
+   ```go
+   // Old
+   countryCode := record.Country.IsoCode
+   subdivisionCode := record.Subdivisions[0].IsoCode
+
+   // New
+   countryCode := record.Country.ISOCode
+   subdivisionCode := record.Subdivisions[0].ISOCode
    ```
 
 # 1.11.0 - 2024-06-03

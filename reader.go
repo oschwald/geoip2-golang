@@ -33,27 +33,27 @@ type Enterprise struct {
 	} `maxminddb:"postal"`
 	Subdivisions []struct {
 		Names      map[string]string `maxminddb:"names"`
-		IsoCode    string            `maxminddb:"iso_code"`
+		ISOCode    string            `maxminddb:"iso_code"`
 		GeoNameID  uint              `maxminddb:"geoname_id"`
 		Confidence uint8             `maxminddb:"confidence"`
 	} `maxminddb:"subdivisions"`
 	RepresentedCountry struct {
 		Names             map[string]string `maxminddb:"names"`
-		IsoCode           string            `maxminddb:"iso_code"`
+		ISOCode           string            `maxminddb:"iso_code"`
 		Type              string            `maxminddb:"type"`
 		GeoNameID         uint              `maxminddb:"geoname_id"`
 		IsInEuropeanUnion bool              `maxminddb:"is_in_european_union"`
 	} `maxminddb:"represented_country"`
 	Country struct {
 		Names             map[string]string `maxminddb:"names"`
-		IsoCode           string            `maxminddb:"iso_code"`
+		ISOCode           string            `maxminddb:"iso_code"`
 		GeoNameID         uint              `maxminddb:"geoname_id"`
 		Confidence        uint8             `maxminddb:"confidence"`
 		IsInEuropeanUnion bool              `maxminddb:"is_in_european_union"`
 	} `maxminddb:"country"`
 	RegisteredCountry struct {
 		Names             map[string]string `maxminddb:"names"`
-		IsoCode           string            `maxminddb:"iso_code"`
+		ISOCode           string            `maxminddb:"iso_code"`
 		GeoNameID         uint              `maxminddb:"geoname_id"`
 		Confidence        uint8             `maxminddb:"confidence"`
 		IsInEuropeanUnion bool              `maxminddb:"is_in_european_union"`
@@ -100,25 +100,25 @@ type City struct {
 	} `maxminddb:"continent"`
 	Subdivisions []struct {
 		Names     map[string]string `maxminddb:"names"`
-		IsoCode   string            `maxminddb:"iso_code"`
+		ISOCode   string            `maxminddb:"iso_code"`
 		GeoNameID uint              `maxminddb:"geoname_id"`
 	} `maxminddb:"subdivisions"`
 	RepresentedCountry struct {
 		Names             map[string]string `maxminddb:"names"`
-		IsoCode           string            `maxminddb:"iso_code"`
+		ISOCode           string            `maxminddb:"iso_code"`
 		Type              string            `maxminddb:"type"`
 		GeoNameID         uint              `maxminddb:"geoname_id"`
 		IsInEuropeanUnion bool              `maxminddb:"is_in_european_union"`
 	} `maxminddb:"represented_country"`
 	Country struct {
 		Names             map[string]string `maxminddb:"names"`
-		IsoCode           string            `maxminddb:"iso_code"`
+		ISOCode           string            `maxminddb:"iso_code"`
 		GeoNameID         uint              `maxminddb:"geoname_id"`
 		IsInEuropeanUnion bool              `maxminddb:"is_in_european_union"`
 	} `maxminddb:"country"`
 	RegisteredCountry struct {
 		Names             map[string]string `maxminddb:"names"`
-		IsoCode           string            `maxminddb:"iso_code"`
+		ISOCode           string            `maxminddb:"iso_code"`
 		GeoNameID         uint              `maxminddb:"geoname_id"`
 		IsInEuropeanUnion bool              `maxminddb:"is_in_european_union"`
 	} `maxminddb:"registered_country"`
@@ -146,19 +146,19 @@ type Country struct {
 	} `maxminddb:"continent"`
 	Country struct {
 		Names             map[string]string `maxminddb:"names"`
-		IsoCode           string            `maxminddb:"iso_code"`
+		ISOCode           string            `maxminddb:"iso_code"`
 		GeoNameID         uint              `maxminddb:"geoname_id"`
 		IsInEuropeanUnion bool              `maxminddb:"is_in_european_union"`
 	} `maxminddb:"country"`
 	RegisteredCountry struct {
 		Names             map[string]string `maxminddb:"names"`
-		IsoCode           string            `maxminddb:"iso_code"`
+		ISOCode           string            `maxminddb:"iso_code"`
 		GeoNameID         uint              `maxminddb:"geoname_id"`
 		IsInEuropeanUnion bool              `maxminddb:"is_in_european_union"`
 	} `maxminddb:"registered_country"`
 	RepresentedCountry struct {
 		Names             map[string]string `maxminddb:"names"`
-		IsoCode           string            `maxminddb:"iso_code"`
+		ISOCode           string            `maxminddb:"iso_code"`
 		Type              string            `maxminddb:"type"`
 		GeoNameID         uint              `maxminddb:"geoname_id"`
 		IsInEuropeanUnion bool              `maxminddb:"is_in_european_union"`

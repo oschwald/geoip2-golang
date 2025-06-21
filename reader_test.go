@@ -67,7 +67,7 @@ func TestReader(t *testing.T) {
 
 	assert.Equal(t, uint(2635167), record.Country.GeoNameID)
 	assert.False(t, record.Country.IsInEuropeanUnion)
-	assert.Equal(t, "GB", record.Country.IsoCode)
+	assert.Equal(t, "GB", record.Country.ISOCode)
 	assert.Equal(t,
 		map[string]string{
 			"de":    "Vereinigtes Königreich",
@@ -88,7 +88,7 @@ func TestReader(t *testing.T) {
 	assert.Equal(t, "Europe/London", record.Location.TimeZone)
 
 	assert.Equal(t, uint(6269131), record.Subdivisions[0].GeoNameID)
-	assert.Equal(t, "ENG", record.Subdivisions[0].IsoCode)
+	assert.Equal(t, "ENG", record.Subdivisions[0].ISOCode)
 	assert.Equal(t,
 		map[string]string{
 			"en":    "England",
@@ -101,7 +101,7 @@ func TestReader(t *testing.T) {
 
 	assert.Equal(t, uint(6252001), record.RegisteredCountry.GeoNameID)
 	assert.False(t, record.RegisteredCountry.IsInEuropeanUnion)
-	assert.Equal(t, "US", record.RegisteredCountry.IsoCode)
+	assert.Equal(t, "US", record.RegisteredCountry.ISOCode)
 	assert.Equal(t,
 		map[string]string{
 			"de":    "USA",
