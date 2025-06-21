@@ -3,7 +3,7 @@ package geoip2
 import (
 	"fmt"
 	"log"
-	"net"
+	"net/netip"
 )
 
 // Example provides a basic example of using the API. Use of the Country
@@ -14,8 +14,8 @@ func Example() {
 		log.Panic(err)
 	}
 	defer db.Close()
-	// If you are using strings that may be invalid, check that ip is not nil
-	ip := net.ParseIP("81.2.69.142")
+	// If you are using strings that may be invalid, use netip.ParseAddr and check for errors
+	ip := netip.MustParseAddr("81.2.69.142")
 	record, err := db.City(ip)
 	if err != nil {
 		log.Panic(err)

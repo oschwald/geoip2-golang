@@ -9,9 +9,9 @@ package geoip2
 
 import (
 	"fmt"
-	"net"
+	"net/netip"
 
-	"github.com/oschwald/maxminddb-golang"
+	"github.com/oschwald/maxminddb-golang/v2"
 )
 
 // The Enterprise struct corresponds to the data in the GeoIP2 Enterprise
@@ -315,95 +315,95 @@ func getDBType(reader *maxminddb.Reader) (databaseType, error) {
 	}
 }
 
-// Enterprise takes an IP address as a net.IP struct and returns an Enterprise
+// Enterprise takes an IP address as a netip.Addr and returns an Enterprise
 // struct and/or an error. This is intended to be used with the GeoIP2
 // Enterprise database.
-func (r *Reader) Enterprise(ipAddress net.IP) (*Enterprise, error) {
+func (r *Reader) Enterprise(ipAddress netip.Addr) (*Enterprise, error) {
 	if isEnterprise&r.databaseType == 0 {
 		return nil, InvalidMethodError{"Enterprise", r.Metadata().DatabaseType}
 	}
 	var enterprise Enterprise
-	err := r.mmdbReader.Lookup(ipAddress, &enterprise)
+	err := r.mmdbReader.Lookup(ipAddress).Decode(&enterprise)
 	return &enterprise, err
 }
 
-// City takes an IP address as a net.IP struct and returns a City struct
+// City takes an IP address as a netip.Addr and returns a City struct
 // and/or an error. Although this can be used with other databases, this
 // method generally should be used with the GeoIP2 or GeoLite2 City databases.
-func (r *Reader) City(ipAddress net.IP) (*City, error) {
+func (r *Reader) City(ipAddress netip.Addr) (*City, error) {
 	if isCity&r.databaseType == 0 {
 		return nil, InvalidMethodError{"City", r.Metadata().DatabaseType}
 	}
 	var city City
-	err := r.mmdbReader.Lookup(ipAddress, &city)
+	err := r.mmdbReader.Lookup(ipAddress).Decode(&city)
 	return &city, err
 }
 
-// Country takes an IP address as a net.IP struct and returns a Country struct
+// Country takes an IP address as a netip.Addr and returns a Country struct
 // and/or an error. Although this can be used with other databases, this
 // method generally should be used with the GeoIP2 or GeoLite2 Country
 // databases.
-func (r *Reader) Country(ipAddress net.IP) (*Country, error) {
+func (r *Reader) Country(ipAddress netip.Addr) (*Country, error) {
 	if isCountry&r.databaseType == 0 {
 		return nil, InvalidMethodError{"Country", r.Metadata().DatabaseType}
 	}
 	var country Country
-	err := r.mmdbReader.Lookup(ipAddress, &country)
+	err := r.mmdbReader.Lookup(ipAddress).Decode(&country)
 	return &country, err
 }
 
-// AnonymousIP takes an IP address as a net.IP struct and returns a
+// AnonymousIP takes an IP address as a netip.Addr and returns a
 // AnonymousIP struct and/or an error.
-func (r *Reader) AnonymousIP(ipAddress net.IP) (*AnonymousIP, error) {
+func (r *Reader) AnonymousIP(ipAddress netip.Addr) (*AnonymousIP, error) {
 	if isAnonymousIP&r.databaseType == 0 {
 		return nil, InvalidMethodError{"AnonymousIP", r.Metadata().DatabaseType}
 	}
 	var anonIP AnonymousIP
-	err := r.mmdbReader.Lookup(ipAddress, &anonIP)
+	err := r.mmdbReader.Lookup(ipAddress).Decode(&anonIP)
 	return &anonIP, err
 }
 
-// ASN takes an IP address as a net.IP struct and returns a ASN struct and/or
+// ASN takes an IP address as a netip.Addr and returns a ASN struct and/or
 // an error.
-func (r *Reader) ASN(ipAddress net.IP) (*ASN, error) {
+func (r *Reader) ASN(ipAddress netip.Addr) (*ASN, error) {
 	if isASN&r.databaseType == 0 {
 		return nil, InvalidMethodError{"ASN", r.Metadata().DatabaseType}
 	}
 	var val ASN
-	err := r.mmdbReader.Lookup(ipAddress, &val)
+	err := r.mmdbReader.Lookup(ipAddress).Decode(&val)
 	return &val, err
 }
 
-// ConnectionType takes an IP address as a net.IP struct and returns a
+// ConnectionType takes an IP address as a netip.Addr and returns a
 // ConnectionType struct and/or an error.
-func (r *Reader) ConnectionType(ipAddress net.IP) (*ConnectionType, error) {
+func (r *Reader) ConnectionType(ipAddress netip.Addr) (*ConnectionType, error) {
 	if isConnectionType&r.databaseType == 0 {
 		return nil, InvalidMethodError{"ConnectionType", r.Metadata().DatabaseType}
 	}
 	var val ConnectionType
-	err := r.mmdbReader.Lookup(ipAddress, &val)
+	err := r.mmdbReader.Lookup(ipAddress).Decode(&val)
 	return &val, err
 }
 
-// Domain takes an IP address as a net.IP struct and returns a
+// Domain takes an IP address as a netip.Addr and returns a
 // Domain struct and/or an error.
-func (r *Reader) Domain(ipAddress net.IP) (*Domain, error) {
+func (r *Reader) Domain(ipAddress netip.Addr) (*Domain, error) {
 	if isDomain&r.databaseType == 0 {
 		return nil, InvalidMethodError{"Domain", r.Metadata().DatabaseType}
 	}
 	var val Domain
-	err := r.mmdbReader.Lookup(ipAddress, &val)
+	err := r.mmdbReader.Lookup(ipAddress).Decode(&val)
 	return &val, err
 }
 
-// ISP takes an IP address as a net.IP struct and returns a ISP struct and/or
+// ISP takes an IP address as a netip.Addr and returns a ISP struct and/or
 // an error.
-func (r *Reader) ISP(ipAddress net.IP) (*ISP, error) {
+func (r *Reader) ISP(ipAddress netip.Addr) (*ISP, error) {
 	if isISP&r.databaseType == 0 {
 		return nil, InvalidMethodError{"ISP", r.Metadata().DatabaseType}
 	}
 	var val ISP
-	err := r.mmdbReader.Lookup(ipAddress, &val)
+	err := r.mmdbReader.Lookup(ipAddress).Decode(&val)
 	return &val, err
 }
 

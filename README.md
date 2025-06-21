@@ -32,7 +32,7 @@ package main
 import (
 	"fmt"
 	"log"
-	"net"
+	"net/netip"
 
 	"github.com/oschwald/geoip2-golang"
 )
@@ -43,8 +43,11 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	// If you are using strings that may be invalid, check that ip is not nil
-	ip := net.ParseIP("81.2.69.142")
+	// If you are using strings that may be invalid, use netip.ParseAddr and check for errors
+	ip, err := netip.ParseAddr("81.2.69.142")
+	if err != nil {
+		log.Fatal(err)
+	}
 	record, err := db.City(ip)
 	if err != nil {
 		log.Fatal(err)

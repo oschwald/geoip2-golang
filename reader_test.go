@@ -3,6 +3,7 @@ package geoip2
 import (
 	"math/rand"
 	"net"
+	"net/netip"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -15,7 +16,7 @@ func TestReader(t *testing.T) {
 
 	defer reader.Close()
 
-	record, err := reader.City(net.ParseIP("81.2.69.160"))
+	record, err := reader.City(netip.MustParseAddr("81.2.69.160"))
 	require.NoError(t, err)
 
 	m := reader.Metadata()
@@ -125,7 +126,7 @@ func TestIsAnycast(t *testing.T) {
 			require.NoError(t, err)
 			defer reader.Close()
 
-			record, err := reader.City(net.ParseIP("214.1.1.0"))
+			record, err := reader.City(netip.MustParseAddr("214.1.1.0"))
 			require.NoError(t, err)
 
 			assert.True(t, record.Traits.IsAnycast)
@@ -138,7 +139,7 @@ func TestMetroCode(t *testing.T) {
 	require.NoError(t, err)
 	defer reader.Close()
 
-	record, err := reader.City(net.ParseIP("216.160.83.56"))
+	record, err := reader.City(netip.MustParseAddr("216.160.83.56"))
 	require.NoError(t, err)
 
 	assert.Equal(t, uint(819), record.Location.MetroCode)
@@ -149,7 +150,7 @@ func TestAnonymousIP(t *testing.T) {
 	require.NoError(t, err)
 	defer reader.Close()
 
-	record, err := reader.AnonymousIP(net.ParseIP("1.2.0.0"))
+	record, err := reader.AnonymousIP(netip.MustParseAddr("1.2.0.0"))
 	require.NoError(t, err)
 
 	assert.True(t, record.IsAnonymous)
@@ -166,7 +167,7 @@ func TestASN(t *testing.T) {
 	require.NoError(t, err)
 	defer reader.Close()
 
-	record, err := reader.ASN(net.ParseIP("1.128.0.0"))
+	record, err := reader.ASN(netip.MustParseAddr("1.128.0.0"))
 	require.NoError(t, err)
 
 	assert.Equal(t, uint(1221), record.AutonomousSystemNumber)
@@ -180,7 +181,7 @@ func TestConnectionType(t *testing.T) {
 
 	defer reader.Close()
 
-	record, err := reader.ConnectionType(net.ParseIP("1.0.1.0"))
+	record, err := reader.ConnectionType(netip.MustParseAddr("1.0.1.0"))
 	require.NoError(t, err)
 
 	assert.Equal(t, "Cellular", record.ConnectionType)
@@ -192,7 +193,7 @@ func TestCountry(t *testing.T) {
 
 	defer reader.Close()
 
-	record, err := reader.Country(net.ParseIP("81.2.69.160"))
+	record, err := reader.Country(netip.MustParseAddr("81.2.69.160"))
 	require.NoError(t, err)
 
 	assert.False(t, record.Country.IsInEuropeanUnion)
@@ -205,7 +206,7 @@ func TestDomain(t *testing.T) {
 	require.NoError(t, err)
 	defer reader.Close()
 
-	record, err := reader.Domain(net.ParseIP("1.2.0.0"))
+	record, err := reader.Domain(netip.MustParseAddr("1.2.0.0"))
 	require.NoError(t, err)
 	assert.Equal(t, "maxmind.com", record.Domain)
 }
@@ -216,7 +217,7 @@ func TestEnterprise(t *testing.T) {
 
 	defer reader.Close()
 
-	record, err := reader.Enterprise(net.ParseIP("74.209.24.0"))
+	record, err := reader.Enterprise(netip.MustParseAddr("74.209.24.0"))
 	require.NoError(t, err)
 
 	assert.Equal(t, uint8(11), record.City.Confidence)
@@ -227,7 +228,7 @@ func TestEnterprise(t *testing.T) {
 	assert.Equal(t, "frpt.net", record.Traits.Domain)
 	assert.InEpsilon(t, float64(0.34), record.Traits.StaticIPScore, 1e-10)
 
-	record, err = reader.Enterprise(net.ParseIP("149.101.100.0"))
+	record, err = reader.Enterprise(netip.MustParseAddr("149.101.100.0"))
 	require.NoError(t, err)
 
 	assert.Equal(t, uint(6167), record.Traits.AutonomousSystemNumber)
@@ -243,7 +244,7 @@ func TestISP(t *testing.T) {
 	require.NoError(t, err)
 	defer reader.Close()
 
-	record, err := reader.ISP(net.ParseIP("149.101.100.0"))
+	record, err := reader.ISP(netip.MustParseAddr("149.101.100.0"))
 	require.NoError(t, err)
 
 	assert.Equal(t, uint(6167), record.AutonomousSystemNumber)
@@ -273,7 +274,8 @@ func BenchmarkCity(b *testing.B) {
 	ip := make(net.IP, 4)
 	for range b.N {
 		randomIPv4Address(r, ip)
-		city, err = db.City(ip)
+		addr, _ := netip.AddrFromSlice(ip)
+		city, err = db.City(addr)
 		if err != nil {
 			b.Fatal(err)
 		}
@@ -299,7 +301,8 @@ func BenchmarkASN(b *testing.B) {
 	ip := make(net.IP, 4)
 	for range b.N {
 		randomIPv4Address(r, ip)
-		asn, err = db.ASN(ip)
+		addr, _ := netip.AddrFromSlice(ip)
+		asn, err = db.ASN(addr)
 		if err != nil {
 			b.Fatal(err)
 		}
