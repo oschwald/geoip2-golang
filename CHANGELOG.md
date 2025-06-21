@@ -7,6 +7,9 @@
   networking practices.
 * **BREAKING CHANGE**: Renamed `IsoCode` fields to `ISOCode` in all structs
   to follow proper capitalization for the ISO acronym. Closes GitHub issue #4.
+* Added custom `UnmarshalMaxMindDB` methods to all major structs (`ASN`,
+  `AnonymousIP`, `ConnectionType`, `Domain`, `ISP`, `Country`, `City`, and
+  `Enterprise`) for improved performance by avoiding reflection in hot paths.
 * Updated module path to `github.com/oschwald/geoip2-golang/v2` to follow
   Go's semantic versioning guidelines for breaking changes.
 * Updated examples and documentation to demonstrate proper error handling
