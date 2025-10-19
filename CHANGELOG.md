@@ -1,3 +1,7 @@
+# 2.0.0 -
+
+* Updated dependency on `github.com/oschwald/maxminddb-golang/v2` to `v2.0.0`.
+
 # 2.0.0-beta.4 - 2025-08-23
 
 * Updated maxminddb dependency to v2.0.0-beta.9.
