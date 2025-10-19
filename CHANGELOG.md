@@ -1,4 +1,4 @@
-# 2.0.0-beta.4
+# 2.0.0-beta.4 - 2025-08-23
 
 * Updated maxminddb dependency to v2.0.0-beta.9.
 * Added `OpenBytes` method to match the API changes in maxminddb v2.0.0-beta.9.
