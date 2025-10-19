@@ -1,6 +1,8 @@
 # 2.0.0 -
 
 - Updated dependency on `github.com/oschwald/maxminddb-golang/v2` to `v2.0.0`.
+- Allow `Open` and `OpenBytes` to forward reader options to `maxminddb-golang`,
+  enabling advanced reader configuration.
 
 # 2.0.0-beta.4 - 2025-08-23
 
