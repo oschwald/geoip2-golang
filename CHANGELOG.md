@@ -1,4 +1,4 @@
-# 2.0.0 -
+# 2.0.0 - 2025-10-19
 
 - **BREAKING CHANGE**: Lookup methods now require `netip.Addr`, return typed
   `Names`, and provide `HasData()` helpers while always populating
