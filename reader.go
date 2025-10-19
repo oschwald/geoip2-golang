@@ -144,17 +144,6 @@ func OpenBytes(bytes []byte, options ...Option) (*Reader, error) {
 	return &Reader{reader, dbType}, err
 }
 
-// FromBytes takes a byte slice corresponding to a GeoIP2/GeoLite2 database
-// file and returns a Reader struct or an error. Note that the byte slice is
-// used directly; any modification of it after opening the database will result
-// in errors while reading from the database.
-//
-// Deprecated: Use OpenBytes instead. FromBytes will be removed in a future
-// version.
-func FromBytes(bytes []byte, options ...Option) (*Reader, error) {
-	return OpenBytes(bytes, options...)
-}
-
 func getDBType(reader *maxminddb.Reader) (databaseType, error) {
 	switch reader.Metadata.DatabaseType {
 	case "GeoIP2-Anonymous-IP":

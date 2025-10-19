@@ -3,6 +3,8 @@
 - Updated dependency on `github.com/oschwald/maxminddb-golang/v2` to `v2.0.0`.
 - Add configurable `Option` helpers so `Open` and `OpenBytes` can accept
   future options.
+- **BREAKING CHANGE**: Removed deprecated `FromBytes` method. Use `OpenBytes`
+  instead.
 
 # 2.0.0-beta.4 - 2025-08-23
 
