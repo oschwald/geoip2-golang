@@ -1,8 +1,16 @@
 # 2.0.0 -
 
+- **BREAKING CHANGE**: Lookup methods now require `netip.Addr`, return typed
+  `Names`, and provide `HasData()` helpers while always populating
+  `Network`/`IPAddress` fields so network topology remains accessible.
+- **BREAKING CHANGE**: Struct field casing now matches MaxMind responses (for
+  example `IsoCode` → `ISOCode`), location coordinates use pointers, and JSON
+  tags rely on Go 1.24 `omitzero` support—upgrade your toolchain before
+  adopting v2.
+- Added `MIGRATION.md` with detailed guidance for upgrading from v1.
 - Updated dependency on `github.com/oschwald/maxminddb-golang/v2` to `v2.0.0`.
-- Add configurable `Option` helpers so `Open` and `OpenBytes` can accept
-  future options.
+- Added configurable `Option` helpers so `Open` and `OpenBytes` can accept
+  future options without forcing a v3 release.
 - **BREAKING CHANGE**: Removed deprecated `FromBytes` method. Use `OpenBytes`
   instead.
 

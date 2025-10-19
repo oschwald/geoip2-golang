@@ -38,6 +38,11 @@ Version 2.0 includes several major improvements:
 - **Go 1.24 Support**: Uses `omitzero` JSON tags to match MaxMind database
   behavior
 
+## Migration
+
+See [MIGRATION.md](MIGRATION.md) for step-by-step guidance on upgrading from
+v1.
+
 ## Usage
 
 [See GoDoc](https://pkg.go.dev/github.com/oschwald/geoip2-golang/v2) for
