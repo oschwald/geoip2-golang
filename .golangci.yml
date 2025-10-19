@@ -134,6 +134,10 @@ linters:
           disabled: true
         - name: unhandled-error
           disabled: true
+        - name: package-directory-mismatch
+          arguments:
+            - ignore-directories:
+                - geoip2-golang
     tagliatelle:
       case:
         rules:
