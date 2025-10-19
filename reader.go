@@ -78,6 +78,23 @@ type Reader struct {
 	databaseType databaseType
 }
 
+// Option configures Reader behavior.
+type Option func(*readerOptions)
+
+type readerOptions struct {
+	maxminddb []maxminddb.ReaderOption
+}
+
+func applyOptions(options []Option) []maxminddb.ReaderOption {
+	var opts readerOptions
+	for _, option := range options {
+		if option != nil {
+			option(&opts)
+		}
+	}
+	return opts.maxminddb
+}
+
 // InvalidMethodError is returned when a lookup method is called on a
 // database that it does not support. For instance, calling the ISP method
 // on a City database.
@@ -104,10 +121,9 @@ func (e UnknownDatabaseTypeError) Error() string {
 
 // Open takes a string path to a file and returns a Reader struct or an error.
 // The database file is opened using a memory map. Use the Close method on the
-// Reader object to return the resources to the system. Any reader options
-// provided are passed directly to maxminddb.Open.
-func Open(file string, options ...maxminddb.ReaderOption) (*Reader, error) {
-	reader, err := maxminddb.Open(file, options...)
+// Reader object to return the resources to the system.
+func Open(file string, options ...Option) (*Reader, error) {
+	reader, err := maxminddb.Open(file, applyOptions(options)...)
 	if err != nil {
 		return nil, err
 	}
@@ -118,10 +134,9 @@ func Open(file string, options ...maxminddb.ReaderOption) (*Reader, error) {
 // OpenBytes takes a byte slice corresponding to a GeoIP2/GeoLite2 database
 // file and returns a Reader struct or an error. Note that the byte slice is
 // used directly; any modification of it after opening the database will result
-// in errors while reading from the database. Any reader options provided are
-// passed directly to maxminddb.OpenBytes.
-func OpenBytes(bytes []byte, options ...maxminddb.ReaderOption) (*Reader, error) {
-	reader, err := maxminddb.OpenBytes(bytes, options...)
+// in errors while reading from the database.
+func OpenBytes(bytes []byte, options ...Option) (*Reader, error) {
+	reader, err := maxminddb.OpenBytes(bytes, applyOptions(options)...)
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +151,7 @@ func OpenBytes(bytes []byte, options ...maxminddb.ReaderOption) (*Reader, error)
 //
 // Deprecated: Use OpenBytes instead. FromBytes will be removed in a future
 // version.
-func FromBytes(bytes []byte, options ...maxminddb.ReaderOption) (*Reader, error) {
+func FromBytes(bytes []byte, options ...Option) (*Reader, error) {
 	return OpenBytes(bytes, options...)
 }
 
