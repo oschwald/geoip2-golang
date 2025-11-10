@@ -288,7 +288,7 @@ func BenchmarkCity(b *testing.B) {
 	var city *City
 
 	ip := make(net.IP, 4)
-	for range b.N {
+	for b.Loop() {
 		randomIPv4Address(r, ip)
 		addr, _ := netip.AddrFromSlice(ip)
 		city, err = db.City(addr)
@@ -315,7 +315,7 @@ func BenchmarkASN(b *testing.B) {
 	var asn *ASN
 
 	ip := make(net.IP, 4)
-	for range b.N {
+	for b.Loop() {
 		randomIPv4Address(r, ip)
 		addr, _ := netip.AddrFromSlice(ip)
 		asn, err = db.ASN(addr)
