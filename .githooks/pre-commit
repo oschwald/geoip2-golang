@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+# Git pre-commit hook that runs precious lint on staged files
+#
+
+set -e
+
+echo "Running precious lint on staged files..."
+
+# Run precious lint on staged files
+if ! precious lint --staged; then
+    echo ""
+    echo "❌ Linting failed. Please fix the issues above before committing."
+    echo ""
+    echo "To fix formatting issues automatically, run:"
+    echo "  precious tidy --staged"
+    exit 1
+fi
+
+echo "✅ All linters passed!"

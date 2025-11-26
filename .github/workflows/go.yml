@@ -3,7 +3,6 @@ name: Go
 on: [push, pull_request]
 
 jobs:
-
   build:
     name: Build
     strategy:
