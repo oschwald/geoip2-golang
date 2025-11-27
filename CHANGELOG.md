@@ -1,3 +1,9 @@
+# 2.0.1 - 2025-11-26
+
+- Upgraded `github.com/oschwald/geoip2-golang/v2` to 2.1.1, which fixes an
+  issue that prevented a unclosed memory-mapped file from being unmapped
+  when the reader was garbage collected.
+
 # 2.0.0 - 2025-10-19
 
 - **BREAKING CHANGE**: Lookup methods now require `netip.Addr`, return typed
