@@ -35,6 +35,9 @@ var (
 	zeroEnterprisePostal        EnterprisePostal
 	zeroEnterpriseSubdivision   EnterpriseSubdivision
 	zeroEnterpriseCountryRecord EnterpriseCountryRecord
+	zeroEnterpriseTraits        EnterpriseTraits
+	zeroCityTraits              CityTraits
+	zeroCountryTraits           CountryTraits
 )
 
 // HasData returns true if the Names struct has any localized names.
@@ -227,8 +230,9 @@ type EnterpriseTraits struct {
 	// UserType indicates the user type associated with the IP address
 	// (business, cafe, cellular, college, etc.)
 	UserType string `json:"user_type,omitzero"                      maxminddb:"user_type"`
-	// StaticIPScore is an indicator of how static or dynamic an IP address
-	// is, ranging from 0 to 99.99
+	// StaticIPScore was added in error and has never been populated.
+	//
+	// Deprecated: This field will be removed in the next major release.
 	StaticIPScore float64 `json:"static_ip_score,omitzero"                maxminddb:"static_ip_score"`
 	// AutonomousSystemNumber for the IP address
 	AutonomousSystemNumber uint `json:"autonomous_system_number,omitzero"       maxminddb:"autonomous_system_number"`
@@ -236,18 +240,19 @@ type EnterpriseTraits struct {
 	// See https://en.wikipedia.org/wiki/Anycast
 	IsAnycast bool `json:"is_anycast,omitzero"                     maxminddb:"is_anycast"`
 	// IsLegitimateProxy is true if MaxMind believes this IP address to be a
-	// legitimate proxy, such as an internal VPN used by a corporation
+	// legitimate proxy, such as an internal VPN used by a corporation.
+	//
+	// Deprecated: MaxMind has deprecated this field. It will be removed in
+	// the next major release.
 	IsLegitimateProxy bool `json:"is_legitimate_proxy,omitzero"            maxminddb:"is_legitimate_proxy"`
 }
 
 // HasData returns true if the EnterpriseTraits has any data (excluding Network and IPAddress).
 func (t EnterpriseTraits) HasData() bool {
-	return t.AutonomousSystemOrganization != "" || t.ConnectionType != "" ||
-		t.Domain != "" || t.ISP != "" || t.MobileCountryCode != "" ||
-		t.MobileNetworkCode != "" || t.Organization != "" ||
-		t.UserType != "" || t.StaticIPScore != 0 ||
-		t.AutonomousSystemNumber != 0 || t.IsAnycast ||
-		t.IsLegitimateProxy
+	cmp := t
+	cmp.Network = zeroEnterpriseTraits.Network
+	cmp.IPAddress = zeroEnterpriseTraits.IPAddress
+	return cmp != zeroEnterpriseTraits
 }
 
 // City/Country-specific types
@@ -323,7 +328,10 @@ type CityTraits struct {
 
 // HasData returns true if the CityTraits has any data (excluding Network and IPAddress).
 func (t CityTraits) HasData() bool {
-	return t.IsAnycast
+	cmp := t
+	cmp.Network = zeroCityTraits.Network
+	cmp.IPAddress = zeroCityTraits.IPAddress
+	return cmp != zeroCityTraits
 }
 
 // CountryTraits contains traits data for Country database records.
@@ -340,7 +348,10 @@ type CountryTraits struct {
 
 // HasData returns true if the CountryTraits has any data (excluding Network and IPAddress).
 func (t CountryTraits) HasData() bool {
-	return t.IsAnycast
+	cmp := t
+	cmp.Network = zeroCountryTraits.Network
+	cmp.IPAddress = zeroCountryTraits.IPAddress
+	return cmp != zeroCountryTraits
 }
 
 // The Enterprise struct corresponds to the data in the GeoIP2 Enterprise

@@ -374,9 +374,7 @@ func main() {
 	fmt.Printf("Connection Type: %v\n", record.Traits.ConnectionType)
 	fmt.Printf("Domain: %v\n", record.Traits.Domain)
 	fmt.Printf("User Type: %v\n", record.Traits.UserType)
-	fmt.Printf("Static IP Score: %v\n", record.Traits.StaticIPScore)
 	fmt.Printf("Is Anycast: %v\n", record.Traits.IsAnycast)
-	fmt.Printf("Is Legitimate Proxy: %v\n", record.Traits.IsLegitimateProxy)
 
 	// Mobile carrier information (if available)
 	if record.Traits.MobileCountryCode != "" {
