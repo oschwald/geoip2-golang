@@ -1,7 +1,10 @@
 # Changes
 
-## 2.0.2
+## 2.1.0 - 2025-12-22
 
+- Added support for the GeoIP Anonymous Plus database. This database provides
+  VPN detection with confidence scoring, provider identification, and temporal
+  tracking via the new `AnonymousPlus()` method.
 - Deprecated `IsLegitimateProxy` on `EnterpriseTraits`. MaxMind has deprecated
   this field and it will be removed in the next major release.
 - Deprecated `StaticIPScore` on `EnterpriseTraits`. This field was added in
