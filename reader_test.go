@@ -5,6 +5,7 @@ import (
 	"net"
 	"net/netip"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -163,6 +164,60 @@ func TestAnonymousIP(t *testing.T) {
 	assert.Equal(t, testAddr, record.IPAddress)
 	assert.True(t, record.Network.IsValid())
 	assert.True(t, record.Network.Contains(testAddr))
+}
+
+func TestAnonymousPlus(t *testing.T) {
+	reader, err := Open("test-data/test-data/GeoIP-Anonymous-Plus-Test.mmdb")
+	require.NoError(t, err)
+	defer reader.Close()
+
+	// Test IP with full data
+	testAddrFull := netip.MustParseAddr("1.2.0.1")
+	record, err := reader.AnonymousPlus(testAddrFull)
+	require.NoError(t, err)
+
+	assert.True(t, record.IsAnonymous)
+	assert.True(t, record.IsAnonymousVPN)
+	assert.False(t, record.IsHostingProvider)
+	assert.False(t, record.IsPublicProxy)
+	assert.False(t, record.IsTorExitNode)
+	assert.False(t, record.IsResidentialProxy)
+
+	// Anonymous Plus specific fields
+	assert.Equal(t, uint16(30), record.AnonymizerConfidence)
+	assert.Equal(t, "foo", record.ProviderName)
+	expectedDate := time.Date(2025, 4, 14, 0, 0, 0, 0, time.UTC)
+	assert.Equal(t, expectedDate, record.NetworkLastSeen.Time)
+
+	// Test Network and IPAddress fields
+	assert.Equal(t, testAddrFull, record.IPAddress)
+	assert.True(t, record.Network.IsValid())
+	assert.True(t, record.Network.Contains(testAddrFull))
+
+	// Test HasData
+	assert.True(t, record.HasData())
+
+	// Test IP with minimal data
+	testAddrMinimal := netip.MustParseAddr("1.2.0.0")
+	minRecord, err := reader.AnonymousPlus(testAddrMinimal)
+	require.NoError(t, err)
+
+	assert.True(t, minRecord.IsAnonymous)
+	assert.True(t, minRecord.IsAnonymousVPN)
+	assert.Equal(t, uint16(0), minRecord.AnonymizerConfidence)
+	assert.Empty(t, minRecord.ProviderName)
+	assert.True(t, minRecord.NetworkLastSeen.IsZero())
+	assert.True(t, minRecord.HasData())
+
+	// Test private IP returns empty data
+	privateAddr := netip.MustParseAddr("192.168.1.1")
+	emptyRecord, err := reader.AnonymousPlus(privateAddr)
+	require.NoError(t, err)
+
+	assert.False(t, emptyRecord.HasData())
+	// Network and IPAddress should still be set
+	assert.Equal(t, privateAddr, emptyRecord.IPAddress)
+	assert.True(t, emptyRecord.Network.IsValid())
 }
 
 func TestASN(t *testing.T) {
@@ -429,6 +484,7 @@ func TestAllStructsHaveHasData(t *testing.T) {
 	var country Country
 	var enterprise Enterprise
 	var anonymousIP AnonymousIP
+	var anonymousPlus AnonymousPlus
 	var asn ASN
 	var connectionType ConnectionType
 	var domain Domain
@@ -440,6 +496,7 @@ func TestAllStructsHaveHasData(t *testing.T) {
 	assert.False(t, country.HasData())
 	assert.False(t, enterprise.HasData())
 	assert.False(t, anonymousIP.HasData())
+	assert.False(t, anonymousPlus.HasData())
 	assert.False(t, asn.HasData())
 	assert.False(t, connectionType.HasData())
 	assert.False(t, domain.HasData())

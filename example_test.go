@@ -162,6 +162,41 @@ func ExampleReader_AnonymousIP() {
 	// Is Public Proxy: false
 }
 
+// ExampleReader_AnonymousPlus demonstrates how to use the Anonymous Plus database.
+func ExampleReader_AnonymousPlus() {
+	db, err := Open("test-data/test-data/GeoIP-Anonymous-Plus-Test.mmdb")
+	if err != nil {
+		log.Panic(err)
+	}
+	defer db.Close()
+
+	ip, err := netip.ParseAddr("1.2.0.1")
+	if err != nil {
+		log.Panic(err)
+	}
+	record, err := db.AnonymousPlus(ip)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	if !record.HasData() {
+		fmt.Println("No data found for this IP")
+		return
+	}
+
+	fmt.Printf("Is Anonymous: %v\n", record.IsAnonymous)
+	fmt.Printf("Is Anonymous VPN: %v\n", record.IsAnonymousVPN)
+	fmt.Printf("Anonymizer Confidence: %v\n", record.AnonymizerConfidence)
+	fmt.Printf("Provider Name: %v\n", record.ProviderName)
+	fmt.Printf("Network Last Seen: %v\n", record.NetworkLastSeen.Format("2006-01-02"))
+	// Output:
+	// Is Anonymous: true
+	// Is Anonymous VPN: true
+	// Anonymizer Confidence: 30
+	// Provider Name: foo
+	// Network Last Seen: 2025-04-14
+}
+
 // ExampleReader_Enterprise demonstrates how to use the Enterprise database.
 func ExampleReader_Enterprise() {
 	db, err := Open("test-data/test-data/GeoIP2-Enterprise-Test.mmdb")

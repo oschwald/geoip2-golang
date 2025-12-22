@@ -1,6 +1,43 @@
 package geoip2
 
-import "net/netip"
+import (
+	"fmt"
+	"net/netip"
+	"time"
+
+	"github.com/oschwald/maxminddb-golang/v2/mmdbdata"
+)
+
+// Date represents a date value that is stored as an ISO 8601 string
+// in the database but exposed as a time.Time.
+type Date struct {
+	time.Time
+}
+
+// UnmarshalMaxMindDB implements the mmdbdata.Unmarshaler interface.
+func (d *Date) UnmarshalMaxMindDB(decoder *mmdbdata.Decoder) error {
+	s, err := decoder.ReadString()
+	if err != nil {
+		return err
+	}
+	if s == "" {
+		return nil
+	}
+	t, err := time.Parse(time.DateOnly, s)
+	if err != nil {
+		return fmt.Errorf("parsing date %q: %w", s, err)
+	}
+	d.Time = t
+	return nil
+}
+
+// MarshalJSON implements json.Marshaler to serialize as ISO date string.
+func (d Date) MarshalJSON() ([]byte, error) { //nolint:unparam // error required by json.Marshaler
+	if d.IsZero() {
+		return []byte("null"), nil
+	}
+	return []byte(`"` + d.Format(time.DateOnly) + `"`), nil
+}
 
 // Names contains localized names for geographic entities.
 type Names struct {
@@ -516,6 +553,56 @@ type AnonymousIP struct {
 func (a AnonymousIP) HasData() bool {
 	return a.IsAnonymous || a.IsAnonymousVPN || a.IsHostingProvider ||
 		a.IsPublicProxy || a.IsResidentialProxy || a.IsTorExitNode
+}
+
+// The AnonymousPlus struct corresponds to the data in the GeoIP Anonymous Plus
+// database. This database provides VPN detection with confidence scoring,
+// provider identification, and temporal tracking.
+type AnonymousPlus struct {
+	// IPAddress is the IP address used during the lookup
+	IPAddress netip.Addr `json:"ip_address,omitzero"`
+	// Network is the largest network prefix where all fields besides
+	// IPAddress have the same value.
+	Network netip.Prefix `json:"network,omitzero"`
+	// NetworkLastSeen is the last day the network was sighted in anonymized
+	// network analysis.
+	NetworkLastSeen Date `json:"network_last_seen,omitzero"     maxminddb:"network_last_seen"`
+	// ProviderName is the name of the VPN provider (e.g., "NordVPN", "SurfShark").
+	ProviderName string `json:"provider_name,omitzero"         maxminddb:"provider_name"`
+	// AnonymizerConfidence is a score from 1 to 99 indicating the confidence
+	// that the network is part of an actively used VPN.
+	AnonymizerConfidence uint16 `json:"anonymizer_confidence,omitzero" maxminddb:"anonymizer_confidence"`
+	// IsAnonymous is true if the IP address belongs to any sort of anonymous network.
+	IsAnonymous bool `json:"is_anonymous,omitzero"          maxminddb:"is_anonymous"`
+	// IsAnonymousVPN is true if the IP address is registered to an anonymous
+	// VPN provider. If a VPN provider does not register subnets under names
+	// associated with them, we will likely only flag their IP ranges using the
+	// IsHostingProvider attribute.
+	IsAnonymousVPN bool `json:"is_anonymous_vpn,omitzero"      maxminddb:"is_anonymous_vpn"`
+	// IsHostingProvider is true if the IP address belongs to a hosting or VPN provider
+	// (see description of IsAnonymousVPN attribute).
+	IsHostingProvider bool `json:"is_hosting_provider,omitzero"   maxminddb:"is_hosting_provider"`
+	// IsPublicProxy is true if the IP address belongs to a public proxy.
+	IsPublicProxy bool `json:"is_public_proxy,omitzero"       maxminddb:"is_public_proxy"`
+	// IsResidentialProxy is true if the IP address is on a suspected
+	// anonymizing network and belongs to a residential ISP.
+	IsResidentialProxy bool `json:"is_residential_proxy,omitzero"  maxminddb:"is_residential_proxy"`
+	// IsTorExitNode is true if the IP address is a Tor exit node.
+	IsTorExitNode bool `json:"is_tor_exit_node,omitzero"      maxminddb:"is_tor_exit_node"`
+}
+
+// HasData returns true if any data was found for the IP in the AnonymousPlus database.
+// This excludes the Network and IPAddress fields which are always populated for found IPs.
+func (a AnonymousPlus) HasData() bool {
+	return a.AnonymizerConfidence != 0 ||
+		a.IsAnonymous ||
+		a.IsAnonymousVPN ||
+		a.IsHostingProvider ||
+		a.IsPublicProxy ||
+		a.IsResidentialProxy ||
+		a.IsTorExitNode ||
+		!a.NetworkLastSeen.IsZero() ||
+		a.ProviderName != ""
 }
 
 // The ASN struct corresponds to the data in the GeoLite2 ASN database.
