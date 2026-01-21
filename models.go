@@ -57,6 +57,12 @@ type Names struct {
 	Russian string `json:"ru,omitzero"    maxminddb:"ru"`
 	// SimplifiedChinese localized name (zh-CN)
 	SimplifiedChinese string `json:"zh-CN,omitzero" maxminddb:"zh-CN"` //nolint:tagliatelle // zh-CN matches MMDB format
+
+	// The next two languages are for DB-IP MMDB database.
+	// Persian localized name
+	Persian string `json:"fa,omitzero"    maxminddb:"fa"`
+	// Korean localized name
+	Korean string `json:"ko,omitzero"    maxminddb:"ko"`
 }
 
 var (
