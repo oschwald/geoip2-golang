@@ -1,6 +1,6 @@
 # Changes
 
-## Unreleased
+## 2.3.0 - 2026-08-08
 
 - Updated `github.com/oschwald/maxminddb-golang/v2` to `v2.5.0` and switched
   all exported database model structs to generated decoders. This substantially
