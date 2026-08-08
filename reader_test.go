@@ -260,7 +260,10 @@ func TestCountry(t *testing.T) {
 	record, err := reader.Country(netip.MustParseAddr("81.2.69.160"))
 	require.NoError(t, err)
 
+	assert.Equal(t, "EU", record.Continent.Code)
+	assert.Equal(t, "GB", record.Country.ISOCode)
 	assert.False(t, record.Country.IsInEuropeanUnion)
+	assert.Equal(t, "US", record.RegisteredCountry.ISOCode)
 	assert.False(t, record.RegisteredCountry.IsInEuropeanUnion)
 	assert.False(t, record.RepresentedCountry.IsInEuropeanUnion)
 }
