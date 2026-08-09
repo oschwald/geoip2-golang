@@ -36,13 +36,17 @@ if [ -n "$(git status --porcelain)" ]; then
     die "the working directory is not clean"
 fi
 
-if grep -q '^## Unreleased$' CHANGELOG.md; then
+release_commit=$(git rev-parse --verify HEAD)
+
+release_heading=$(awk '/^## / { print; exit }' CHANGELOG.md)
+if [ "$release_heading" = "## Unreleased" ]; then
     die "replace the Unreleased heading with a version and release date"
 fi
 
-heading_pattern='^## [0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z][0-9A-Za-z.-]*)? - [0-9]{4}-[0-9]{2}-[0-9]{2}$'
-release_heading=$(grep -m1 -E "$heading_pattern" CHANGELOG.md || true)
-if [ -z "$release_heading" ]; then
+semver_number='(0|[1-9][0-9]*)'
+semver_identifier='(0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)'
+heading_pattern="^## $semver_number\.$semver_number\.$semver_number(-$semver_identifier(\.$semver_identifier)*)? - [0-9]{4}-[0-9]{2}-[0-9]{2}$"
+if [ -z "$release_heading" ] || [[ ! $release_heading =~ $heading_pattern ]]; then
     die "CHANGELOG.md does not start with a release heading such as ## 2.3.0 - 2026-08-08"
 fi
 
@@ -86,23 +90,51 @@ case "$major" in
         ;;
 esac
 
-if git show-ref --verify --quiet "refs/tags/$tag"; then
-    die "tag $tag already exists locally"
-fi
-if git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null 2>&1; then
-    die "tag $tag already exists on origin"
-fi
-
 if ! gh auth status >/dev/null 2>&1; then
     die "gh is not authenticated"
 fi
 
+repository=$(
+    gh repo view "$(git remote get-url origin)" --json nameWithOwner --jq .nameWithOwner
+) || die "could not resolve the origin GitHub repository"
+
+if git show-ref --verify --quiet "refs/tags/$tag"; then
+    die "tag $tag already exists locally"
+fi
+
+remote_tag=$(git ls-remote origin "refs/tags/$tag") ||
+    die "could not check whether tag $tag exists on origin"
+if [ -n "$remote_tag" ]; then
+    die "tag $tag already exists on origin"
+fi
+
+release_response=$(
+    gh api --include --silent "repos/$repository/releases/tags/$tag" 2>/dev/null || true
+)
+release_http_status=$(printf '%s\n' "$release_response" | awk 'NR == 1 { print $2 }')
+case "$release_http_status" in
+    200) die "release $tag already exists" ;;
+    404) ;;
+    *) die "could not verify whether release $tag exists" ;;
+esac
+
 echo "Running release checks..."
+if [ "$(go env GOHOSTOS)" != "linux" ] || [ "$(go env GOHOSTARCH)" != "amd64" ]; then
+    die "release checks require a Linux/amd64 host"
+fi
+if [ "$(go env GOOS)" != "linux" ] || [ "$(go env GOARCH)" != "amd64" ]; then
+    die "release checks require GOOS=linux and GOARCH=amd64"
+fi
+if [ "$(go env CGO_ENABLED)" != "1" ]; then
+    die "release checks require CGO_ENABLED=1"
+fi
 golangci-lint fmt
+go mod tidy
 go mod verify
 go generate ./...
 go test ./...
 go test -race ./...
+CGO_ENABLED=0 GOOS=linux GOARCH=386 go test ./...
 golangci-lint run
 
 if [ -n "$(git status --porcelain)" ]; then
@@ -112,31 +144,38 @@ if [ -n "$(git status --porcelain)" ]; then
     exit 1
 fi
 
-release_commit=$(git rev-parse HEAD)
+if [ "$(git rev-parse --verify HEAD)" != "$release_commit" ]; then
+    die "HEAD changed during release checks"
+fi
 
 echo
 echo "Version: $version"
 echo
 echo "Release notes:"
-echo "$notes"
+printf '%s\n' "$notes"
 echo
 
-read -r -p "Create $tag from $current_branch and push to origin? [y/N] " should_release
+read -r -p "Push $current_branch and create $tag in $repository? [y/N] " should_release
 if [[ ! $should_release =~ ^[Yy]$ ]]; then
     echo "Aborting"
     exit 1
 fi
 
-git push --atomic origin \
-    "$release_commit:refs/heads/$current_branch" \
-    "$release_commit:refs/tags/$tag"
-
 notes_file=$(mktemp "${TMPDIR:-/tmp}/geoip2-release-notes.XXXXXX")
 trap 'rm -f -- "$notes_file"' EXIT
 printf '%s\n' "$notes" >"$notes_file"
 
+git push origin "$release_commit:refs/heads/$current_branch"
+
+remote_tag=$(git ls-remote origin "refs/tags/$tag") ||
+    die "could not recheck whether tag $tag exists on origin"
+if [ -n "$remote_tag" ]; then
+    die "tag $tag appeared on origin during release checks"
+fi
+
 gh release create \
-    --verify-tag \
+    --repo "$repository" \
+    --target "$release_commit" \
     --title "$version" \
     --notes-file "$notes_file" \
     "$tag"
