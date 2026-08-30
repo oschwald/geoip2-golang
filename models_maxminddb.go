@@ -28,7 +28,7 @@ func maxminddbGenDecodeASN(cursor mmdbdata.Cursor, out *ASN) (mmdbdata.Cursor, e
 			}
 			seenFields |= 1
 			var value1 string
-			value1, next, err = valueCursor.ReadString()
+			value1, next, err = valueCursor.ReadStringMaxSize(4096)
 			if err == nil {
 				out.AutonomousSystemOrganization = string(value1)
 			}
@@ -192,7 +192,7 @@ func maxminddbGenDecodeAnonymousPlus(cursor mmdbdata.Cursor, out *AnonymousPlus)
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 1
-			next, err = valueCursor.Unmarshal(&out.NetworkLastSeen)
+			next, err = valueCursor.UnmarshalCursor(&out.NetworkLastSeen)
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field network_last_seen: %w", err)
 			}
@@ -202,7 +202,7 @@ func maxminddbGenDecodeAnonymousPlus(cursor mmdbdata.Cursor, out *AnonymousPlus)
 			}
 			seenFields |= 2
 			var value9 string
-			value9, next, err = valueCursor.ReadString()
+			value9, next, err = valueCursor.ReadStringMaxSize(4096)
 			if err == nil {
 				out.ProviderName = string(value9)
 			}
@@ -379,7 +379,7 @@ func maxminddbGenDecodeCity(cursor mmdbdata.Cursor, out *City) (mmdbdata.Cursor,
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 16
-			values17, openErr17 := valueCursor.Slice()
+			values17, openErr17 := valueCursor.SliceMaxSize(32)
 			if openErr17 != nil {
 				err = mmdbdata.NormalizeUnmarshalError[[]CitySubdivision](openErr17)
 			} else {
@@ -486,7 +486,7 @@ func maxminddbGenDecodeCityPostal(cursor mmdbdata.Cursor, out *CityPostal) (mmdb
 			}
 			seenFields |= 1
 			var value18 string
-			value18, next, err = valueCursor.ReadString()
+			value18, next, err = valueCursor.ReadStringMaxSize(128)
 			if err == nil {
 				out.Code = string(value18)
 			}
@@ -591,7 +591,7 @@ func maxminddbGenDecodeCitySubdivision(cursor mmdbdata.Cursor, out *CitySubdivis
 			}
 			seenFields |= 2
 			var value20 string
-			value20, next, err = valueCursor.ReadString()
+			value20, next, err = valueCursor.ReadStringMaxSize(16)
 			if err == nil {
 				out.ISOCode = string(value20)
 			}
@@ -691,7 +691,7 @@ func maxminddbGenDecodeConnectionType(cursor mmdbdata.Cursor, out *ConnectionTyp
 			}
 			seenFields |= 1
 			var value23 string
-			value23, next, err = valueCursor.ReadString()
+			value23, next, err = valueCursor.ReadStringMaxSize(128)
 			if err == nil {
 				out.ConnectionType = string(value23)
 			}
@@ -736,7 +736,7 @@ func maxminddbGenDecodeContinent(cursor mmdbdata.Cursor, out *Continent) (mmdbda
 			}
 			seenFields |= 2
 			var value24 string
-			value24, next, err = valueCursor.ReadString()
+			value24, next, err = valueCursor.ReadStringMaxSize(16)
 			if err == nil {
 				out.Code = string(value24)
 			}
@@ -877,7 +877,7 @@ func maxminddbGenDecodeCountryRecord(cursor mmdbdata.Cursor, out *CountryRecord)
 			}
 			seenFields |= 2
 			var value26 string
-			value26, next, err = valueCursor.ReadString()
+			value26, next, err = valueCursor.ReadStringMaxSize(16)
 			if err == nil {
 				out.ISOCode = string(value26)
 			}
@@ -990,7 +990,7 @@ func maxminddbGenDecodeDomain(cursor mmdbdata.Cursor, out *Domain) (mmdbdata.Cur
 			}
 			seenFields |= 1
 			var value30 string
-			value30, next, err = valueCursor.ReadString()
+			value30, next, err = valueCursor.ReadStringMaxSize(512)
 			if err == nil {
 				out.Domain = string(value30)
 			}
@@ -1034,7 +1034,7 @@ func maxminddbGenDecodeEnterprise(cursor mmdbdata.Cursor, out *Enterprise) (mmdb
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 2
-			values31, openErr31 := valueCursor.Slice()
+			values31, openErr31 := valueCursor.SliceMaxSize(32)
 			if openErr31 != nil {
 				err = mmdbdata.NormalizeUnmarshalError[[]EnterpriseSubdivision](openErr31)
 			} else {
@@ -1265,7 +1265,7 @@ func maxminddbGenDecodeEnterpriseCountryRecord(cursor mmdbdata.Cursor, out *Ente
 			}
 			seenFields |= 2
 			var value34 string
-			value34, next, err = valueCursor.ReadString()
+			value34, next, err = valueCursor.ReadStringMaxSize(16)
 			if err == nil {
 				out.ISOCode = string(value34)
 			}
@@ -1370,7 +1370,7 @@ func maxminddbGenDecodeEnterprisePostal(cursor mmdbdata.Cursor, out *EnterpriseP
 			}
 			seenFields |= 1
 			var value38 string
-			value38, next, err = valueCursor.ReadString()
+			value38, next, err = valueCursor.ReadStringMaxSize(128)
 			if err == nil {
 				out.Code = string(value38)
 			}
@@ -1443,7 +1443,7 @@ func maxminddbGenDecodeEnterpriseSubdivision(cursor mmdbdata.Cursor, out *Enterp
 			}
 			seenFields |= 2
 			var value40 string
-			value40, next, err = valueCursor.ReadString()
+			value40, next, err = valueCursor.ReadStringMaxSize(16)
 			if err == nil {
 				out.ISOCode = string(value40)
 			}
@@ -1535,7 +1535,7 @@ func maxminddbGenDecodeEnterpriseTraits(cursor mmdbdata.Cursor, out *EnterpriseT
 			}
 			seenFields |= 1
 			var value43 string
-			value43, next, err = valueCursor.ReadString()
+			value43, next, err = valueCursor.ReadStringMaxSize(4096)
 			if err == nil {
 				out.AutonomousSystemOrganization = string(value43)
 			}
@@ -1548,7 +1548,7 @@ func maxminddbGenDecodeEnterpriseTraits(cursor mmdbdata.Cursor, out *EnterpriseT
 			}
 			seenFields |= 2
 			var value44 string
-			value44, next, err = valueCursor.ReadString()
+			value44, next, err = valueCursor.ReadStringMaxSize(128)
 			if err == nil {
 				out.ConnectionType = string(value44)
 			}
@@ -1561,7 +1561,7 @@ func maxminddbGenDecodeEnterpriseTraits(cursor mmdbdata.Cursor, out *EnterpriseT
 			}
 			seenFields |= 4
 			var value45 string
-			value45, next, err = valueCursor.ReadString()
+			value45, next, err = valueCursor.ReadStringMaxSize(512)
 			if err == nil {
 				out.Domain = string(value45)
 			}
@@ -1574,7 +1574,7 @@ func maxminddbGenDecodeEnterpriseTraits(cursor mmdbdata.Cursor, out *EnterpriseT
 			}
 			seenFields |= 8
 			var value46 string
-			value46, next, err = valueCursor.ReadString()
+			value46, next, err = valueCursor.ReadStringMaxSize(4096)
 			if err == nil {
 				out.ISP = string(value46)
 			}
@@ -1587,7 +1587,7 @@ func maxminddbGenDecodeEnterpriseTraits(cursor mmdbdata.Cursor, out *EnterpriseT
 			}
 			seenFields |= 16
 			var value47 string
-			value47, next, err = valueCursor.ReadString()
+			value47, next, err = valueCursor.ReadStringMaxSize(16)
 			if err == nil {
 				out.MobileCountryCode = string(value47)
 			}
@@ -1600,7 +1600,7 @@ func maxminddbGenDecodeEnterpriseTraits(cursor mmdbdata.Cursor, out *EnterpriseT
 			}
 			seenFields |= 32
 			var value48 string
-			value48, next, err = valueCursor.ReadString()
+			value48, next, err = valueCursor.ReadStringMaxSize(16)
 			if err == nil {
 				out.MobileNetworkCode = string(value48)
 			}
@@ -1613,7 +1613,7 @@ func maxminddbGenDecodeEnterpriseTraits(cursor mmdbdata.Cursor, out *EnterpriseT
 			}
 			seenFields |= 64
 			var value49 string
-			value49, next, err = valueCursor.ReadString()
+			value49, next, err = valueCursor.ReadStringMaxSize(4096)
 			if err == nil {
 				out.Organization = string(value49)
 			}
@@ -1626,7 +1626,7 @@ func maxminddbGenDecodeEnterpriseTraits(cursor mmdbdata.Cursor, out *EnterpriseT
 			}
 			seenFields |= 128
 			var value50 string
-			value50, next, err = valueCursor.ReadString()
+			value50, next, err = valueCursor.ReadStringMaxSize(128)
 			if err == nil {
 				out.UserType = string(value50)
 			}
@@ -1730,7 +1730,7 @@ func maxminddbGenDecodeISP(cursor mmdbdata.Cursor, out *ISP) (mmdbdata.Cursor, e
 			}
 			seenFields |= 1
 			var value55 string
-			value55, next, err = valueCursor.ReadString()
+			value55, next, err = valueCursor.ReadStringMaxSize(4096)
 			if err == nil {
 				out.AutonomousSystemOrganization = string(value55)
 			}
@@ -1743,7 +1743,7 @@ func maxminddbGenDecodeISP(cursor mmdbdata.Cursor, out *ISP) (mmdbdata.Cursor, e
 			}
 			seenFields |= 2
 			var value56 string
-			value56, next, err = valueCursor.ReadString()
+			value56, next, err = valueCursor.ReadStringMaxSize(4096)
 			if err == nil {
 				out.ISP = string(value56)
 			}
@@ -1756,7 +1756,7 @@ func maxminddbGenDecodeISP(cursor mmdbdata.Cursor, out *ISP) (mmdbdata.Cursor, e
 			}
 			seenFields |= 4
 			var value57 string
-			value57, next, err = valueCursor.ReadString()
+			value57, next, err = valueCursor.ReadStringMaxSize(16)
 			if err == nil {
 				out.MobileCountryCode = string(value57)
 			}
@@ -1769,7 +1769,7 @@ func maxminddbGenDecodeISP(cursor mmdbdata.Cursor, out *ISP) (mmdbdata.Cursor, e
 			}
 			seenFields |= 8
 			var value58 string
-			value58, next, err = valueCursor.ReadString()
+			value58, next, err = valueCursor.ReadStringMaxSize(16)
 			if err == nil {
 				out.MobileNetworkCode = string(value58)
 			}
@@ -1782,7 +1782,7 @@ func maxminddbGenDecodeISP(cursor mmdbdata.Cursor, out *ISP) (mmdbdata.Cursor, e
 			}
 			seenFields |= 16
 			var value59 string
-			value59, next, err = valueCursor.ReadString()
+			value59, next, err = valueCursor.ReadStringMaxSize(4096)
 			if err == nil {
 				out.Organization = string(value59)
 			}
@@ -1900,7 +1900,7 @@ func maxminddbGenDecodeLocation(cursor mmdbdata.Cursor, out *Location) (mmdbdata
 			}
 			seenFields |= 4
 			var value67 string
-			value67, next, err = valueCursor.ReadString()
+			value67, next, err = valueCursor.ReadStringMaxSize(256)
 			if err == nil {
 				out.TimeZone = string(value67)
 			}
@@ -1992,7 +1992,7 @@ func maxminddbGenDecodeNames(cursor mmdbdata.Cursor, out *Names) (mmdbdata.Curso
 			}
 			seenFields |= 1
 			var value70 string
-			value70, next, err = valueCursor.ReadString()
+			value70, next, err = valueCursor.ReadStringMaxSize(1024)
 			if err == nil {
 				out.German = string(value70)
 			}
@@ -2005,7 +2005,7 @@ func maxminddbGenDecodeNames(cursor mmdbdata.Cursor, out *Names) (mmdbdata.Curso
 			}
 			seenFields |= 2
 			var value71 string
-			value71, next, err = valueCursor.ReadString()
+			value71, next, err = valueCursor.ReadStringMaxSize(1024)
 			if err == nil {
 				out.English = string(value71)
 			}
@@ -2018,7 +2018,7 @@ func maxminddbGenDecodeNames(cursor mmdbdata.Cursor, out *Names) (mmdbdata.Curso
 			}
 			seenFields |= 4
 			var value72 string
-			value72, next, err = valueCursor.ReadString()
+			value72, next, err = valueCursor.ReadStringMaxSize(1024)
 			if err == nil {
 				out.Spanish = string(value72)
 			}
@@ -2031,7 +2031,7 @@ func maxminddbGenDecodeNames(cursor mmdbdata.Cursor, out *Names) (mmdbdata.Curso
 			}
 			seenFields |= 8
 			var value73 string
-			value73, next, err = valueCursor.ReadString()
+			value73, next, err = valueCursor.ReadStringMaxSize(1024)
 			if err == nil {
 				out.French = string(value73)
 			}
@@ -2044,7 +2044,7 @@ func maxminddbGenDecodeNames(cursor mmdbdata.Cursor, out *Names) (mmdbdata.Curso
 			}
 			seenFields |= 16
 			var value74 string
-			value74, next, err = valueCursor.ReadString()
+			value74, next, err = valueCursor.ReadStringMaxSize(1024)
 			if err == nil {
 				out.Japanese = string(value74)
 			}
@@ -2057,7 +2057,7 @@ func maxminddbGenDecodeNames(cursor mmdbdata.Cursor, out *Names) (mmdbdata.Curso
 			}
 			seenFields |= 32
 			var value75 string
-			value75, next, err = valueCursor.ReadString()
+			value75, next, err = valueCursor.ReadStringMaxSize(1024)
 			if err == nil {
 				out.BrazilianPortuguese = string(value75)
 			}
@@ -2070,7 +2070,7 @@ func maxminddbGenDecodeNames(cursor mmdbdata.Cursor, out *Names) (mmdbdata.Curso
 			}
 			seenFields |= 64
 			var value76 string
-			value76, next, err = valueCursor.ReadString()
+			value76, next, err = valueCursor.ReadStringMaxSize(1024)
 			if err == nil {
 				out.Russian = string(value76)
 			}
@@ -2083,7 +2083,7 @@ func maxminddbGenDecodeNames(cursor mmdbdata.Cursor, out *Names) (mmdbdata.Curso
 			}
 			seenFields |= 128
 			var value77 string
-			value77, next, err = valueCursor.ReadString()
+			value77, next, err = valueCursor.ReadStringMaxSize(1024)
 			if err == nil {
 				out.SimplifiedChinese = string(value77)
 			}
@@ -2128,7 +2128,7 @@ func maxminddbGenDecodeRepresentedCountry(cursor mmdbdata.Cursor, out *Represent
 			}
 			seenFields |= 2
 			var value78 string
-			value78, next, err = valueCursor.ReadString()
+			value78, next, err = valueCursor.ReadStringMaxSize(16)
 			if err == nil {
 				out.ISOCode = string(value78)
 			}
@@ -2141,7 +2141,7 @@ func maxminddbGenDecodeRepresentedCountry(cursor mmdbdata.Cursor, out *Represent
 			}
 			seenFields |= 4
 			var value79 string
-			value79, next, err = valueCursor.ReadString()
+			value79, next, err = valueCursor.ReadStringMaxSize(128)
 			if err == nil {
 				out.Type = string(value79)
 			}
