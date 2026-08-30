@@ -1,7 +1,6 @@
 package geoip2
 
 import (
-	"errors"
 	"reflect"
 	"strconv"
 	"strings"
@@ -57,6 +56,8 @@ func TestModelVariableSizeFieldsHaveMaxSize(t *testing.T) {
 				require.LessOrEqual(t, maximum, 4096, "%s maxsize", fieldPath)
 			case reflect.Struct:
 				checkType(fieldType, fieldPath)
+			default:
+				// Fixed-size values need no schema limit.
 			}
 		}
 	}
@@ -105,7 +106,8 @@ func TestGeneratedModelMaxSizeBounds(t *testing.T) {
 		require.NoError(t, decode(1024, &exact))
 		require.Len(t, exact.English, 1024)
 
-		over := Names{English: "keep"}
+		var over Names
+		over.English = "keep"
 		err := decode(1025, &over)
 		requireMaxSizeError(t, err)
 		require.Equal(t, "keep", over.English)
@@ -113,7 +115,11 @@ func TestGeneratedModelMaxSizeBounds(t *testing.T) {
 
 	t.Run("subdivisions", func(t *testing.T) {
 		decode := func(size int, destination *City) error {
-			data := []byte{0xe1, 0x4c, 's', 'u', 'b', 'd', 'i', 'v', 'i', 's', 'i', 'o', 'n', 's'}
+			data := make([]byte, 0, 18+size)
+			data = append(
+				data,
+				0xe1, 0x4c, 's', 'u', 'b', 'd', 'i', 'v', 'i', 's', 'i', 'o', 'n', 's',
+			)
 			data = append(data, mmdbSliceHeader(size)...)
 			for range size {
 				data = append(data, 0xe0)
@@ -126,17 +132,25 @@ func TestGeneratedModelMaxSizeBounds(t *testing.T) {
 		require.NoError(t, decode(32, &exact))
 		require.Len(t, exact.Subdivisions, 32)
 
-		over := City{Subdivisions: []CitySubdivision{{GeoNameID: 42}}}
+		var keptSubdivision CitySubdivision
+		keptSubdivision.GeoNameID = 42
+		var over City
+		over.Subdivisions = []CitySubdivision{keptSubdivision}
 		err := decode(33, &over)
 		requireMaxSizeError(t, err)
-		require.Equal(t, []CitySubdivision{{GeoNameID: 42}}, over.Subdivisions)
+		require.Equal(t, []CitySubdivision{keptSubdivision}, over.Subdivisions)
 	})
 }
 
 func TestGeneratedModelsRejectDuplicateFields(t *testing.T) {
-	sharedCity := []byte{0xe1, 0x45, 'n', 'a', 'm', 'e', 's', 0xe1, 0x42, 'e', 'n', 0x43, 'o', 'n', 'e'}
+	sharedCity := []byte{
+		0xe1, 0x45, 'n', 'a', 'm', 'e', 's',
+		0xe1, 0x42, 'e', 'n', 0x43, 'o', 'n', 'e',
+	}
 	root := len(sharedCity)
-	data := append(sharedCity, mmdbMapHeader(100)...)
+	data := make([]byte, len(sharedCity), len(sharedCity)+702)
+	copy(data, sharedCity)
+	data = append(data, mmdbMapHeader(100)...)
 	for range 100 {
 		data = append(data, 0x44, 'c', 'i', 't', 'y', 0x20, 0x00)
 	}
@@ -153,7 +167,7 @@ func TestGeneratedModelsRejectDuplicateFields(t *testing.T) {
 func requireMaxSizeError(t *testing.T, err error) {
 	t.Helper()
 	var invalidDatabase mmdbdata.InvalidDatabaseError
-	require.True(t, errors.As(err, &invalidDatabase), "error = %v", err)
+	require.ErrorAs(t, err, &invalidDatabase)
 	require.ErrorContains(t, err, "exceeds maxsize")
 }
 

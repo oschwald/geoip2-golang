@@ -22,7 +22,8 @@ const maxDateSize = 64
 func (d *Date) UnmarshalMaxMindDBCursor(
 	cursor mmdbdata.Cursor,
 ) (mmdbdata.Cursor, error) {
-	if err := cursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), maxDateSize); err != nil {
+	stringKind := mmdbdata.NewKindSet(mmdbdata.KindString)
+	if err := cursor.CheckMaxSize(stringKind, maxDateSize); err != nil {
 		return mmdbdata.Cursor{}, err
 	}
 	s, next, err := cursor.ReadString()
@@ -41,6 +42,14 @@ func (d *Date) UnmarshalMaxMindDB(decoder *mmdbdata.Decoder) error {
 	return decoder.Advance(next)
 }
 
+// MarshalJSON implements json.Marshaler to serialize as ISO date string.
+func (d Date) MarshalJSON() ([]byte, error) { //nolint:unparam // error required by json.Marshaler
+	if d.IsZero() {
+		return []byte("null"), nil
+	}
+	return []byte(`"` + d.Format(time.DateOnly) + `"`), nil
+}
+
 func (d *Date) set(s string) error {
 	if s == "" {
 		return nil
@@ -51,14 +60,6 @@ func (d *Date) set(s string) error {
 	}
 	d.Time = t
 	return nil
-}
-
-// MarshalJSON implements json.Marshaler to serialize as ISO date string.
-func (d Date) MarshalJSON() ([]byte, error) { //nolint:unparam // error required by json.Marshaler
-	if d.IsZero() {
-		return []byte("null"), nil
-	}
-	return []byte(`"` + d.Format(time.DateOnly) + `"`), nil
 }
 
 // Names contains localized names for geographic entities.

@@ -47,6 +47,7 @@ func TestReader(t *testing.T) {
 		Japanese:            "ロンドン",
 		BrazilianPortuguese: "Londres",
 		Russian:             "Лондон",
+		SimplifiedChinese:   "",
 	}
 	assert.Equal(t, expectedNames, record.City.Names)
 
@@ -87,9 +88,13 @@ func TestReader(t *testing.T) {
 	assert.Equal(t, uint(6269131), record.Subdivisions[0].GeoNameID)
 	assert.Equal(t, "ENG", record.Subdivisions[0].ISOCode)
 	expectedSubdivisionNames := Names{
+		German:              "",
 		English:             "England",
 		BrazilianPortuguese: "Inglaterra",
 		French:              "Angleterre",
+		Japanese:            "",
+		Russian:             "",
+		SimplifiedChinese:   "",
 		Spanish:             "Inglaterra",
 	}
 	assert.Equal(t, expectedSubdivisionNames, record.Subdivisions[0].Names)
@@ -439,14 +444,16 @@ func TestIsZero(t *testing.T) {
 	var emptyNames Names
 	assert.False(t, emptyNames.HasData(), "Empty Names should not have data")
 
-	nonEmptyNames := Names{English: "Test"}
+	var nonEmptyNames Names
+	nonEmptyNames.English = "Test"
 	assert.True(t, nonEmptyNames.HasData(), "Names with data should have data")
 
 	// Test other struct types
 	var emptyASN ASN
 	assert.False(t, emptyASN.HasData(), "Empty ASN should not have data")
 
-	nonEmptyASN := ASN{AutonomousSystemNumber: 123}
+	var nonEmptyASN ASN
+	nonEmptyASN.AutonomousSystemNumber = 123
 	assert.True(t, nonEmptyASN.HasData(), "ASN with data should have data")
 }
 
