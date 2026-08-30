@@ -6,41 +6,41 @@ import "net/netip"
 // such as `type cityReflection City` would now dispatch to the generated
 // methods on City's nested model types and would no longer measure reflection.
 type namesReflectionBenchmark struct {
-	German              string `maxminddb:"de"`
-	English             string `maxminddb:"en"`
-	Spanish             string `maxminddb:"es"`
-	French              string `maxminddb:"fr"`
-	Japanese            string `maxminddb:"ja"`
-	BrazilianPortuguese string `maxminddb:"pt-BR"`
-	Russian             string `maxminddb:"ru"`
-	SimplifiedChinese   string `maxminddb:"zh-CN"`
+	German              string `maxminddb:"de,maxsize:1024"`
+	English             string `maxminddb:"en,maxsize:1024"`
+	Spanish             string `maxminddb:"es,maxsize:1024"`
+	French              string `maxminddb:"fr,maxsize:1024"`
+	Japanese            string `maxminddb:"ja,maxsize:1024"`
+	BrazilianPortuguese string `maxminddb:"pt-BR,maxsize:1024"`
+	Russian             string `maxminddb:"ru,maxsize:1024"`
+	SimplifiedChinese   string `maxminddb:"zh-CN,maxsize:1024"`
 }
 
 type continentReflectionBenchmark struct {
 	Names     namesReflectionBenchmark `maxminddb:"names"`
-	Code      string                   `maxminddb:"code"`
+	Code      string                   `maxminddb:"code,maxsize:16"`
 	GeoNameID uint                     `maxminddb:"geoname_id"`
 }
 
 type locationReflectionBenchmark struct {
 	Latitude       *float64 `maxminddb:"latitude"`
 	Longitude      *float64 `maxminddb:"longitude"`
-	TimeZone       string   `maxminddb:"time_zone"`
+	TimeZone       string   `maxminddb:"time_zone,maxsize:256"`
 	MetroCode      uint     `maxminddb:"metro_code"`
 	AccuracyRadius uint16   `maxminddb:"accuracy_radius"`
 }
 
 type representedCountryReflectionBenchmark struct {
 	Names             namesReflectionBenchmark `maxminddb:"names"`
-	ISOCode           string                   `maxminddb:"iso_code"`
-	Type              string                   `maxminddb:"type"`
+	ISOCode           string                   `maxminddb:"iso_code,maxsize:16"`
+	Type              string                   `maxminddb:"type,maxsize:128"`
 	GeoNameID         uint                     `maxminddb:"geoname_id"`
 	IsInEuropeanUnion bool                     `maxminddb:"is_in_european_union"`
 }
 
 type countryRecordReflectionBenchmark struct {
 	Names             namesReflectionBenchmark `maxminddb:"names"`
-	ISOCode           string                   `maxminddb:"iso_code"`
+	ISOCode           string                   `maxminddb:"iso_code,maxsize:16"`
 	GeoNameID         uint                     `maxminddb:"geoname_id"`
 	IsInEuropeanUnion bool                     `maxminddb:"is_in_european_union"`
 }
@@ -51,12 +51,12 @@ type cityRecordReflectionBenchmark struct {
 }
 
 type cityPostalReflectionBenchmark struct {
-	Code string `maxminddb:"code"`
+	Code string `maxminddb:"code,maxsize:128"`
 }
 
 type citySubdivisionReflectionBenchmark struct {
 	Names     namesReflectionBenchmark `maxminddb:"names"`
-	ISOCode   string                   `maxminddb:"iso_code"`
+	ISOCode   string                   `maxminddb:"iso_code,maxsize:16"`
 	GeoNameID uint                     `maxminddb:"geoname_id"`
 }
 
@@ -71,7 +71,7 @@ type cityReflectionBenchmark struct {
 	Postal             cityPostalReflectionBenchmark         `maxminddb:"postal"`
 	Continent          continentReflectionBenchmark          `maxminddb:"continent"`
 	City               cityRecordReflectionBenchmark         `maxminddb:"city"`
-	Subdivisions       []citySubdivisionReflectionBenchmark  `maxminddb:"subdivisions"`
+	Subdivisions       []citySubdivisionReflectionBenchmark  `maxminddb:"subdivisions,maxsize:32"`
 	RepresentedCountry representedCountryReflectionBenchmark `maxminddb:"represented_country"`
 	Country            countryRecordReflectionBenchmark      `maxminddb:"country"`
 	RegisteredCountry  countryRecordReflectionBenchmark      `maxminddb:"registered_country"`
@@ -85,20 +85,20 @@ type enterpriseCityRecordReflectionBenchmark struct {
 }
 
 type enterprisePostalReflectionBenchmark struct {
-	Code       string `maxminddb:"code"`
+	Code       string `maxminddb:"code,maxsize:128"`
 	Confidence uint8  `maxminddb:"confidence"`
 }
 
 type enterpriseSubdivisionReflectionBenchmark struct {
 	Names      namesReflectionBenchmark `maxminddb:"names"`
-	ISOCode    string                   `maxminddb:"iso_code"`
+	ISOCode    string                   `maxminddb:"iso_code,maxsize:16"`
 	GeoNameID  uint                     `maxminddb:"geoname_id"`
 	Confidence uint8                    `maxminddb:"confidence"`
 }
 
 type enterpriseCountryRecordReflectionBenchmark struct {
 	Names             namesReflectionBenchmark `maxminddb:"names"`
-	ISOCode           string                   `maxminddb:"iso_code"`
+	ISOCode           string                   `maxminddb:"iso_code,maxsize:16"`
 	GeoNameID         uint                     `maxminddb:"geoname_id"`
 	Confidence        uint8                    `maxminddb:"confidence"`
 	IsInEuropeanUnion bool                     `maxminddb:"is_in_european_union"`
@@ -107,14 +107,14 @@ type enterpriseCountryRecordReflectionBenchmark struct {
 type enterpriseTraitsReflectionBenchmark struct {
 	Network                      netip.Prefix `maxminddb:"-"`
 	IPAddress                    netip.Addr   `maxminddb:"-"`
-	AutonomousSystemOrganization string       `maxminddb:"autonomous_system_organization"`
-	ConnectionType               string       `maxminddb:"connection_type"`
-	Domain                       string       `maxminddb:"domain"`
-	ISP                          string       `maxminddb:"isp"`
-	MobileCountryCode            string       `maxminddb:"mobile_country_code"`
-	MobileNetworkCode            string       `maxminddb:"mobile_network_code"`
-	Organization                 string       `maxminddb:"organization"`
-	UserType                     string       `maxminddb:"user_type"`
+	AutonomousSystemOrganization string       `maxminddb:"autonomous_system_organization,maxsize:4096"`
+	ConnectionType               string       `maxminddb:"connection_type,maxsize:128"`
+	Domain                       string       `maxminddb:"domain,maxsize:512"`
+	ISP                          string       `maxminddb:"isp,maxsize:4096"`
+	MobileCountryCode            string       `maxminddb:"mobile_country_code,maxsize:16"`
+	MobileNetworkCode            string       `maxminddb:"mobile_network_code,maxsize:16"`
+	Organization                 string       `maxminddb:"organization,maxsize:4096"`
+	UserType                     string       `maxminddb:"user_type,maxsize:128"`
 	StaticIPScore                float64      `maxminddb:"static_ip_score"`
 	AutonomousSystemNumber       uint         `maxminddb:"autonomous_system_number"`
 	IsAnycast                    bool         `maxminddb:"is_anycast"`
@@ -123,7 +123,7 @@ type enterpriseTraitsReflectionBenchmark struct {
 
 type enterpriseReflectionBenchmark struct {
 	Continent          continentReflectionBenchmark               `maxminddb:"continent"`
-	Subdivisions       []enterpriseSubdivisionReflectionBenchmark `maxminddb:"subdivisions"`
+	Subdivisions       []enterpriseSubdivisionReflectionBenchmark `maxminddb:"subdivisions,maxsize:32"`
 	Postal             enterprisePostalReflectionBenchmark        `maxminddb:"postal"`
 	RepresentedCountry representedCountryReflectionBenchmark      `maxminddb:"represented_country"`
 	Country            enterpriseCountryRecordReflectionBenchmark `maxminddb:"country"`
