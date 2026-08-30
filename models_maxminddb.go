@@ -27,12 +27,10 @@ func maxminddbGenDecodeASN(cursor mmdbdata.Cursor, out *ASN) (mmdbdata.Cursor, e
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 1
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 4096); err == nil {
-				var value1 string
-				value1, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.AutonomousSystemOrganization = string(value1)
-				}
+			var value1 string
+			value1, next, err = valueCursor.ReadStringMaxSize(4096)
+			if err == nil {
+				out.AutonomousSystemOrganization = string(value1)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field autonomous_system_organization: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -203,12 +201,10 @@ func maxminddbGenDecodeAnonymousPlus(cursor mmdbdata.Cursor, out *AnonymousPlus)
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 2
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 4096); err == nil {
-				var value9 string
-				value9, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.ProviderName = string(value9)
-				}
+			var value9 string
+			value9, next, err = valueCursor.ReadStringMaxSize(4096)
+			if err == nil {
+				out.ProviderName = string(value9)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field provider_name: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -383,44 +379,42 @@ func maxminddbGenDecodeCity(cursor mmdbdata.Cursor, out *City) (mmdbdata.Cursor,
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 16
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindSlice), 32); err == nil {
-				values17, openErr17 := valueCursor.Slice()
-				if openErr17 != nil {
-					err = mmdbdata.NormalizeUnmarshalError[[]CitySubdivision](openErr17)
-				} else {
-					sizeValue17, sizeReady17 := values17.SizeForCapacity(cap(out.Subdivisions))
-					if !sizeReady17 {
-						sizeValue17, err = values17.Size()
+			values17, openErr17 := valueCursor.SliceMaxSize(32)
+			if openErr17 != nil {
+				err = mmdbdata.NormalizeUnmarshalError[[]CitySubdivision](openErr17)
+			} else {
+				sizeValue17, sizeReady17 := values17.SizeForCapacity(cap(out.Subdivisions))
+				if !sizeReady17 {
+					sizeValue17, err = values17.Size()
+				}
+				if err == nil {
+					size17 := int(sizeValue17)
+					oldLen17 := len(out.Subdivisions)
+					if out.Subdivisions == nil || cap(out.Subdivisions) < size17 {
+						out.Subdivisions = make([]CitySubdivision, size17)
+					} else {
+						out.Subdivisions = out.Subdivisions[:size17]
+						clear(out.Subdivisions)
+						if oldLen17 > size17 {
+							clear(out.Subdivisions[size17:oldLen17])
+						}
+					}
+					var elementNext17 mmdbdata.Cursor
+					for {
+						indexValue17, elementCursor17, ok17 := values17.Next(elementNext17)
+						if !ok17 {
+							break
+						}
+						index17 := int(indexValue17)
+						var elementErr17 error
+						elementNext17, elementErr17 = maxminddbGenDecodeCitySubdivision(elementCursor17, &out.Subdivisions[index17])
+						if elementErr17 != nil {
+							err = fmt.Errorf("decoding index %d: %w", index17, elementErr17)
+							break
+						}
 					}
 					if err == nil {
-						size17 := int(sizeValue17)
-						oldLen17 := len(out.Subdivisions)
-						if out.Subdivisions == nil || cap(out.Subdivisions) < size17 {
-							out.Subdivisions = make([]CitySubdivision, size17)
-						} else {
-							out.Subdivisions = out.Subdivisions[:size17]
-							clear(out.Subdivisions)
-							if oldLen17 > size17 {
-								clear(out.Subdivisions[size17:oldLen17])
-							}
-						}
-						var elementNext17 mmdbdata.Cursor
-						for {
-							indexValue17, elementCursor17, ok17 := values17.Next(elementNext17)
-							if !ok17 {
-								break
-							}
-							index17 := int(indexValue17)
-							var elementErr17 error
-							elementNext17, elementErr17 = maxminddbGenDecodeCitySubdivision(elementCursor17, &out.Subdivisions[index17])
-							if elementErr17 != nil {
-								err = fmt.Errorf("decoding index %d: %w", index17, elementErr17)
-								break
-							}
-						}
-						if err == nil {
-							next, err = values17.End()
-						}
+						next, err = values17.End()
 					}
 				}
 			}
@@ -491,12 +485,10 @@ func maxminddbGenDecodeCityPostal(cursor mmdbdata.Cursor, out *CityPostal) (mmdb
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 1
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 128); err == nil {
-				var value18 string
-				value18, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.Code = string(value18)
-				}
+			var value18 string
+			value18, next, err = valueCursor.ReadStringMaxSize(128)
+			if err == nil {
+				out.Code = string(value18)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field code: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -598,12 +590,10 @@ func maxminddbGenDecodeCitySubdivision(cursor mmdbdata.Cursor, out *CitySubdivis
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 2
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 16); err == nil {
-				var value20 string
-				value20, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.ISOCode = string(value20)
-				}
+			var value20 string
+			value20, next, err = valueCursor.ReadStringMaxSize(16)
+			if err == nil {
+				out.ISOCode = string(value20)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field iso_code: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -700,12 +690,10 @@ func maxminddbGenDecodeConnectionType(cursor mmdbdata.Cursor, out *ConnectionTyp
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 1
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 128); err == nil {
-				var value23 string
-				value23, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.ConnectionType = string(value23)
-				}
+			var value23 string
+			value23, next, err = valueCursor.ReadStringMaxSize(128)
+			if err == nil {
+				out.ConnectionType = string(value23)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field connection_type: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -747,12 +735,10 @@ func maxminddbGenDecodeContinent(cursor mmdbdata.Cursor, out *Continent) (mmdbda
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 2
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 16); err == nil {
-				var value24 string
-				value24, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.Code = string(value24)
-				}
+			var value24 string
+			value24, next, err = valueCursor.ReadStringMaxSize(16)
+			if err == nil {
+				out.Code = string(value24)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field code: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -890,12 +876,10 @@ func maxminddbGenDecodeCountryRecord(cursor mmdbdata.Cursor, out *CountryRecord)
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 2
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 16); err == nil {
-				var value26 string
-				value26, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.ISOCode = string(value26)
-				}
+			var value26 string
+			value26, next, err = valueCursor.ReadStringMaxSize(16)
+			if err == nil {
+				out.ISOCode = string(value26)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field iso_code: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -1005,12 +989,10 @@ func maxminddbGenDecodeDomain(cursor mmdbdata.Cursor, out *Domain) (mmdbdata.Cur
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 1
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 512); err == nil {
-				var value30 string
-				value30, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.Domain = string(value30)
-				}
+			var value30 string
+			value30, next, err = valueCursor.ReadStringMaxSize(512)
+			if err == nil {
+				out.Domain = string(value30)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field domain: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -1052,44 +1034,42 @@ func maxminddbGenDecodeEnterprise(cursor mmdbdata.Cursor, out *Enterprise) (mmdb
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 2
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindSlice), 32); err == nil {
-				values31, openErr31 := valueCursor.Slice()
-				if openErr31 != nil {
-					err = mmdbdata.NormalizeUnmarshalError[[]EnterpriseSubdivision](openErr31)
-				} else {
-					sizeValue31, sizeReady31 := values31.SizeForCapacity(cap(out.Subdivisions))
-					if !sizeReady31 {
-						sizeValue31, err = values31.Size()
+			values31, openErr31 := valueCursor.SliceMaxSize(32)
+			if openErr31 != nil {
+				err = mmdbdata.NormalizeUnmarshalError[[]EnterpriseSubdivision](openErr31)
+			} else {
+				sizeValue31, sizeReady31 := values31.SizeForCapacity(cap(out.Subdivisions))
+				if !sizeReady31 {
+					sizeValue31, err = values31.Size()
+				}
+				if err == nil {
+					size31 := int(sizeValue31)
+					oldLen31 := len(out.Subdivisions)
+					if out.Subdivisions == nil || cap(out.Subdivisions) < size31 {
+						out.Subdivisions = make([]EnterpriseSubdivision, size31)
+					} else {
+						out.Subdivisions = out.Subdivisions[:size31]
+						clear(out.Subdivisions)
+						if oldLen31 > size31 {
+							clear(out.Subdivisions[size31:oldLen31])
+						}
+					}
+					var elementNext31 mmdbdata.Cursor
+					for {
+						indexValue31, elementCursor31, ok31 := values31.Next(elementNext31)
+						if !ok31 {
+							break
+						}
+						index31 := int(indexValue31)
+						var elementErr31 error
+						elementNext31, elementErr31 = maxminddbGenDecodeEnterpriseSubdivision(elementCursor31, &out.Subdivisions[index31])
+						if elementErr31 != nil {
+							err = fmt.Errorf("decoding index %d: %w", index31, elementErr31)
+							break
+						}
 					}
 					if err == nil {
-						size31 := int(sizeValue31)
-						oldLen31 := len(out.Subdivisions)
-						if out.Subdivisions == nil || cap(out.Subdivisions) < size31 {
-							out.Subdivisions = make([]EnterpriseSubdivision, size31)
-						} else {
-							out.Subdivisions = out.Subdivisions[:size31]
-							clear(out.Subdivisions)
-							if oldLen31 > size31 {
-								clear(out.Subdivisions[size31:oldLen31])
-							}
-						}
-						var elementNext31 mmdbdata.Cursor
-						for {
-							indexValue31, elementCursor31, ok31 := values31.Next(elementNext31)
-							if !ok31 {
-								break
-							}
-							index31 := int(indexValue31)
-							var elementErr31 error
-							elementNext31, elementErr31 = maxminddbGenDecodeEnterpriseSubdivision(elementCursor31, &out.Subdivisions[index31])
-							if elementErr31 != nil {
-								err = fmt.Errorf("decoding index %d: %w", index31, elementErr31)
-								break
-							}
-						}
-						if err == nil {
-							next, err = values31.End()
-						}
+						next, err = values31.End()
 					}
 				}
 			}
@@ -1284,12 +1264,10 @@ func maxminddbGenDecodeEnterpriseCountryRecord(cursor mmdbdata.Cursor, out *Ente
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 2
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 16); err == nil {
-				var value34 string
-				value34, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.ISOCode = string(value34)
-				}
+			var value34 string
+			value34, next, err = valueCursor.ReadStringMaxSize(16)
+			if err == nil {
+				out.ISOCode = string(value34)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field iso_code: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -1391,12 +1369,10 @@ func maxminddbGenDecodeEnterprisePostal(cursor mmdbdata.Cursor, out *EnterpriseP
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 1
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 128); err == nil {
-				var value38 string
-				value38, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.Code = string(value38)
-				}
+			var value38 string
+			value38, next, err = valueCursor.ReadStringMaxSize(128)
+			if err == nil {
+				out.Code = string(value38)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field code: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -1466,12 +1442,10 @@ func maxminddbGenDecodeEnterpriseSubdivision(cursor mmdbdata.Cursor, out *Enterp
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 2
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 16); err == nil {
-				var value40 string
-				value40, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.ISOCode = string(value40)
-				}
+			var value40 string
+			value40, next, err = valueCursor.ReadStringMaxSize(16)
+			if err == nil {
+				out.ISOCode = string(value40)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field iso_code: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -1560,12 +1534,10 @@ func maxminddbGenDecodeEnterpriseTraits(cursor mmdbdata.Cursor, out *EnterpriseT
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 1
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 4096); err == nil {
-				var value43 string
-				value43, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.AutonomousSystemOrganization = string(value43)
-				}
+			var value43 string
+			value43, next, err = valueCursor.ReadStringMaxSize(4096)
+			if err == nil {
+				out.AutonomousSystemOrganization = string(value43)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field autonomous_system_organization: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -1575,12 +1547,10 @@ func maxminddbGenDecodeEnterpriseTraits(cursor mmdbdata.Cursor, out *EnterpriseT
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 2
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 128); err == nil {
-				var value44 string
-				value44, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.ConnectionType = string(value44)
-				}
+			var value44 string
+			value44, next, err = valueCursor.ReadStringMaxSize(128)
+			if err == nil {
+				out.ConnectionType = string(value44)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field connection_type: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -1590,12 +1560,10 @@ func maxminddbGenDecodeEnterpriseTraits(cursor mmdbdata.Cursor, out *EnterpriseT
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 4
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 512); err == nil {
-				var value45 string
-				value45, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.Domain = string(value45)
-				}
+			var value45 string
+			value45, next, err = valueCursor.ReadStringMaxSize(512)
+			if err == nil {
+				out.Domain = string(value45)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field domain: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -1605,12 +1573,10 @@ func maxminddbGenDecodeEnterpriseTraits(cursor mmdbdata.Cursor, out *EnterpriseT
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 8
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 4096); err == nil {
-				var value46 string
-				value46, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.ISP = string(value46)
-				}
+			var value46 string
+			value46, next, err = valueCursor.ReadStringMaxSize(4096)
+			if err == nil {
+				out.ISP = string(value46)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field isp: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -1620,12 +1586,10 @@ func maxminddbGenDecodeEnterpriseTraits(cursor mmdbdata.Cursor, out *EnterpriseT
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 16
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 16); err == nil {
-				var value47 string
-				value47, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.MobileCountryCode = string(value47)
-				}
+			var value47 string
+			value47, next, err = valueCursor.ReadStringMaxSize(16)
+			if err == nil {
+				out.MobileCountryCode = string(value47)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field mobile_country_code: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -1635,12 +1599,10 @@ func maxminddbGenDecodeEnterpriseTraits(cursor mmdbdata.Cursor, out *EnterpriseT
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 32
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 16); err == nil {
-				var value48 string
-				value48, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.MobileNetworkCode = string(value48)
-				}
+			var value48 string
+			value48, next, err = valueCursor.ReadStringMaxSize(16)
+			if err == nil {
+				out.MobileNetworkCode = string(value48)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field mobile_network_code: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -1650,12 +1612,10 @@ func maxminddbGenDecodeEnterpriseTraits(cursor mmdbdata.Cursor, out *EnterpriseT
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 64
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 4096); err == nil {
-				var value49 string
-				value49, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.Organization = string(value49)
-				}
+			var value49 string
+			value49, next, err = valueCursor.ReadStringMaxSize(4096)
+			if err == nil {
+				out.Organization = string(value49)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field organization: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -1665,12 +1625,10 @@ func maxminddbGenDecodeEnterpriseTraits(cursor mmdbdata.Cursor, out *EnterpriseT
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 128
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 128); err == nil {
-				var value50 string
-				value50, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.UserType = string(value50)
-				}
+			var value50 string
+			value50, next, err = valueCursor.ReadStringMaxSize(128)
+			if err == nil {
+				out.UserType = string(value50)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field user_type: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -1771,12 +1729,10 @@ func maxminddbGenDecodeISP(cursor mmdbdata.Cursor, out *ISP) (mmdbdata.Cursor, e
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 1
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 4096); err == nil {
-				var value55 string
-				value55, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.AutonomousSystemOrganization = string(value55)
-				}
+			var value55 string
+			value55, next, err = valueCursor.ReadStringMaxSize(4096)
+			if err == nil {
+				out.AutonomousSystemOrganization = string(value55)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field autonomous_system_organization: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -1786,12 +1742,10 @@ func maxminddbGenDecodeISP(cursor mmdbdata.Cursor, out *ISP) (mmdbdata.Cursor, e
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 2
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 4096); err == nil {
-				var value56 string
-				value56, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.ISP = string(value56)
-				}
+			var value56 string
+			value56, next, err = valueCursor.ReadStringMaxSize(4096)
+			if err == nil {
+				out.ISP = string(value56)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field isp: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -1801,12 +1755,10 @@ func maxminddbGenDecodeISP(cursor mmdbdata.Cursor, out *ISP) (mmdbdata.Cursor, e
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 4
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 16); err == nil {
-				var value57 string
-				value57, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.MobileCountryCode = string(value57)
-				}
+			var value57 string
+			value57, next, err = valueCursor.ReadStringMaxSize(16)
+			if err == nil {
+				out.MobileCountryCode = string(value57)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field mobile_country_code: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -1816,12 +1768,10 @@ func maxminddbGenDecodeISP(cursor mmdbdata.Cursor, out *ISP) (mmdbdata.Cursor, e
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 8
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 16); err == nil {
-				var value58 string
-				value58, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.MobileNetworkCode = string(value58)
-				}
+			var value58 string
+			value58, next, err = valueCursor.ReadStringMaxSize(16)
+			if err == nil {
+				out.MobileNetworkCode = string(value58)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field mobile_network_code: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -1831,12 +1781,10 @@ func maxminddbGenDecodeISP(cursor mmdbdata.Cursor, out *ISP) (mmdbdata.Cursor, e
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 16
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 4096); err == nil {
-				var value59 string
-				value59, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.Organization = string(value59)
-				}
+			var value59 string
+			value59, next, err = valueCursor.ReadStringMaxSize(4096)
+			if err == nil {
+				out.Organization = string(value59)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field organization: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -1951,12 +1899,10 @@ func maxminddbGenDecodeLocation(cursor mmdbdata.Cursor, out *Location) (mmdbdata
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 4
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 256); err == nil {
-				var value67 string
-				value67, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.TimeZone = string(value67)
-				}
+			var value67 string
+			value67, next, err = valueCursor.ReadStringMaxSize(256)
+			if err == nil {
+				out.TimeZone = string(value67)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field time_zone: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -2045,12 +1991,10 @@ func maxminddbGenDecodeNames(cursor mmdbdata.Cursor, out *Names) (mmdbdata.Curso
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 1
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 1024); err == nil {
-				var value70 string
-				value70, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.German = string(value70)
-				}
+			var value70 string
+			value70, next, err = valueCursor.ReadStringMaxSize(1024)
+			if err == nil {
+				out.German = string(value70)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field de: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -2060,12 +2004,10 @@ func maxminddbGenDecodeNames(cursor mmdbdata.Cursor, out *Names) (mmdbdata.Curso
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 2
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 1024); err == nil {
-				var value71 string
-				value71, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.English = string(value71)
-				}
+			var value71 string
+			value71, next, err = valueCursor.ReadStringMaxSize(1024)
+			if err == nil {
+				out.English = string(value71)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field en: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -2075,12 +2017,10 @@ func maxminddbGenDecodeNames(cursor mmdbdata.Cursor, out *Names) (mmdbdata.Curso
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 4
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 1024); err == nil {
-				var value72 string
-				value72, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.Spanish = string(value72)
-				}
+			var value72 string
+			value72, next, err = valueCursor.ReadStringMaxSize(1024)
+			if err == nil {
+				out.Spanish = string(value72)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field es: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -2090,12 +2030,10 @@ func maxminddbGenDecodeNames(cursor mmdbdata.Cursor, out *Names) (mmdbdata.Curso
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 8
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 1024); err == nil {
-				var value73 string
-				value73, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.French = string(value73)
-				}
+			var value73 string
+			value73, next, err = valueCursor.ReadStringMaxSize(1024)
+			if err == nil {
+				out.French = string(value73)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field fr: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -2105,12 +2043,10 @@ func maxminddbGenDecodeNames(cursor mmdbdata.Cursor, out *Names) (mmdbdata.Curso
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 16
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 1024); err == nil {
-				var value74 string
-				value74, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.Japanese = string(value74)
-				}
+			var value74 string
+			value74, next, err = valueCursor.ReadStringMaxSize(1024)
+			if err == nil {
+				out.Japanese = string(value74)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field ja: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -2120,12 +2056,10 @@ func maxminddbGenDecodeNames(cursor mmdbdata.Cursor, out *Names) (mmdbdata.Curso
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 32
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 1024); err == nil {
-				var value75 string
-				value75, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.BrazilianPortuguese = string(value75)
-				}
+			var value75 string
+			value75, next, err = valueCursor.ReadStringMaxSize(1024)
+			if err == nil {
+				out.BrazilianPortuguese = string(value75)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field pt-BR: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -2135,12 +2069,10 @@ func maxminddbGenDecodeNames(cursor mmdbdata.Cursor, out *Names) (mmdbdata.Curso
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 64
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 1024); err == nil {
-				var value76 string
-				value76, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.Russian = string(value76)
-				}
+			var value76 string
+			value76, next, err = valueCursor.ReadStringMaxSize(1024)
+			if err == nil {
+				out.Russian = string(value76)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field ru: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -2150,12 +2082,10 @@ func maxminddbGenDecodeNames(cursor mmdbdata.Cursor, out *Names) (mmdbdata.Curso
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 128
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 1024); err == nil {
-				var value77 string
-				value77, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.SimplifiedChinese = string(value77)
-				}
+			var value77 string
+			value77, next, err = valueCursor.ReadStringMaxSize(1024)
+			if err == nil {
+				out.SimplifiedChinese = string(value77)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field zh-CN: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -2197,12 +2127,10 @@ func maxminddbGenDecodeRepresentedCountry(cursor mmdbdata.Cursor, out *Represent
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 2
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 16); err == nil {
-				var value78 string
-				value78, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.ISOCode = string(value78)
-				}
+			var value78 string
+			value78, next, err = valueCursor.ReadStringMaxSize(16)
+			if err == nil {
+				out.ISOCode = string(value78)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field iso_code: %w", mmdbdata.NormalizeUnmarshalError[string](err))
@@ -2212,12 +2140,10 @@ func maxminddbGenDecodeRepresentedCountry(cursor mmdbdata.Cursor, out *Represent
 				return mmdbdata.Cursor{}, mmdbdata.NewInvalidDatabaseError("duplicate map key %q", key)
 			}
 			seenFields |= 4
-			if err = valueCursor.CheckMaxSize(mmdbdata.NewKindSet(mmdbdata.KindString), 128); err == nil {
-				var value79 string
-				value79, next, err = valueCursor.ReadString()
-				if err == nil {
-					out.Type = string(value79)
-				}
+			var value79 string
+			value79, next, err = valueCursor.ReadStringMaxSize(128)
+			if err == nil {
+				out.Type = string(value79)
 			}
 			if err != nil {
 				return mmdbdata.Cursor{}, fmt.Errorf("decoding field type: %w", mmdbdata.NormalizeUnmarshalError[string](err))
