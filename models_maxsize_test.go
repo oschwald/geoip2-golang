@@ -34,8 +34,7 @@ func TestModelVariableSizeFieldsHaveMaxSize(t *testing.T) {
 			return
 		}
 		seen[model] = true
-		for fieldIndex := range model.NumField() {
-			field := model.Field(fieldIndex)
+		for field := range model.Fields() {
 			if !field.IsExported() {
 				continue
 			}

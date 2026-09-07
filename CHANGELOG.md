@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- This module now targets Go 1.26+.
 - Updated `github.com/oschwald/maxminddb-golang/v2` to `v2.6.0`, including
   denial-of-service fixes and performance improvements. Regenerated model
   decoders now reject duplicate recognized fields with an `InvalidDatabaseError`.
