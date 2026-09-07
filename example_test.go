@@ -9,7 +9,7 @@ import (
 // Example provides a basic example of using the API. Use of the Country
 // method is analogous to that of the City method.
 func Example() {
-	db, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
+	db, err := Open("testdata/test-data/GeoIP2-City-Test.mmdb")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -44,7 +44,7 @@ func Example() {
 
 // ExampleReader_City demonstrates how to use the City database.
 func ExampleReader_City() {
-	db, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
+	db, err := Open("testdata/test-data/GeoIP2-City-Test.mmdb")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -75,7 +75,7 @@ func ExampleReader_City() {
 
 // ExampleReader_Country demonstrates how to use the Country database.
 func ExampleReader_Country() {
-	db, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
+	db, err := Open("testdata/test-data/GeoIP2-City-Test.mmdb")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -104,7 +104,7 @@ func ExampleReader_Country() {
 
 // ExampleReader_ASN demonstrates how to use the ASN database.
 func ExampleReader_ASN() {
-	db, err := Open("test-data/test-data/GeoLite2-ASN-Test.mmdb")
+	db, err := Open("testdata/test-data/GeoLite2-ASN-Test.mmdb")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -133,7 +133,7 @@ func ExampleReader_ASN() {
 
 // ExampleReader_AnonymousIP demonstrates how to use the Anonymous IP database.
 func ExampleReader_AnonymousIP() {
-	db, err := Open("test-data/test-data/GeoIP2-Anonymous-IP-Test.mmdb")
+	db, err := Open("testdata/test-data/GeoIP2-Anonymous-IP-Test.mmdb")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -164,7 +164,7 @@ func ExampleReader_AnonymousIP() {
 
 // ExampleReader_AnonymousPlus demonstrates how to use the Anonymous Plus database.
 func ExampleReader_AnonymousPlus() {
-	db, err := Open("test-data/test-data/GeoIP-Anonymous-Plus-Test.mmdb")
+	db, err := Open("testdata/test-data/GeoIP-Anonymous-Plus-Test.mmdb")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -199,7 +199,7 @@ func ExampleReader_AnonymousPlus() {
 
 // ExampleReader_Enterprise demonstrates how to use the Enterprise database.
 func ExampleReader_Enterprise() {
-	db, err := Open("test-data/test-data/GeoIP2-Enterprise-Test.mmdb")
+	db, err := Open("testdata/test-data/GeoIP2-Enterprise-Test.mmdb")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -232,7 +232,7 @@ func ExampleReader_Enterprise() {
 
 // ExampleReader_ISP demonstrates how to use the ISP database.
 func ExampleReader_ISP() {
-	db, err := Open("test-data/test-data/GeoIP2-ISP-Test.mmdb")
+	db, err := Open("testdata/test-data/GeoIP2-ISP-Test.mmdb")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -263,7 +263,7 @@ func ExampleReader_ISP() {
 
 // ExampleReader_Domain demonstrates how to use the Domain database.
 func ExampleReader_Domain() {
-	db, err := Open("test-data/test-data/GeoIP2-Domain-Test.mmdb")
+	db, err := Open("testdata/test-data/GeoIP2-Domain-Test.mmdb")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -290,7 +290,7 @@ func ExampleReader_Domain() {
 
 // ExampleReader_ConnectionType demonstrates how to use the Connection Type database.
 func ExampleReader_ConnectionType() {
-	db, err := Open("test-data/test-data/GeoIP2-Connection-Type-Test.mmdb")
+	db, err := Open("testdata/test-data/GeoIP2-Connection-Type-Test.mmdb")
 	if err != nil {
 		log.Panic(err)
 	}

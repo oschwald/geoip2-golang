@@ -26,12 +26,12 @@ var (
 )
 
 func TestGeneratedCityParity(t *testing.T) {
-	testGeneratedParity(t, "test-data/test-data/GeoIP2-City-Test.mmdb",
+	testGeneratedParity(t, "testdata/test-data/GeoIP2-City-Test.mmdb",
 		cityBenchmarkAddresses(), cityFromReflection)
 }
 
 func TestGeneratedEnterpriseParity(t *testing.T) {
-	testGeneratedParity(t, "test-data/test-data/GeoIP2-Enterprise-Test.mmdb",
+	testGeneratedParity(t, "testdata/test-data/GeoIP2-Enterprise-Test.mmdb",
 		enterpriseBenchmarkAddresses(), enterpriseFromReflection)
 }
 
@@ -66,7 +66,7 @@ func testGeneratedParity[T, R any](
 }
 
 func BenchmarkCityDecodeGeneratedReused(b *testing.B) {
-	reader, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoIP2-City-Test.mmdb")
 	require.NoError(b, err)
 	b.Cleanup(func() { require.NoError(b, reader.Close()) })
 	addresses := cityBenchmarkAddresses()
@@ -87,7 +87,7 @@ func BenchmarkCityDecodeGeneratedReused(b *testing.B) {
 }
 
 func BenchmarkCityDecodeReflectionReused(b *testing.B) {
-	reader, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoIP2-City-Test.mmdb")
 	require.NoError(b, err)
 	b.Cleanup(func() { require.NoError(b, reader.Close()) })
 	addresses := cityBenchmarkAddresses()
@@ -108,7 +108,7 @@ func BenchmarkCityDecodeReflectionReused(b *testing.B) {
 }
 
 func BenchmarkCityLookupGeneratedFresh(b *testing.B) {
-	reader, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoIP2-City-Test.mmdb")
 	require.NoError(b, err)
 	b.Cleanup(func() { require.NoError(b, reader.Close()) })
 	addresses := cityBenchmarkAddresses()
@@ -125,7 +125,7 @@ func BenchmarkCityLookupGeneratedFresh(b *testing.B) {
 }
 
 func BenchmarkCityLookupReflectionFresh(b *testing.B) {
-	reader, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoIP2-City-Test.mmdb")
 	require.NoError(b, err)
 	b.Cleanup(func() { require.NoError(b, reader.Close()) })
 	addresses := cityBenchmarkAddresses()
@@ -165,7 +165,7 @@ func BenchmarkCityCommercialGeneratedFresh(b *testing.B) {
 }
 
 func BenchmarkEnterpriseDecodeGeneratedReused(b *testing.B) {
-	reader, err := Open("test-data/test-data/GeoIP2-Enterprise-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoIP2-Enterprise-Test.mmdb")
 	require.NoError(b, err)
 	b.Cleanup(func() { require.NoError(b, reader.Close()) })
 	addresses := enterpriseBenchmarkAddresses()
@@ -186,7 +186,7 @@ func BenchmarkEnterpriseDecodeGeneratedReused(b *testing.B) {
 }
 
 func BenchmarkEnterpriseDecodeReflectionReused(b *testing.B) {
-	reader, err := Open("test-data/test-data/GeoIP2-Enterprise-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoIP2-Enterprise-Test.mmdb")
 	require.NoError(b, err)
 	b.Cleanup(func() { require.NoError(b, reader.Close()) })
 	addresses := enterpriseBenchmarkAddresses()
@@ -207,7 +207,7 @@ func BenchmarkEnterpriseDecodeReflectionReused(b *testing.B) {
 }
 
 func BenchmarkEnterpriseLookupGeneratedFresh(b *testing.B) {
-	reader, err := Open("test-data/test-data/GeoIP2-Enterprise-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoIP2-Enterprise-Test.mmdb")
 	require.NoError(b, err)
 	b.Cleanup(func() { require.NoError(b, reader.Close()) })
 	addresses := enterpriseBenchmarkAddresses()
@@ -224,7 +224,7 @@ func BenchmarkEnterpriseLookupGeneratedFresh(b *testing.B) {
 }
 
 func BenchmarkEnterpriseLookupReflectionFresh(b *testing.B) {
-	reader, err := Open("test-data/test-data/GeoIP2-Enterprise-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoIP2-Enterprise-Test.mmdb")
 	require.NoError(b, err)
 	b.Cleanup(func() { require.NoError(b, reader.Close()) })
 	addresses := enterpriseBenchmarkAddresses()
