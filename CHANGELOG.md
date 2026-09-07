@@ -1,6 +1,6 @@
 # Changes
 
-## Unreleased
+## 2.4.0 - 2026-09-07
 
 - This module now targets Go 1.26+.
 - Updated `github.com/oschwald/maxminddb-golang/v2` to `v2.6.0`, including
