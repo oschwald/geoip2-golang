@@ -12,7 +12,7 @@ import (
 )
 
 func TestReader(t *testing.T) {
-	reader, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoIP2-City-Test.mmdb")
 	require.NoError(t, err)
 
 	defer reader.Close()
@@ -47,6 +47,7 @@ func TestReader(t *testing.T) {
 		Japanese:            "ロンドン",
 		BrazilianPortuguese: "Londres",
 		Russian:             "Лондон",
+		SimplifiedChinese:   "",
 	}
 	assert.Equal(t, expectedNames, record.City.Names)
 
@@ -87,9 +88,13 @@ func TestReader(t *testing.T) {
 	assert.Equal(t, uint(6269131), record.Subdivisions[0].GeoNameID)
 	assert.Equal(t, "ENG", record.Subdivisions[0].ISOCode)
 	expectedSubdivisionNames := Names{
+		German:              "",
 		English:             "England",
 		BrazilianPortuguese: "Inglaterra",
 		French:              "Angleterre",
+		Japanese:            "",
+		Russian:             "",
+		SimplifiedChinese:   "",
 		Spanish:             "Inglaterra",
 	}
 	assert.Equal(t, expectedSubdivisionNames, record.Subdivisions[0].Names)
@@ -120,7 +125,7 @@ func TestReader(t *testing.T) {
 func TestIsAnycast(t *testing.T) {
 	for _, test := range []string{"Country", "City", "Enterprise"} {
 		t.Run(test, func(t *testing.T) {
-			reader, err := Open("test-data/test-data/GeoIP2-" + test + "-Test.mmdb")
+			reader, err := Open("testdata/test-data/GeoIP2-" + test + "-Test.mmdb")
 			require.NoError(t, err)
 			defer reader.Close()
 
@@ -133,7 +138,7 @@ func TestIsAnycast(t *testing.T) {
 }
 
 func TestMetroCode(t *testing.T) {
-	reader, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoIP2-City-Test.mmdb")
 	require.NoError(t, err)
 	defer reader.Close()
 
@@ -144,7 +149,7 @@ func TestMetroCode(t *testing.T) {
 }
 
 func TestAnonymousIP(t *testing.T) {
-	reader, err := Open("test-data/test-data/GeoIP2-Anonymous-IP-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoIP2-Anonymous-IP-Test.mmdb")
 	require.NoError(t, err)
 	defer reader.Close()
 
@@ -167,7 +172,7 @@ func TestAnonymousIP(t *testing.T) {
 }
 
 func TestAnonymousPlus(t *testing.T) {
-	reader, err := Open("test-data/test-data/GeoIP-Anonymous-Plus-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoIP-Anonymous-Plus-Test.mmdb")
 	require.NoError(t, err)
 	defer reader.Close()
 
@@ -221,7 +226,7 @@ func TestAnonymousPlus(t *testing.T) {
 }
 
 func TestASN(t *testing.T) {
-	reader, err := Open("test-data/test-data/GeoLite2-ASN-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoLite2-ASN-Test.mmdb")
 	require.NoError(t, err)
 	defer reader.Close()
 
@@ -240,7 +245,7 @@ func TestASN(t *testing.T) {
 }
 
 func TestConnectionType(t *testing.T) {
-	reader, err := Open("test-data/test-data/GeoIP2-Connection-Type-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoIP2-Connection-Type-Test.mmdb")
 	require.NoError(t, err)
 
 	defer reader.Close()
@@ -252,7 +257,7 @@ func TestConnectionType(t *testing.T) {
 }
 
 func TestCountry(t *testing.T) {
-	reader, err := Open("test-data/test-data/GeoIP2-Country-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoIP2-Country-Test.mmdb")
 	require.NoError(t, err)
 
 	defer reader.Close()
@@ -269,7 +274,7 @@ func TestCountry(t *testing.T) {
 }
 
 func TestDomain(t *testing.T) {
-	reader, err := Open("test-data/test-data/GeoIP2-Domain-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoIP2-Domain-Test.mmdb")
 	require.NoError(t, err)
 	defer reader.Close()
 
@@ -279,7 +284,7 @@ func TestDomain(t *testing.T) {
 }
 
 func TestEnterprise(t *testing.T) {
-	reader, err := Open("test-data/test-data/GeoIP2-Enterprise-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoIP2-Enterprise-Test.mmdb")
 	require.NoError(t, err)
 
 	defer reader.Close()
@@ -314,7 +319,7 @@ func TestEnterprise(t *testing.T) {
 }
 
 func TestISP(t *testing.T) {
-	reader, err := Open("test-data/test-data/GeoIP2-ISP-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoIP2-ISP-Test.mmdb")
 	require.NoError(t, err)
 	defer reader.Close()
 
@@ -393,7 +398,7 @@ func randomIPv4Address(r *rand.Rand, ip net.IP) {
 }
 
 func TestIsZero(t *testing.T) {
-	reader, err := Open("test-data/test-data/GeoIP2-City-Test.mmdb")
+	reader, err := Open("testdata/test-data/GeoIP2-City-Test.mmdb")
 	require.NoError(t, err)
 	defer reader.Close()
 
@@ -439,20 +444,22 @@ func TestIsZero(t *testing.T) {
 	var emptyNames Names
 	assert.False(t, emptyNames.HasData(), "Empty Names should not have data")
 
-	nonEmptyNames := Names{English: "Test"}
+	var nonEmptyNames Names
+	nonEmptyNames.English = "Test"
 	assert.True(t, nonEmptyNames.HasData(), "Names with data should have data")
 
 	// Test other struct types
 	var emptyASN ASN
 	assert.False(t, emptyASN.HasData(), "Empty ASN should not have data")
 
-	nonEmptyASN := ASN{AutonomousSystemNumber: 123}
+	var nonEmptyASN ASN
+	nonEmptyASN.AutonomousSystemNumber = 123
 	assert.True(t, nonEmptyASN.HasData(), "ASN with data should have data")
 }
 
 func TestIPAddressAndNetworkAlwaysSet(t *testing.T) {
 	// Test that IPAddress and Network are always set for ASN lookups
-	asnReader, err := Open("test-data/test-data/GeoLite2-ASN-Test.mmdb")
+	asnReader, err := Open("testdata/test-data/GeoLite2-ASN-Test.mmdb")
 	require.NoError(t, err)
 	defer asnReader.Close()
 
