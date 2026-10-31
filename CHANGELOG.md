@@ -1,5 +1,10 @@
 # Changes
 
+## Unreleased
+
+- Updated `github.com/oschwald/maxminddb-golang/v2` to `v2.9.0`, which
+  includes lookup and decoding performance improvements.
+
 ## 2.5.0 - 2026-10-11
 
 - Updated `github.com/oschwald/maxminddb-golang/v2` to `v2.8.0`, which
