@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Wrong-type MMDB values for `Date` now return a `maxminddb.UnmarshalTypeError`
+  instead of an `mmdbdata.UnexpectedKindError`. Field and offset context are
+  preserved.
 - Updated `github.com/oschwald/maxminddb-golang/v2` to `v2.9.0`, which
   includes lookup and decoding performance improvements.
 

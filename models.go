@@ -28,7 +28,7 @@ func (d *Date) UnmarshalMaxMindDBCursor(
 	}
 	s, next, err := cursor.ReadString()
 	if err != nil {
-		return mmdbdata.Cursor{}, err
+		return mmdbdata.Cursor{}, mmdbdata.NormalizeUnmarshalError[Date](err)
 	}
 	return next, d.set(s)
 }
