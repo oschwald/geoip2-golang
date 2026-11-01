@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Added support for GeoIP2 City Shield, Country Shield, and Enterprise Shield
+  databases through the corresponding lookup methods.
+
 - Updated `github.com/oschwald/maxminddb-golang/v2` to `v2.9.0`, which
   includes lookup and decoding performance improvements.
 
