@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `Open` and `OpenBytes` now return a nil reader for unsupported database types.
+  `Open` releases the memory map before returning the error instead of waiting
+  for garbage collection.
 - Updated `github.com/oschwald/maxminddb-golang/v2` to `v2.9.0`, which
   includes lookup and decoding performance improvements.
 

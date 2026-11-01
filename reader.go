@@ -52,6 +52,7 @@
 package geoip2
 
 import (
+	"errors"
 	"fmt"
 	"net/netip"
 
@@ -129,7 +130,13 @@ func Open(file string, options ...Option) (*Reader, error) {
 		return nil, err
 	}
 	dbType, err := getDBType(reader)
-	return &Reader{reader, dbType}, err
+	if err != nil {
+		if closeErr := reader.Close(); closeErr != nil {
+			err = errors.Join(err, fmt.Errorf("geoip2: closing unsupported database: %w", closeErr))
+		}
+		return nil, err
+	}
+	return &Reader{reader, dbType}, nil
 }
 
 // OpenBytes takes a byte slice corresponding to a GeoIP2/GeoLite2 database
@@ -142,7 +149,13 @@ func OpenBytes(bytes []byte, options ...Option) (*Reader, error) {
 		return nil, err
 	}
 	dbType, err := getDBType(reader)
-	return &Reader{reader, dbType}, err
+	if err != nil {
+		if closeErr := reader.Close(); closeErr != nil {
+			err = errors.Join(err, fmt.Errorf("geoip2: closing unsupported database: %w", closeErr))
+		}
+		return nil, err
+	}
+	return &Reader{reader, dbType}, nil
 }
 
 func getDBType(reader *maxminddb.Reader) (databaseType, error) {
