@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Fixed JSON round trips for `Date` and populated `AnonymousPlus` records.
+  Date decoding now accepts date-only strings while preserving RFC3339 and
+  `null` handling. Invalid date input leaves the destination unchanged.
 - Updated `github.com/oschwald/maxminddb-golang/v2` to `v2.9.0`, which
   includes lookup and decoding performance improvements.
 
