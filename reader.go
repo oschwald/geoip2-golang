@@ -29,11 +29,12 @@
 //
 // # Database Types
 //
-// This library supports all MaxMind database types:
+// This library provides these lookup methods for supported database types:
 //   - City: Most comprehensive geolocation data
 //   - Country: Country-level geolocation
 //   - ASN: Autonomous system information
 //   - AnonymousIP: Anonymous network detection
+//   - AnonymousPlus: Anonymous network detection with provider and temporal data
 //   - Enterprise: Enhanced City data with additional fields
 //   - ISP: Internet service provider information
 //   - Domain: Second-level domain data

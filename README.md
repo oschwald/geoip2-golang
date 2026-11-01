@@ -130,8 +130,9 @@ and additional features.
 
 ## Database Examples
 
-This library supports all MaxMind GeoIP2 and GeoLite2 database types. Below are
-examples for each database type:
+This library supports the database types used by the lookup methods below, not
+every MaxMind database type. `Open` and `OpenBytes` return
+`UnknownDatabaseTypeError` for unsupported types.
 
 ### City Database
 
