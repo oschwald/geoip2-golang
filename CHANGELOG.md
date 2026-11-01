@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Fixed JSON round trips for `Date` and populated `AnonymousPlus` records.
+  Date decoding now accepts date-only strings while preserving RFC3339 and
+  `null` handling. Invalid date input leaves the destination unchanged.
 - `Open` and `OpenBytes` now return a nil reader for unsupported database types.
   `Open` releases the memory map before returning the error instead of waiting
   for garbage collection.
