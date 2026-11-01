@@ -1,134 +1,172 @@
 # Real-MMDB performance investigation
 
-## Recommended change
+## Current implementation
 
-Add a fast path to `Cursor.ReadMapKey` in `maxminddb-golang/v2`. Real databases
-reuse map keys near the start of the data section. Read pointers with a one-byte
-payload directly, without the `decodeKey` / `decodeKeyAt` call chain. Handle
-both compact string lengths and the one-byte size extension used by keys such
-as `autonomous_system_organization`.
+[maxminddb-golang PR #267](https://github.com/oschwald/maxminddb-golang/pull/267)
+now optimizes `decodeKeyAt`, not `Cursor.ReadMapKey`. The shared key decoder
+handles one-byte size extensions (29–284-byte strings) without entering the
+general decoder. Inline keys and all four pointer widths use this path.
+Generated, reflection, and iterator decoders can benefit.
 
-The implementation is in
-[maxminddb-golang PR #267](https://github.com/oschwald/maxminddb-golang/pull/267):
+Review identified regressions in the original cursor-only implementation:
+inline keys and wider pointers paid for an extra fallback call. Moving the
+optimization restores the original `ReadMapKey` call chain and its `validate()`
+check. The change also removes the extra copy of pointer-following logic.
+Compact keys keep their existing shared-decoder path.
 
-- `internal/decoder/cursor.go`: fast path and unchanged general-decoder fallback.
-- `internal/decoder/cursor_map_key_test.go`: encoding, malformed-input,
-  differential fuzz, and microbenchmark coverage.
+A separate commit limits borrowed key slices to their payload capacity. An
+append now allocates instead of overwriting subsequent database bytes. The
+returned bytes still alias the input and must not be modified directly.
 
-This change needs no generated-code or public API changes. It adds no cache,
-retained reader state, or allocations. The string-cache capacity and policy
-remain unchanged. All other prototypes were removed. This checkout's `go.mod`
-and generated models are unchanged.
+Neither change adds a cache, retained reader state, or decoding allocations.
+Cache capacity and policy remain unchanged. This library's `go.mod`, public
+methods, and generated models are unchanged.
 
 ## Method
 
-Baseline: geoip2-golang commit `876fc55`, using maxminddb-golang v2.9.0.
-Candidate: maxminddb-golang commit `ace4f3f`, based on `3359e15`. The baseline
-`internal` directory matched the v2.9.0 module contents.
+The review follow-up compares three dependency revisions:
 
-Environment: Go 1.27.3, Linux/amd64, Intel Core Ultra 7 265K. Databases came from
-`/var/lib/GeoIP`: GeoIP2 City, Enterprise, Country, ISP, and GeoLite2 ASN.
+- Baseline: `origin/main` at `3359e15`, the v2.9.0 release.
+- Original PR: `ace4f3f`, the cursor-only optimization.
+- Revised PR: `18d984a`, including shared decoding (`19c3273`) and key-capacity
+  hardening.
 
-`real_database_benchmark_test.go` supplies:
+The benchmark harness is geoip2-golang commit `09fe119`. Environment: Go 1.27.3,
+Linux/amd64, Intel Core Ultra 7 265K. Databases came from `/var/lib/GeoIP`:
+GeoIP2 City, Enterprise, Country, ISP, GeoLite2 City, and GeoLite2 ASN.
 
-- 16,384 deterministic successful lookups per database and address family.
+The real-database benchmarks use:
+
+- 16,384 deterministic successful addresses per database and family.
 - Uniform IPv4 candidates, filtered to addresses with records.
 - IPv6 candidates sampled from `2001::/16` and the `2400`, `2600`, `2800`,
   `2a00`, and `2c00` /12 allocations, filtered to addresses with records.
 - Two warm-up passes before timing.
-- Full public lookups with fresh results, decode-only with fresh results,
-  tree traversal, and concurrent public lookups.
+- Fresh generated results for full public lookups and decode-only measurements.
+- Separate fresh reflection decoding with no search-tree traversal. City and
+  Enterprise use deep mirror types so nested generated methods cannot run.
 
-These are address-space samples, not a production traffic trace. They do not
-measure misses, cold starts, or the distribution of fields in actual traffic.
-IPv6 geolocation records in this sample are often less detailed than IPv4
-records. The corpus repeats during timing.
+These are address-space samples, not production traffic traces. They do not
+measure misses, cold starts, or actual traffic's distribution of fields. IPv6
+records in the sample are often less detailed. The corpus repeats during timing.
 
-Final comparisons used ten independent 300 ms samples per case, alternating
-baseline/candidate order. Serial runs used CPU 0 and `GOMAXPROCS=1`. Parallel
-runs used CPUs 0–7 and `GOMAXPROCS=8`. Results below are medians, analyzed with
-`benchstat`. Earlier non-interleaved runs overstated some gains.
+The main comparison used eight independent 250 ms samples per case. Execution
+order rotated across all three versions, pinned to CPU 0 with `GOMAXPROCS=1`.
+The key microbenchmark used eight 150 ms samples per case. Tables show medians,
+analyzed with `benchstat`. Negative changes mean less time per operation.
+“No clear change” means p >= 0.05, not proof of equivalent performance.
 
-## Full-lookup results
+## Key microbenchmarks
 
-Negative changes mean less time per operation. “No clear change” means the
-comparison did not reach p < 0.05.
+Unlike the original benchmark, `BenchmarkMapKeyEncodings` covers inline keys,
+all pointer widths, and both `Cursor.ReadMapKey` and the shared decoder.
 
-| Database   | Family | Baseline ns/op | Candidate ns/op |          Change |
-| ---------- | ------ | -------------: | --------------: | --------------: |
-| City       | IPv4   |          1,157 |           1,130 |          -2.29% |
-| City       | IPv6   |          743.6 |           735.5 | No clear change |
-| Enterprise | IPv4   |          1,555 |           1,548 | No clear change |
-| Enterprise | IPv6   |          904.9 |           867.5 |          -4.14% |
-| Country    | IPv4   |          569.0 |           550.8 |          -3.20% |
-| Country    | IPv6   |          580.3 |           564.5 |          -2.71% |
-| ASN        | IPv4   |          148.0 |           141.3 |          -4.56% |
-| ASN        | IPv6   |          164.0 |           156.3 |          -4.70% |
-| ISP        | IPv4   |          208.4 |           197.9 |          -5.01% |
-| ISP        | IPv6   |          213.4 |           203.3 |          -4.73% |
+Selected cursor results, in ns/key:
 
-Decode-only improvements were 1.8–3.2% for City, Enterprise, and Country,
-10.6–11.1% for ASN, and 8.4–8.6% for ISP. Bytes and allocations per operation
-had no significant change. Tree traversal was effectively unchanged.
+| Encoding                 | Key bytes | Baseline | Original PR | Revised PR |
+| ------------------------ | --------: | -------: | ----------: | ---------: |
+| Inline                   |         2 |    1.882 |       2.438 |      1.872 |
+| Inline                   |        30 |    3.761 |       4.482 |      2.062 |
+| One-byte pointer payload |         2 |    2.237 |       1.889 |      2.083 |
+| One-byte pointer payload |        30 |    5.764 |       1.959 |      2.434 |
+| Two-byte pointer payload |         2 |    2.523 |       3.087 |      2.493 |
+| Two-byte pointer payload |        30 |    6.401 |       6.962 |      3.094 |
+| One-byte pointer payload |       285 |    5.948 |       6.731 |      6.205 |
 
-The existing single-address commercial City benchmark improved from 802.9 to
-754.4 ns/op, or 6.04%. This larger gain is not representative of varied traffic.
+The revised code removes the roughly 29% inline-short-key and 22%
+two-byte-pointer regressions. Thirty-byte keys improve 45–58% through the
+cursor API and 52–60% through the shared decoder across the tested encodings.
 
-At eight goroutines, aggregate time per operation improved 3.0–4.6% for ASN,
-2.0–2.5% for ISP, and 1.6% for Enterprise IPv4. Other parallel comparisons were
-within measurement noise. Parallel ns/op measures throughput, not request
-latency.
+There is still a trade-off. Some 285-byte-key cases are 1–5% slower than the
+baseline, about 0.05–0.3 ns/key. They incur an extra size-extension check before
+falling back. GeoIP2 model field names do not reach this size. All key
+microbenchmarks allocate zero bytes.
 
-The key microbenchmark shows why the extended-size case matters: a 29-byte
-key takes about 2.3 ns through the fast path versus 6.0 ns through the general
-path. The fallback has a cost: a 285-byte key takes about 7.1 ns versus 6.2 ns.
-Such long keys are outside this fast path and are not GeoIP2 model field names.
+## Real-database results
 
-## Other experiments
+Full public lookups, revised PR versus baseline:
 
-- A pointer fast path in `MapReader` did not produce a consistent overall gain.
-- Probing the string cache's home slot before scanning did not help overall.
-- Consolidating compact string decoding did not improve overall performance.
-- Always scanning string-cache buckets produced only small, inconsistent gains.
-- Increasing the cache size was excluded because it increases retained memory.
+| Database     | Family | Baseline ns/op | Revised ns/op |          Change |
+| ------------ | ------ | -------------: | ------------: | --------------: |
+| City         | IPv4   |          1,114 |         1,133 | No clear change |
+| City         | IPv6   |          737.2 |         742.0 | No clear change |
+| GeoLite City | IPv4   |          1,065 |         1,044 | No clear change |
+| GeoLite City | IPv6   |          735.3 |         744.2 | No clear change |
+| Enterprise   | IPv4   |          1,476 |         1,526 |         +3.39%* |
+| Enterprise   | IPv6   |          876.6 |         882.7 | No clear change |
+| Country      | IPv4   |          565.1 |         569.9 | No clear change |
+| Country      | IPv6   |          581.5 |         578.9 | No clear change |
+| ASN          | IPv4   |          147.0 |         141.6 |          -3.64% |
+| ASN          | IPv6   |          162.7 |         157.1 |          -3.44% |
+| ISP          | IPv4   |          205.6 |         199.2 |          -3.09% |
+| ISP          | IPv6   |          210.5 |         203.5 |          -3.30% |
 
-The mixed City/Enterprise CPU profile put about 20% of samples under string
-interning and about 7% under map-key reading. Decoding, allocation, and garbage
-collection still dominate large result types. This patch removes some key
-handling overhead without changing those memory costs.
+*The Enterprise IPv4 regression did not repeat in a longer follow-up: ten
+alternating one-second samples measured 1,526 versus 1,543 ns/op, p=0.101.
+That follow-up also found no significant City or GeoLite City IPv4 difference.
+Their revised lookup medians remained slightly higher, so this is not a claim
+that regressions are impossible.
 
-## Validation
+Generated decode-only results improve 7.6–8.4% for ASN and 5.2–5.4% for ISP.
+Fresh reflection decoding improves 3.1–4.2% for ASN and 2.9–3.1% for ISP.
+Most larger-record decode comparisons are within noise. Small 0.5–0.8%
+regressions appeared in some IPv6 City, GeoLite City, and Country decode cases.
+These results do not establish a general City/Enterprise speed-up.
 
-Passed with the candidate dependency:
+Bytes and allocations per operation had no significant change.
 
-- Both libraries' normal and race-enabled test suites.
-- Decoder and `mmdbdata` tests on `GOARCH=386`.
-- Generated-versus-reflection parity on 65,536 real City/Enterprise addresses,
-  checking both fresh and reused destinations.
-- All pointer widths, high pointer bits, compact and extended string sizes,
-  borrowed key bytes, and the cursor's position after the pointer.
-- Malformed keys, truncated headers and payloads, pointer chains, invalid
-  offsets, and zero cursors.
-- 45 seconds of differential fuzzing: 5,741,212 executions, no failures.
-- `golangci-lint run ./...` in both checkouts.
+The original PR retains a larger benefit on pointer-heavy generated lookups,
+including City and GeoLite City. The revised implementation gives up most of
+that benefit to avoid penalizing inline-key workloads and to share the
+extended-size improvement with reflection and iterator callers.
+
+The parallel benchmark remains available. Earlier parallel and single-address
+results measured `ace4f3f`, not the revised implementation, and should not be
+used as revised-PR performance claims.
+
+## Review coverage and validation
+
+- Restored the original cursor validation and removed its extra fallback call.
+- Shared extended-size handling across inline keys and all pointer widths.
+- Tested `extendedKeyBytes` directly: supported sizes must return a non-nil key,
+  proving they are accepted without the general decoder.
+- Compared cursor results and cache offsets with `decodeKeyAtSlow`.
+- Tested capacity limits and append behavior for compact and extended keys,
+  all pointer widths, and both optimized and general decoding.
+- Added benchmarks for the inline and wider-pointer cases missing originally.
+- Added unreleased changelog entries in maxminddb-golang.
+- Passed both libraries' tests and race tests, plus decoder and `mmdbdata` tests
+  on `GOARCH=386`.
+- Passed fresh/reused generated-versus-reflection parity on 98,304 real City,
+  GeoLite City, and Enterprise addresses, including a race-enabled run.
+- Passed 60 seconds of differential fuzzing: 7,664,178 executions, no failures.
+- Passed `golangci-lint` and formatting checks.
+
+The review found no correctness bug in the original fast path. The follow-up
+changes address performance coverage, shared implementation, and defensive
+slice capacity rather than changing valid decoded values.
 
 ## Reproduce
 
-Run from this checkout. An unset `GEOIP2_REAL_DB_DIR` defaults to
-`/var/lib/GeoIP` for benchmarks. Missing default files are skipped. An explicit
-path makes missing files fail. The real-database parity test is opt-in.
+Run from this checkout. Benchmarks use `GEOIP2_REAL_DB_DIR`, defaulting to
+`/var/lib/GeoIP`. Missing default files are skipped. An explicit directory makes
+missing files fail. The real-database parity test requires the environment
+variable and is skipped by ordinary CI.
 
 ```sh
 GEOIP2_REAL_DB_DIR=/var/lib/GeoIP go test -run '^$' \
-  -bench '^BenchmarkRealDatabase/.*/.*/(Lookup|Decode|Traverse)$' \
-  -benchmem -benchtime=300ms -count=10 -cpu=1
+  -bench '^BenchmarkRealDatabase$/.*/.*/(Lookup|Decode)$' \
+  -benchmem -benchtime=250ms -count=8 -cpu=1
+
+GEOIP2_REAL_DB_DIR=/var/lib/GeoIP go test -run '^$' \
+  -bench '^BenchmarkRealDatabaseReflection$' \
+  -benchmem -benchtime=250ms -count=8 -cpu=1
 
 GEOIP2_REAL_DB_DIR=/var/lib/GeoIP go test -run TestRealDatabaseParity
 ```
 
-For the candidate run, check out maxminddb-golang commit `ace4f3f` in
-`../maxminddb-golang-geoip2-perf`. Use an alternate module file to test that
-checkout without changing `go.mod`:
+Check out the candidate dependency in `../maxminddb-golang-geoip2-perf` and use
+an alternate module file without changing `go.mod`:
 
 ```sh
 benchdir=$(mktemp -d)
@@ -137,10 +175,11 @@ cp go.sum "$benchdir/local.sum"
 go mod edit -modfile="$benchdir/local.mod" \
   -replace="github.com/oschwald/maxminddb-golang/v2=$(realpath ../maxminddb-golang-geoip2-perf)"
 GEOIP2_REAL_DB_DIR=/var/lib/GeoIP go test -modfile="$benchdir/local.mod" \
-  -run '^$' -bench '^BenchmarkRealDatabase/.*/.*/(Lookup|Decode|Traverse)$' \
-  -benchmem -benchtime=300ms -count=10 -cpu=1
+  -run '^$' -bench '^BenchmarkRealDatabase$/.*/.*/(Lookup|Decode)$' \
+  -benchmem -benchtime=250ms -count=8 -cpu=1
 ```
 
-For close comparisons, compile each version with `go test -c`, pin the test
-binaries with `taskset`, and alternate their execution order. Save both versions'
-output and compare the results with `benchstat`.
+For close comparisons, compile each version with `go test -c`, pin the binaries
+with `taskset`, and rotate execution order. Save each version's output and
+compare it with `benchstat`. Run `BenchmarkMapKeyEncodings` in the dependency's
+`internal/decoder` package for the key-encoding microbenchmarks.
