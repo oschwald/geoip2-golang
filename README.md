@@ -173,7 +173,9 @@ func main() {
 	}
 
 	fmt.Printf("City: %v\n", record.City.Names.English)
-	fmt.Printf("Subdivision: %v\n", record.Subdivisions[0].Names.English)
+	if len(record.Subdivisions) > 0 {
+		fmt.Printf("Subdivision: %v\n", record.Subdivisions[0].Names.English)
+	}
 	fmt.Printf("Country: %v (%v)\n", record.Country.Names.English, record.Country.ISOCode)
 	fmt.Printf("Continent: %v (%v)\n", record.Continent.Names.English, record.Continent.Code)
 	fmt.Printf("Postal Code: %v\n", record.Postal.Code)
