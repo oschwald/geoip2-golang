@@ -22,6 +22,7 @@ import (
 // allocations. Each family has 16,384 addresses.
 func BenchmarkRealDatabase(b *testing.B) {
 	benchmarkRealDatabase(b, "City", "GeoIP2-City.mmdb", (*Reader).City)
+	benchmarkRealDatabase(b, "GeoLiteCity", "GeoLite2-City.mmdb", (*Reader).City)
 	benchmarkRealDatabase(b, "Enterprise", "GeoIP2-Enterprise.mmdb", (*Reader).Enterprise)
 	benchmarkRealDatabase(b, "Country", "GeoIP2-Country.mmdb", (*Reader).Country)
 	benchmarkRealDatabase(b, "ASN", "GeoLite2-ASN.mmdb", (*Reader).ASN)
@@ -156,6 +157,7 @@ func TestRealDatabaseParity(t *testing.T) {
 		t.Skip("set GEOIP2_REAL_DB_DIR to test real databases")
 	}
 	testRealDatabaseParity(t, "GeoIP2-City.mmdb", cityFromReflection)
+	testRealDatabaseParity(t, "GeoLite2-City.mmdb", cityFromReflection)
 	testRealDatabaseParity(t, "GeoIP2-Enterprise.mmdb", enterpriseFromReflection)
 }
 
