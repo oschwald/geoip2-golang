@@ -130,8 +130,9 @@ and additional features.
 
 ## Database Examples
 
-This library supports all MaxMind GeoIP2 and GeoLite2 database types. Below are
-examples for each database type:
+This library supports the database types used by the lookup methods below, not
+every MaxMind database type. `Open` and `OpenBytes` return
+`UnknownDatabaseTypeError` for unsupported types.
 
 ### City Database
 
@@ -172,7 +173,9 @@ func main() {
 	}
 
 	fmt.Printf("City: %v\n", record.City.Names.English)
-	fmt.Printf("Subdivision: %v\n", record.Subdivisions[0].Names.English)
+	if len(record.Subdivisions) > 0 {
+		fmt.Printf("Subdivision: %v\n", record.Subdivisions[0].Names.English)
+	}
 	fmt.Printf("Country: %v (%v)\n", record.Country.Names.English, record.Country.ISOCode)
 	fmt.Printf("Continent: %v (%v)\n", record.Continent.Names.English, record.Continent.Code)
 	fmt.Printf("Postal Code: %v\n", record.Postal.Code)
