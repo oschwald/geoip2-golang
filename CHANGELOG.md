@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fixed decoding an explicitly empty date string to clear a reused `Date` value.
+  Missing date fields still leave the destination unchanged.
 - Updated `github.com/oschwald/maxminddb-golang/v2` to `v2.9.0`, which
   includes lookup and decoding performance improvements.
 
