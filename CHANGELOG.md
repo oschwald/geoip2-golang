@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Wrong-type MMDB values for `Date` now return a `maxminddb.UnmarshalTypeError`
+  instead of an `mmdbdata.UnexpectedKindError`. Field and offset context are
+  preserved.
 - Fixed JSON round trips for `Date` and populated `AnonymousPlus` records.
   Date decoding now accepts date-only strings while preserving RFC3339 and
   `null` handling. Invalid date input leaves the destination unchanged.
