@@ -4,6 +4,17 @@
 
 - Fixed decoding an explicitly empty date string to clear a reused `Date` value.
   Missing date fields still leave the destination unchanged.
+- Added support for GeoIP2 City Shield, Country Shield, and Enterprise Shield
+  databases through the corresponding lookup methods.
+- Wrong-type MMDB values for `Date` now return a `maxminddb.UnmarshalTypeError`
+  instead of an `mmdbdata.UnexpectedKindError`. Field and offset context are
+  preserved.
+- Fixed JSON round trips for `Date` and populated `AnonymousPlus` records.
+  Date decoding now accepts date-only strings while preserving RFC3339 and
+  `null` handling. Invalid date input leaves the destination unchanged.
+- `Open` and `OpenBytes` now return a nil reader for unsupported database types.
+  `Open` releases the memory map before returning the error instead of waiting
+  for garbage collection.
 - Updated `github.com/oschwald/maxminddb-golang/v2` to `v2.9.0`, which
   includes lookup and decoding performance improvements.
 
