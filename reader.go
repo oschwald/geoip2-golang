@@ -176,6 +176,7 @@ func getDBType(reader *maxminddb.Reader) (databaseType, error) {
 		"GeoLite2-City",
 		"GeoIP-City-Redacted-US",
 		"GeoIP2-City",
+		"GeoIP2-City-Shield",
 		"GeoIP2-City-Africa",
 		"GeoIP2-City-Asia-Pacific",
 		"GeoIP2-City-Europe",
@@ -183,7 +184,8 @@ func getDBType(reader *maxminddb.Reader) (databaseType, error) {
 		"GeoIP2-City-South-America",
 		"GeoIP2-Precision-City",
 		"GeoLite2-Country",
-		"GeoIP2-Country":
+		"GeoIP2-Country",
+		"GeoIP2-Country-Shield":
 		return isCity | isCountry, nil
 	case "GeoIP2-Connection-Type":
 		return isConnectionType, nil
@@ -192,7 +194,8 @@ func getDBType(reader *maxminddb.Reader) (databaseType, error) {
 	case "DBIP-ISP (compat=Enterprise)",
 		"DBIP-Location-ISP (compat=Enterprise)",
 		"GeoIP-Enterprise-Redacted-US",
-		"GeoIP2-Enterprise":
+		"GeoIP2-Enterprise",
+		"GeoIP2-Enterprise-Shield":
 		return isEnterprise | isCity | isCountry, nil
 	case "GeoIP2-ISP", "GeoIP2-Precision-ISP":
 		return isISP | isASN, nil

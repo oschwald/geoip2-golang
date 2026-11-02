@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added support for GeoIP2 City Shield, Country Shield, and Enterprise Shield
+  databases through the corresponding lookup methods.
 - Wrong-type MMDB values for `Date` now return a `maxminddb.UnmarshalTypeError`
   instead of an `mmdbdata.UnexpectedKindError`. Field and offset context are
   preserved.
