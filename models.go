@@ -30,6 +30,10 @@ func (d *Date) UnmarshalMaxMindDBCursor(
 	if err != nil {
 		return mmdbdata.Cursor{}, mmdbdata.NormalizeUnmarshalError[Date](err)
 	}
+	if s == "" {
+		d.Time = time.Time{}
+		return next, nil
+	}
 	return next, d.set(s)
 }
 
@@ -64,9 +68,6 @@ func (d *Date) UnmarshalJSON(data []byte) error {
 }
 
 func (d *Date) set(s string) error {
-	if s == "" {
-		return nil
-	}
 	t, err := time.Parse(time.DateOnly, s)
 	if err != nil {
 		return fmt.Errorf("parsing date %q: %w", s, err)

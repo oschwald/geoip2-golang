@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fixed decoding an explicitly empty date string to clear a reused `Date` value.
+  Missing date fields still leave the destination unchanged.
 - Added support for GeoIP2 City Shield, Country Shield, and Enterprise Shield
   databases through the corresponding lookup methods.
 - Wrong-type MMDB values for `Date` now return a `maxminddb.UnmarshalTypeError`
