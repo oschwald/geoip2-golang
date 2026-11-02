@@ -29,11 +29,12 @@
 //
 // # Database Types
 //
-// This library supports all MaxMind database types:
+// This library provides these lookup methods for supported database types:
 //   - City: Most comprehensive geolocation data
 //   - Country: Country-level geolocation
 //   - ASN: Autonomous system information
 //   - AnonymousIP: Anonymous network detection
+//   - AnonymousPlus: Anonymous network detection with provider and temporal data
 //   - Enterprise: Enhanced City data with additional fields
 //   - ISP: Internet service provider information
 //   - Domain: Second-level domain data
@@ -52,6 +53,7 @@
 package geoip2
 
 import (
+	"errors"
 	"fmt"
 	"net/netip"
 
@@ -129,7 +131,13 @@ func Open(file string, options ...Option) (*Reader, error) {
 		return nil, err
 	}
 	dbType, err := getDBType(reader)
-	return &Reader{reader, dbType}, err
+	if err != nil {
+		if closeErr := reader.Close(); closeErr != nil {
+			err = errors.Join(err, fmt.Errorf("geoip2: closing unsupported database: %w", closeErr))
+		}
+		return nil, err
+	}
+	return &Reader{reader, dbType}, nil
 }
 
 // OpenBytes takes a byte slice corresponding to a GeoIP2/GeoLite2 database
@@ -142,7 +150,13 @@ func OpenBytes(bytes []byte, options ...Option) (*Reader, error) {
 		return nil, err
 	}
 	dbType, err := getDBType(reader)
-	return &Reader{reader, dbType}, err
+	if err != nil {
+		if closeErr := reader.Close(); closeErr != nil {
+			err = errors.Join(err, fmt.Errorf("geoip2: closing unsupported database: %w", closeErr))
+		}
+		return nil, err
+	}
+	return &Reader{reader, dbType}, nil
 }
 
 func getDBType(reader *maxminddb.Reader) (databaseType, error) {

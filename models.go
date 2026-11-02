@@ -28,7 +28,7 @@ func (d *Date) UnmarshalMaxMindDBCursor(
 	}
 	s, next, err := cursor.ReadString()
 	if err != nil {
-		return mmdbdata.Cursor{}, err
+		return mmdbdata.Cursor{}, mmdbdata.NormalizeUnmarshalError[Date](err)
 	}
 	return next, d.set(s)
 }
@@ -48,6 +48,19 @@ func (d Date) MarshalJSON() ([]byte, error) { //nolint:unparam // error required
 		return []byte("null"), nil
 	}
 	return []byte(`"` + d.Format(time.DateOnly) + `"`), nil
+}
+
+// UnmarshalJSON accepts date-only strings and RFC3339 timestamps.
+func (d *Date) UnmarshalJSON(data []byte) error {
+	if len(data) == len(`"2006-01-02"`) && data[0] == '"' && data[len(data)-1] == '"' {
+		return d.set(string(data[1 : len(data)-1]))
+	}
+	parsed := d.Time
+	if err := parsed.UnmarshalJSON(data); err != nil {
+		return err
+	}
+	d.Time = parsed
+	return nil
 }
 
 func (d *Date) set(s string) error {
