@@ -2,11 +2,17 @@ name: "Code scanning - action"
 
 on:
   push:
-    branches-ignore:
-      - "dependabot/**"
+    branches:
+      - main
   pull_request:
   schedule:
     - cron: "0 12 * * 5"
+
+# Cancel superseded runs for the same pull request. Other events get a
+# unique group so they never cancel each other.
+concurrency:
+  group: codeql-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
   CodeQL-Build:
