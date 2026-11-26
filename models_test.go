@@ -287,3 +287,29 @@ func TestAnonymousPlusJSONRoundTrip(t *testing.T) {
 	require.NoError(t, json.Unmarshal(data, &decoded))
 	assert.Equal(t, original, decoded)
 }
+
+var dateBenchmarkSink []byte
+
+func BenchmarkDateMarshalText(b *testing.B) {
+	date := Date{Time: time.Date(2025, time.April, 14, 0, 0, 0, 0, time.UTC)}
+	b.ReportAllocs()
+	for b.Loop() {
+		text, err := date.MarshalText()
+		if err != nil {
+			b.Fatal(err)
+		}
+		dateBenchmarkSink = text
+	}
+}
+
+func BenchmarkDateMarshalJSON(b *testing.B) {
+	date := Date{Time: time.Date(2025, time.April, 14, 0, 0, 0, 0, time.UTC)}
+	b.ReportAllocs()
+	for b.Loop() {
+		data, err := date.MarshalJSON()
+		if err != nil {
+			b.Fatal(err)
+		}
+		dateBenchmarkSink = data
+	}
+}
