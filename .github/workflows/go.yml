@@ -30,6 +30,9 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Verify go.mod and go.sum are tidy
+        run: go mod tidy -diff
+
       - name: Regenerate models
         run: go generate ./...
 
