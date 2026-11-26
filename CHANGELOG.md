@@ -11,6 +11,8 @@
   unchanged. Text encoding still returns an error for a `Date` whose year is
   outside 0-9999, and JSON encoding now does too instead of writing a date
   that cannot be decoded.
+- `Date` JSON and text encoding is now about twice as fast. The output is
+  unchanged.
 - Fixed decoding an explicitly empty date string to clear a reused `Date` value.
   Missing date fields still leave the destination unchanged.
 - Added support for GeoIP2 City Shield, Country Shield, and Enterprise Shield

@@ -149,6 +149,39 @@ func TestDateTextZeroInOtherLocation(t *testing.T) {
 	}
 }
 
+func TestDateTextMatchesDateOnlyFormat(t *testing.T) {
+	locations := []*time.Location{
+		time.UTC,
+		time.FixedZone("", -12*3600),
+		time.FixedZone("", 14*3600),
+	}
+	years := []int{0, 1, 9, 10, 99, 100, 999, 1000, 1970, 2024, 9999}
+	for _, loc := range locations {
+		for _, year := range years {
+			for month := time.January; month <= time.December; month++ {
+				for _, day := range []int{1, 9, 10, 28, 29, 30, 31} {
+					date := Date{Time: time.Date(year, month, day, 12, 0, 0, 0, loc)}
+					if date.IsZero() {
+						// 0000-12-31 12:00 at -12:00 is the zero instant,
+						// which always encodes as 0001-01-01;
+						// TestDateTextZeroInOtherLocation covers it.
+						continue
+					}
+					want := date.Format(time.DateOnly)
+
+					text, err := date.MarshalText()
+					require.NoError(t, err)
+					require.Equal(t, want, string(text))
+
+					data, err := date.MarshalJSON()
+					require.NoError(t, err)
+					require.Equal(t, `"`+want+`"`, string(data))
+				}
+			}
+		}
+	}
+}
+
 func TestDateMarshalYearOutOfRange(t *testing.T) {
 	for _, date := range []time.Time{
 		time.Date(-1, time.December, 31, 0, 0, 0, 0, time.UTC),
