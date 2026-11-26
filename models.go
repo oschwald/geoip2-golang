@@ -47,11 +47,19 @@ func (d *Date) UnmarshalMaxMindDB(decoder *mmdbdata.Decoder) error {
 }
 
 // MarshalJSON implements json.Marshaler to serialize as ISO date string.
-func (d Date) MarshalJSON() ([]byte, error) { //nolint:unparam // error required by json.Marshaler
+// It returns an error if the year is outside the range [0,9999], because
+// that cannot be written as an ISO date.
+func (d Date) MarshalJSON() ([]byte, error) {
 	if d.IsZero() {
 		return []byte("null"), nil
 	}
-	return []byte(`"` + d.Format(time.DateOnly) + `"`), nil
+	b := make([]byte, 0, len(`"2006-01-02"`))
+	b = append(b, '"')
+	b, err := d.appendDate(b)
+	if err != nil {
+		return nil, err
+	}
+	return append(b, '"'), nil
 }
 
 // UnmarshalJSON accepts date-only strings and RFC3339 timestamps.
@@ -65,6 +73,49 @@ func (d *Date) UnmarshalJSON(data []byte) error {
 	}
 	d.Time = parsed
 	return nil
+}
+
+// MarshalText implements encoding.TextMarshaler using the same date-only
+// format as MarshalJSON. Like MarshalJSON, it writes only the date in d's
+// location, so Dates on the same day encode to the same text. Text has no
+// equivalent of JSON null, so a zero Date encodes as "0001-01-01", which
+// UnmarshalText and UnmarshalJSON decode back to the zero Date. It returns
+// an error if the year is outside the range [0,9999].
+func (d Date) MarshalText() ([]byte, error) {
+	return d.AppendText(make([]byte, 0, len(time.DateOnly)))
+}
+
+// AppendText implements encoding.TextAppender. It appends the same text as
+// MarshalText.
+func (d Date) AppendText(b []byte) ([]byte, error) {
+	if d.IsZero() {
+		// Format the zero instant as the zero date regardless of location,
+		// so it decodes back to the zero Date.
+		return append(b, "0001-01-01"...), nil
+	}
+	return d.appendDate(b)
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler. It accepts date-only
+// strings and RFC3339 timestamps, like UnmarshalJSON. Invalid input,
+// including empty text, returns an error and leaves the Date unchanged.
+func (d *Date) UnmarshalText(data []byte) error {
+	if len(data) == len(time.DateOnly) {
+		return d.set(string(data))
+	}
+	var parsed time.Time
+	if err := parsed.UnmarshalText(data); err != nil {
+		return err
+	}
+	d.Time = parsed
+	return nil
+}
+
+func (d Date) appendDate(b []byte) ([]byte, error) {
+	if y := d.Year(); y < 0 || y > 9999 {
+		return nil, fmt.Errorf("encoding date: year %d outside of range [0,9999]", y)
+	}
+	return d.AppendFormat(b, time.DateOnly), nil
 }
 
 func (d *Date) set(s string) error {
