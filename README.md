@@ -15,7 +15,7 @@ provides significant performance improvements with 56% fewer allocations and
 easily check if data was found. If you only need several fields, you may get
 superior performance by using maxminddb's `Lookup` directly with a result
 struct that only contains the required fields. (See
-[example_test.go](https://github.com/oschwald/maxminddb-golang/blob/v2/example_test.go)
+[example_test.go](https://github.com/oschwald/maxminddb-golang/blob/main/example_test.go)
 in the maxminddb repository for an example of this.)
 
 ## Installation
@@ -694,41 +694,6 @@ if err != nil {
     log.Fatal(err)
 }
 fmt.Println(string(jsonData))
-```
-
-## Migration from v1
-
-### Breaking Changes
-
-- **Import Path**: Change from `github.com/oschwald/geoip2-golang` to
-  `github.com/oschwald/geoip2-golang/v2`
-- **IP Type**: Use `netip.Addr` instead of `net.IP`
-- **Field Names**: `IsoCode` → `ISOCode`
-- **Names Access**: Use struct fields instead of map access
-- **Data Validation**: Use `HasData()` method to check for data availability
-
-### Migration Example
-
-```go
-// v1
-import "github.com/oschwald/geoip2-golang"
-
-ip := net.ParseIP("81.2.69.142")
-record, err := db.City(ip)
-cityName := record.City.Names["en"]
-
-// v2
-import "github.com/oschwald/geoip2-golang/v2"
-
-ip, err := netip.ParseAddr("81.2.69.142")
-if err != nil {
-    // handle error
-}
-record, err := db.City(ip)
-if !record.HasData() {
-    // handle no data found
-}
-cityName := record.City.Names.English
 ```
 
 ## Troubleshooting

@@ -15,8 +15,14 @@
 - `Open` and `OpenBytes` now return a nil reader for unsupported database types.
   `Open` releases the memory map before returning the error instead of waiting
   for garbage collection.
-- Updated `github.com/oschwald/maxminddb-golang/v2` to `v2.9.0`, which
+- Updated `github.com/oschwald/maxminddb-golang/v2` to `v2.9.1`, which
   includes lookup and decoding performance improvements.
+- `MIGRATION.md` now covers v2 breaking changes it previously omitted, such as
+  pointer `Location` coordinates, the removed `IsAnonymousProxy`,
+  `IsSatelliteProvider`, and `Enterprise.RegisteredCountry.Confidence` fields,
+  and the named nested struct types. It also explains the JSON key changes in
+  more detail. The package example now checks that `Subdivisions` is
+  non-empty before indexing it.
 
 ## 2.5.0 - 2026-10-11
 
@@ -60,8 +66,8 @@
 
 ## 2.0.1 - 2025-11-26
 
-- Upgraded `github.com/oschwald/geoip2-golang/v2` to 2.1.1, which fixes an
-  issue that prevented a unclosed memory-mapped file from being unmapped
+- Upgraded `github.com/oschwald/maxminddb-golang/v2` to 2.1.1, which fixes an
+  issue that prevented an unclosed memory-mapped file from being unmapped
   when the reader was garbage collected.
 
 ## 2.0.0 - 2025-10-19
@@ -193,11 +199,17 @@ To migrate from v1 to v2:
    ```go
    // Old
    countryCode := record.Country.IsoCode
-   subdivisionCode := record.Subdivisions[0].IsoCode
+   var subdivisionCode string
+   if len(record.Subdivisions) > 0 {
+       subdivisionCode = record.Subdivisions[0].IsoCode
+   }
 
    // New
    countryCode := record.Country.ISOCode
-   subdivisionCode := record.Subdivisions[0].ISOCode
+   var subdivisionCode string
+   if len(record.Subdivisions) > 0 {
+       subdivisionCode = record.Subdivisions[0].ISOCode
+   }
    ```
 
 4. Replace map-based Names access with struct fields:
