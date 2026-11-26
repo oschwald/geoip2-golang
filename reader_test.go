@@ -47,7 +47,7 @@ func TestReader(t *testing.T) {
 		Japanese:            "ロンドン",
 		BrazilianPortuguese: "Londres",
 		Russian:             "Лондон",
-		SimplifiedChinese:   "",
+		SimplifiedChinese:   "伦敦",
 	}
 	assert.Equal(t, expectedNames, record.City.Names)
 
@@ -88,13 +88,13 @@ func TestReader(t *testing.T) {
 	assert.Equal(t, uint(6269131), record.Subdivisions[0].GeoNameID)
 	assert.Equal(t, "ENG", record.Subdivisions[0].ISOCode)
 	expectedSubdivisionNames := Names{
-		German:              "",
+		German:              "England",
 		English:             "England",
 		BrazilianPortuguese: "Inglaterra",
 		French:              "Angleterre",
-		Japanese:            "",
-		Russian:             "",
-		SimplifiedChinese:   "",
+		Japanese:            "イングランド",
+		Russian:             "Англия",
+		SimplifiedChinese:   "英格兰",
 		Spanish:             "Inglaterra",
 	}
 	assert.Equal(t, expectedSubdivisionNames, record.Subdivisions[0].Names)
@@ -107,8 +107,8 @@ func TestReader(t *testing.T) {
 		English:             "United States",
 		Spanish:             "Estados Unidos",
 		French:              "États-Unis",
-		Japanese:            "アメリカ合衆国",
-		BrazilianPortuguese: "Estados Unidos",
+		Japanese:            "アメリカ",
+		BrazilianPortuguese: "EUA",
 		Russian:             "США",
 		SimplifiedChinese:   "美国",
 	}
