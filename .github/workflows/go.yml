@@ -81,3 +81,24 @@ jobs:
           CGO_ENABLED: "0"
           GOARCH: "386"
         run: go test -v ./...
+
+  govulncheck:
+    name: govulncheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
+        with:
+          go-version: 1.27.x
+          # Scan the newest patch release, not an older cached one, so
+          # already-fixed standard library advisories are not reported.
+          check-latest: true
+
+      - name: Check out code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Dependabot does not track this version, so update it by hand.
+      - name: Run govulncheck
+        run: go run golang.org/x/vuln/cmd/govulncheck@v1.10.0 ./...
