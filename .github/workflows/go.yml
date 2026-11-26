@@ -69,3 +69,12 @@ jobs:
 
       - name: Test
         run: go test -race -v ./...
+
+      # Model fields use uint, which is 32 bits on 386. The race detector
+      # does not support 386, so this run is without -race.
+      - name: Test on 32-bit (386)
+        if: runner.os == 'Linux'
+        env:
+          CGO_ENABLED: "0"
+          GOARCH: "386"
+        run: go test -v ./...
