@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- `Date` now implements `MarshalText`, `AppendText`, and `UnmarshalText` with
+  the same date-only format as its JSON methods. Previously it inherited the
+  RFC3339 text methods from `time.Time`, so `encoding/xml` and JSON map keys
+  wrote a timestamp such as `2025-01-02T00:00:00Z` and text decoding rejected
+  `2025-01-02`. Text decoding accepts date-only and RFC3339 input, a zero
+  `Date` encodes as `0001-01-01`, and invalid input leaves the destination
+  unchanged. Text encoding still returns an error for a `Date` whose year is
+  outside 0-9999, and JSON encoding now does too instead of writing a date
+  that cannot be decoded.
 - Fixed decoding an explicitly empty date string to clear a reused `Date` value.
   Missing date fields still leave the destination unchanged.
 - Added support for GeoIP2 City Shield, Country Shield, and Enterprise Shield
