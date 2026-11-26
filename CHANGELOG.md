@@ -11,6 +11,10 @@
   unchanged. Text encoding still returns an error for a `Date` whose year is
   outside 0-9999, and JSON encoding now does too instead of writing a date
   that cannot be decoded.
+- Documented that `Close` must not be called concurrently with lookups or
+  any other `Reader` method, including `Metadata` and another `Close`. Lookups
+  and `Metadata` remain safe to call concurrently with each other, but callers
+  must wait for all calls on a `Reader` to return before calling `Close`.
 - Fixed decoding an explicitly empty date string to clear a reused `Date` value.
   Missing date fields still leave the destination unchanged.
 - Added support for GeoIP2 City Shield, Country Shield, and Enterprise Shield

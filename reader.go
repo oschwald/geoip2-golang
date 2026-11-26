@@ -27,6 +27,9 @@
 //	fmt.Printf("City: %v\n", record.City.Names.English)
 //	fmt.Printf("Country: %v\n", record.Country.Names.English)
 //
+// If other goroutines use db, all of their calls on it must return before
+// Close runs. See the Reader and Reader.Close documentation for details.
+//
 // # Database Types
 //
 // This library provides these lookup methods for supported database types:
@@ -76,6 +79,11 @@ const (
 
 // Reader holds the maxminddb.Reader struct. It can be created using the
 // Open and OpenBytes functions.
+//
+// The lookup methods and Metadata are safe to call concurrently from multiple
+// goroutines. Close must not be called concurrently with any method on the
+// same Reader, including another call to Close. Wait for all lookups and
+// Metadata calls to return before calling Close.
 type Reader struct {
 	mmdbReader   *maxminddb.Reader
 	databaseType databaseType
@@ -368,8 +376,19 @@ func (r *Reader) Metadata() maxminddb.Metadata {
 	return r.mmdbReader.Metadata
 }
 
-// Close unmaps the database file from virtual memory and returns the
-// resources to the system.
+// Close releases the Reader's resources, unmapping the database file from
+// virtual memory if it was memory-mapped. It does not modify or free a slice
+// passed to OpenBytes.
+//
+// Close must not be called concurrently with any method on the Reader,
+// including another call to Close. The caller must wait for all lookups and
+// Metadata calls using the Reader to return before calling Close. Close clears
+// the Reader's internal state, so a lookup that is still running may read
+// invalid memory, race with Close, or crash the program. This applies to
+// Readers created with OpenBytes as well as Open. A lookup that is synchronized
+// to start after Close has returned, for example through the same lock, is safe
+// and returns an error. Values returned by earlier lookups remain valid after
+// Close.
 func (r *Reader) Close() error {
 	return r.mmdbReader.Close()
 }
