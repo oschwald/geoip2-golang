@@ -111,11 +111,26 @@ func (d *Date) UnmarshalText(data []byte) error {
 	return nil
 }
 
+// appendDate appends d as YYYY-MM-DD in d's location, the same bytes as
+// d.AppendFormat(b, time.DateOnly). It writes the digits directly because
+// the general layout formatter is about twice as slow.
 func (d Date) appendDate(b []byte) ([]byte, error) {
-	if y := d.Year(); y < 0 || y > 9999 {
-		return nil, fmt.Errorf("encoding date: year %d outside of range [0,9999]", y)
+	year, month, day := d.Date()
+	if year < 0 || year > 9999 {
+		return nil, fmt.Errorf("encoding date: year %d outside of range [0,9999]", year)
 	}
-	return d.AppendFormat(b, time.DateOnly), nil
+	return append(b,
+		byte('0'+year/1000),
+		byte('0'+year/100%10),
+		byte('0'+year/10%10),
+		byte('0'+year%10),
+		'-',
+		byte('0'+month/10),
+		byte('0'+month%10),
+		'-',
+		byte('0'+day/10),
+		byte('0'+day%10),
+	), nil
 }
 
 func (d *Date) set(s string) error {
