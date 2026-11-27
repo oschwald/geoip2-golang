@@ -670,6 +670,9 @@ defer db.Close()
 // Use db for multiple lookups...
 ```
 
+If other goroutines use `db`, make sure all their calls on it have returned
+before `Close` runs. See [Concurrent Usage](#concurrent-usage).
+
 ### Memory Usage
 
 For applications needing only specific fields, consider using the lower-level
@@ -677,7 +680,36 @@ maxminddb library with custom result structs to reduce memory allocation.
 
 ### Concurrent Usage
 
-The Reader is safe for concurrent use by multiple goroutines.
+The lookup methods (`City`, `Country`, `ASN`, and the others) and `Metadata`
+are safe to call concurrently from multiple goroutines.
+
+`Close` is the exception. It must not run while another goroutine is calling any
+method on the same `Reader`, including another call to `Close`. `Close` unmaps
+the file when it was memory-mapped and clears the `Reader`'s internal state, so
+a lookup that is still running can read invalid memory, race with `Close`, or
+crash the program. This applies however the `Reader` was opened, including with
+`OpenBytes`. `Close` does not modify or free a slice you passed to `OpenBytes`.
+Wait for all lookups on a `Reader` to return before you call `Close` on it. A
+lookup that your synchronization orders after `Close` has returned, for example
+through the same lock, is safe and returns an error. Lookup results are decoded
+into new memory that does not reference the database, so they remain valid after
+`Close`.
+
+If you replace the `Reader` while your program runs, for example when a new
+database file arrives, close the old `Reader` only after every call that may
+still be using it, including `Metadata`, has returned. One way to do this is a
+`sync.RWMutex`: hold the read lock while you load the current `Reader` and call
+any method on it, and hold the write lock while you swap in the new `Reader` and
+close the old one. Alternatively, do not call `Close` on the old `Reader`. Once
+nothing references it, the garbage collector may unmap a file that `Open`
+memory-mapped, but Go does not guarantee when or whether that happens. Until
+then the old mapping stays in memory, and on Windows the old file cannot be
+deleted or replaced. Calling `Close` unmaps it right away.
+
+Do not overwrite the database file in place while a `Reader` has it open.
+Write the new database to a new path and open it from there. On Unix-like
+systems you can also rename the new file over the old path; Windows does not
+allow replacing a file that is still memory-mapped.
 
 ### JSON Serialization
 
