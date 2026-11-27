@@ -60,6 +60,15 @@ release_date=${BASH_REMATCH[2]}
 today=$(date +%Y-%m-%d)
 tag="v$version"
 
+# A hyphen right after the patch number starts a prerelease, such as
+# 3.0.0-beta.1.
+prerelease_pattern='^[0-9]+\.[0-9]+\.[0-9]+-'
+if [[ $version =~ $prerelease_pattern ]]; then
+    prerelease=true
+else
+    prerelease=false
+fi
+
 if [ "$release_date" != "$today" ]; then
     die "release date $release_date is not today ($today)"
 fi
@@ -150,6 +159,9 @@ fi
 
 echo
 echo "Version: $version"
+if [ "$prerelease" = true ]; then
+    echo "This will be marked as a prerelease."
+fi
 echo
 echo "Release notes:"
 printf '%s\n' "$notes"
@@ -178,4 +190,5 @@ gh release create \
     --target "$release_commit" \
     --title "$version" \
     --notes-file "$notes_file" \
+    --prerelease="$prerelease" \
     "$tag"
